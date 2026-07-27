@@ -387,6 +387,10 @@ noscript {
   background: transparent;
   color: var(--muted);
   font-weight: 700;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .segmented button.active {
