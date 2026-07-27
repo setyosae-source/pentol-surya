@@ -1,0 +1,22 @@
+{
+  "name": "pentol-surya-pwa",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Pentol Surya operational SaaS PWA for multi-outlet pentol business.",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "check": "node scripts/check-project.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.110.8"
+  },
+  "devDependencies": {
+    "vite": "8.1.5"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="Pentol Surya">
+  <rect width="180" height="180" rx="40" fill="#f97316"/>
+  <circle cx="90" cy="90" r="54" fill="#fff7ed"/>
+  <circle cx="73" cy="78" r="16" fill="#fb923c"/>
+  <circle cx="107" cy="78" r="16" fill="#fb923c"/>
+  <circle cx="88" cy="105" r="20" fill="#ea580c"/>
+  <path d="M54 124c20 14 52 14 74 0" fill="none" stroke="#7c2d12" stroke-width="9" stroke-linecap="round"/>
+</svg>

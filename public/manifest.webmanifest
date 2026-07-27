@@ -1,0 +1,37 @@
+{
+  "name": "Pentol Surya",
+  "short_name": "PentolSurya",
+  "description": "Sistem operasional usaha pentol multi outlet.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fff7ed",
+  "theme_color": "#f97316",
+  "categories": ["business", "productivity", "finance"],
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Tambah Penjualan",
+      "short_name": "Penjualan",
+      "url": "./#/sales/new"
+    },
+    {
+      "name": "Laporan Akhir",
+      "short_name": "Tutup Shift",
+      "url": "./#/shift/final"
+    }
+  ]
+}
