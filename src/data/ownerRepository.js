@@ -77,7 +77,7 @@ export const ownerRepository = {
     const client = requireSupabase();
     const { data, error } = await client
       .from('audit_logs')
-      .select('id, table_name, action, record_id, reason, created_at, actor:user_profiles(full_name)')
+      .select('id, table_name, action, record_id, reason, created_at, actor_id')
       .order('created_at', { ascending: false })
       .limit(25);
     if (error) throw error;
