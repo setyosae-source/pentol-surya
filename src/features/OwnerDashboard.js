@@ -7,11 +7,18 @@ import { kpiCard, emptyState } from '../ui/components.js';
 
 export function OwnerDashboard() {
   queueMicrotask(initOwnerDashboard);
-  const dashboard = store.getState().ownerDashboard;
+  const state = store.getState();
+  const dashboard = state.ownerDashboard;
 
   if (!dashboard) {
     return `
       <section class="stack">
+        ${state.ownerDashboardError ? `
+          <div class="empty-state">
+            <strong>Dashboard belum bisa dimuat</strong>
+            <p>${state.ownerDashboardError}</p>
+          </div>
+        ` : ''}
         <div class="skeleton block"></div>
         <div class="kpi-grid">
           <div class="skeleton card"></div>
@@ -255,8 +262,10 @@ async function initOwnerDashboard(force = false) {
     bindOwnerForms();
     return;
   }
+  if (state.ownerDashboardLoading && !force) return;
 
   try {
+    store.setState({ ownerDashboardLoading: true });
     const range = todayRange();
     const [kpis, activeShifts, latestLocations, productPerformance, topOutlets, auditLogs] = await Promise.all([
       ownerRepository.getKpis(range),
@@ -270,6 +279,8 @@ async function initOwnerDashboard(force = false) {
     ]);
 
     store.setState({
+      ownerDashboardLoading: false,
+      ownerDashboardError: null,
       ownerDashboard: {
         kpis,
         activeShifts,
@@ -281,6 +292,10 @@ async function initOwnerDashboard(force = false) {
     });
     bindOwnerForms();
   } catch (error) {
+    store.setState({
+      ownerDashboardLoading: false,
+      ownerDashboardError: error.message || 'Gagal memuat dashboard owner.',
+    });
     toast.error(error.message || 'Gagal memuat dashboard owner.');
   }
 }
@@ -377,7 +392,7 @@ async function submit(form, action, successMessage) {
   try {
     await action();
     toast.success(successMessage);
-    store.setState({ ownerDashboard: null });
+    store.setState({ ownerDashboard: null, ownerDashboardLoading: false });
     form.reset();
   } catch (error) {
     toast.error(error.message || 'Gagal menyimpan data.');
