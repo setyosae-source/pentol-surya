@@ -4,7 +4,7 @@ import { store } from '../core/store.js';
 export const catalogRepository = {
   async loadOutlets() {
     const cached = store.getState();
-    if (cached.outletsLoaded && cached.outlets.length) return cached.outlets;
+    if (cached.outletsLoaded) return cached.outlets;
 
     const client = requireSupabase();
     const { data, error } = await client
@@ -19,7 +19,7 @@ export const catalogRepository = {
 
   async loadProducts(outletId = null) {
     const cached = store.getState();
-    if (cached.productsLoadedFor === (outletId || 'all') && cached.products.length) {
+    if (cached.productsLoadedFor === (outletId || 'all')) {
       return cached.products;
     }
 
