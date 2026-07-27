@@ -247,7 +247,7 @@ export function OwnerDashboard() {
         <div class="list-item">
           <span>
             <strong>${log.table_name} - ${log.action}</strong>
-            <small>${formatDateTime(log.created_at)} - ${log.actor?.full_name || 'System'}</small>
+            <small>${formatDateTime(log.created_at)} - ${log.actor_id ? `User ${log.actor_id.slice(0, 8)}` : 'System'}</small>
           </span>
           <span class="badge">${log.record_id ? log.record_id.slice(0, 8) : '-'}</span>
         </div>
@@ -263,6 +263,7 @@ async function initOwnerDashboard(force = false) {
     return;
   }
   if (state.ownerDashboardLoading && !force) return;
+  if (state.ownerDashboardError && !force) return;
 
   try {
     store.setState({ ownerDashboardLoading: true });
