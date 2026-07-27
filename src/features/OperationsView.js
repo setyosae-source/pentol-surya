@@ -3,6 +3,7 @@ import { employeeRepository } from '../data/employeeRepository.js';
 import { shiftRepository } from '../data/shiftRepository.js';
 import { operationsRepository } from '../data/operationsRepository.js';
 import { stockRepository } from '../data/stockRepository.js';
+import { ownerRepository } from '../data/ownerRepository.js';
 import { store } from '../core/store.js';
 import { toast } from '../core/toast.js';
 import { formatCurrency, toNumber } from '../core/utils.js';
@@ -11,6 +12,11 @@ import { productQtyFields } from '../ui/components.js';
 export function OperationsView() {
   queueMicrotask(initOperations);
   const state = store.getState();
+
+  if (isOwnerRole(state.profile)) {
+    return renderOwnerInput(state);
+  }
+
   const shift = state.activeShift;
 
   if (!shift) {
@@ -48,6 +54,11 @@ export function OperationsView() {
 async function initOperations() {
   try {
     const state = store.getState();
+    if (isOwnerRole(state.profile)) {
+      await initOwnerInput();
+      return;
+    }
+
     if (!state.employee && state.profile?.role === 'employee') {
       await employeeRepository.loadContext();
     }
@@ -59,6 +70,340 @@ async function initOperations() {
   } catch (error) {
     toast.error(error.message || 'Gagal memuat operasional.');
   }
+}
+
+function isOwnerRole(profile) {
+  return ['owner', 'manager'].includes(profile?.role);
+}
+
+function renderOwnerInput(state) {
+  const products = state.products || [];
+  const outlets = state.outlets || [];
+
+  return `
+    <section class="hero-panel">
+      <small>Input Owner</small>
+      <h1>Kelola data operasional</h1>
+      <p>Input master outlet, produk, harga khusus, pengeluaran umum, dan periode gaji tanpa memenuhi dashboard pantauan.</p>
+    </section>
+
+    ${state.ownerInputError ? `
+      <div class="empty-state">
+        <strong>Input belum bisa dimuat</strong>
+        <p>${state.ownerInputError}</p>
+      </div>
+    ` : ''}
+
+    ${state.ownerInputLoading && !state.ownerInputLoaded ? '<div class="skeleton block"></div>' : ''}
+
+    <div class="segmented sticky" role="tablist">
+      <button class="active" data-owner-tab="expense">Pengeluaran</button>
+      <button data-owner-tab="payroll">Payroll</button>
+      <button data-owner-tab="outlet">Outlet</button>
+      <button data-owner-tab="product">Produk</button>
+      <button data-owner-tab="price">Harga</button>
+    </div>
+
+    ${renderOwnerExpenseForm()}
+    ${renderOwnerPayrollForm()}
+    ${renderOwnerOutletForm()}
+    ${renderOwnerProductForm()}
+    ${renderOwnerPriceForm(products, outlets)}
+  `;
+}
+
+async function initOwnerInput() {
+  const state = store.getState();
+  if (state.ownerInputLoaded) {
+    bindOwnerInputs();
+    return;
+  }
+  if (state.ownerInputLoading) return;
+
+  try {
+    store.setState({ ownerInputLoading: true, ownerInputError: null });
+    await Promise.all([
+      catalogRepository.loadOutlets(),
+      catalogRepository.loadProducts(),
+    ]);
+    store.setState({ ownerInputLoaded: true, ownerInputLoading: false });
+    bindOwnerInputs();
+  } catch (error) {
+    store.setState({
+      ownerInputLoading: false,
+      ownerInputError: error.message || 'Gagal memuat data input owner.',
+    });
+    toast.error(error.message || 'Gagal memuat data input owner.');
+  }
+}
+
+function renderOwnerExpenseForm() {
+  return `
+    <form class="surface stack op-panel" data-owner-panel="expense" data-owner-form="general-expense">
+      <div class="section-title">
+        <strong>Pengeluaran umum</strong>
+        <small>Tidak terkait outlet tertentu</small>
+      </div>
+      <label class="field">
+        <span>Kategori</span>
+        <input name="category" placeholder="Bahan baku, sewa, gas, perbaikan" required />
+      </label>
+      <label class="field">
+        <span>Jumlah</span>
+        <input name="amount" type="number" inputmode="numeric" min="0" required />
+      </label>
+      <label class="field">
+        <span>Catatan</span>
+        <textarea name="note" rows="2"></textarea>
+      </label>
+      <button class="primary" type="submit">Simpan Pengeluaran</button>
+    </form>
+  `;
+}
+
+function renderOwnerPayrollForm() {
+  return `
+    <form class="surface stack op-panel hidden" data-owner-panel="payroll" data-owner-form="payroll-period">
+      <div class="section-title">
+        <strong>Periode gaji</strong>
+        <small>Draft, final, sudah dibayar</small>
+      </div>
+      <label class="field">
+        <span>Nama periode</span>
+        <input name="name" placeholder="Gaji Minggu 4 Juli" required />
+      </label>
+      <div class="grid two">
+        <label class="field">
+          <span>Mulai</span>
+          <input name="starts_on" type="date" required />
+        </label>
+        <label class="field">
+          <span>Sampai</span>
+          <input name="ends_on" type="date" required />
+        </label>
+      </div>
+      <button class="primary" type="submit">Buat Draft Payroll</button>
+    </form>
+  `;
+}
+
+function renderOwnerOutletForm() {
+  return `
+    <form class="surface stack op-panel hidden" data-owner-panel="outlet" data-owner-form="outlet">
+      <div class="section-title">
+        <strong>Tambah outlet</strong>
+        <small>Lokasi dapat diubah sewaktu-waktu</small>
+      </div>
+      <label class="field">
+        <span>Nama outlet</span>
+        <input name="name" required />
+      </label>
+      <label class="field">
+        <span>Alamat</span>
+        <textarea name="address" rows="2"></textarea>
+      </label>
+      <div class="grid two">
+        <label class="field"><span>Lat jualan</span><input name="sale_lat" type="number" step="0.0000001" /></label>
+        <label class="field"><span>Lng jualan</span><input name="sale_lng" type="number" step="0.0000001" /></label>
+        <label class="field"><span>Lat ambil barang</span><input name="pickup_lat" type="number" step="0.0000001" /></label>
+        <label class="field"><span>Lng ambil barang</span><input name="pickup_lng" type="number" step="0.0000001" /></label>
+        <label class="field"><span>Lat absen pulang</span><input name="checkout_lat" type="number" step="0.0000001" /></label>
+        <label class="field"><span>Lng absen pulang</span><input name="checkout_lng" type="number" step="0.0000001" /></label>
+      </div>
+      <label class="field"><span>Radius geofence meter</span><input name="geofence_radius_m" type="number" value="120" /></label>
+      <div class="grid two">
+        <label class="field">
+          <span>Metode stok awal</span>
+          <select name="stock_default_method">
+            <option value="default_qty">Qty default</option>
+            <option value="previous_remaining">Sisa shift sebelumnya</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Mode laporan berkala</span>
+          <select name="report_schedule_mode">
+            <option value="free">Bebas</option>
+            <option value="scheduled">Jam tertentu</option>
+          </select>
+        </label>
+      </div>
+      <label class="field">
+        <span>Jam laporan, pisahkan koma</span>
+        <input name="report_times" placeholder="10:00, 13:00, 16:00" />
+      </label>
+      <button class="primary" type="submit">Simpan Outlet</button>
+    </form>
+  `;
+}
+
+function renderOwnerProductForm() {
+  return `
+    <form class="surface stack op-panel hidden" data-owner-panel="product" data-owner-form="product">
+      <div class="section-title">
+        <strong>Tambah produk</strong>
+        <small>Harga transaksi lama tetap memakai snapshot</small>
+      </div>
+      <label class="field"><span>Nama produk</span><input name="name" required /></label>
+      <div class="grid two">
+        <label class="field"><span>Harga jual umum</span><input name="general_sale_price" type="number" min="0" required /></label>
+        <label class="field"><span>HPP</span><input name="hpp" type="number" min="0" required /></label>
+      </div>
+      <label class="field"><span>Qty default</span><input name="default_qty" type="number" min="0" step="0.01" value="0" /></label>
+      <button class="primary" type="submit">Simpan Produk</button>
+    </form>
+  `;
+}
+
+function renderOwnerPriceForm(products, outlets) {
+  return `
+    <form class="surface stack op-panel hidden" data-owner-panel="price" data-owner-form="outlet-price">
+      <div class="section-title">
+        <strong>Harga outlet</strong>
+        <small>Terapkan ke semua outlet atau outlet tertentu</small>
+      </div>
+      <label class="field">
+        <span>Produk</span>
+        <select name="product_id" required>
+          <option value="">Pilih produk</option>
+          ${products.map((product) => `<option value="${product.id}">${product.name}</option>`).join('')}
+        </select>
+      </label>
+      <label class="field">
+        <span>Target outlet</span>
+        <select name="outlet_id" required>
+          <option value="all">Semua outlet</option>
+          ${outlets.map((outlet) => `<option value="${outlet.id}">${outlet.name}</option>`).join('')}
+        </select>
+      </label>
+      <label class="field">
+        <span>Harga jual</span>
+        <input name="sale_price" type="number" min="0" required />
+      </label>
+      <button class="primary" type="submit">Terapkan Harga</button>
+    </form>
+  `;
+}
+
+function bindOwnerInputs() {
+  document.querySelectorAll('[data-owner-tab]').forEach((button) => {
+    button.addEventListener('click', () => {
+      document.querySelectorAll('[data-owner-tab]').forEach((item) => item.classList.remove('active'));
+      document.querySelectorAll('[data-owner-panel]').forEach((panel) => panel.classList.add('hidden'));
+      button.classList.add('active');
+      document.querySelector(`[data-owner-panel="${button.dataset.ownerTab}"]`)?.classList.remove('hidden');
+    });
+  });
+
+  document.querySelector('[data-owner-form="general-expense"]')?.addEventListener('submit', handleOwnerExpenseSubmit);
+  document.querySelector('[data-owner-form="payroll-period"]')?.addEventListener('submit', handleOwnerPayrollSubmit);
+  document.querySelector('[data-owner-form="outlet"]')?.addEventListener('submit', handleOwnerOutletSubmit);
+  document.querySelector('[data-owner-form="product"]')?.addEventListener('submit', handleOwnerProductSubmit);
+  document.querySelector('[data-owner-form="outlet-price"]')?.addEventListener('submit', handleOwnerPriceSubmit);
+}
+
+async function handleOwnerExpenseSubmit(event) {
+  event.preventDefault();
+  const form = new FormData(event.currentTarget);
+  const profile = store.getState().profile;
+  await submitOwnerForm(event.currentTarget, () => ownerRepository.addGeneralExpense({
+    tenant_id: profile.tenant_id,
+    category: form.get('category'),
+    amount: toNumber(form.get('amount')),
+    note: form.get('note'),
+  }), 'Pengeluaran umum tersimpan.');
+}
+
+async function handleOwnerPayrollSubmit(event) {
+  event.preventDefault();
+  const form = new FormData(event.currentTarget);
+  const profile = store.getState().profile;
+  await submitOwnerForm(event.currentTarget, () => ownerRepository.createPayrollPeriod({
+    tenant_id: profile.tenant_id,
+    name: form.get('name'),
+    starts_on: form.get('starts_on'),
+    ends_on: form.get('ends_on'),
+    created_by: profile.id,
+  }), 'Draft payroll dibuat.');
+}
+
+async function handleOwnerOutletSubmit(event) {
+  event.preventDefault();
+  const form = new FormData(event.currentTarget);
+  const profile = store.getState().profile;
+  await submitOwnerForm(event.currentTarget, () => catalogRepository.saveOutlet({
+    tenant_id: profile.tenant_id,
+    name: form.get('name'),
+    address: form.get('address'),
+    sale_lat: nullableNumber(form.get('sale_lat')),
+    sale_lng: nullableNumber(form.get('sale_lng')),
+    pickup_lat: nullableNumber(form.get('pickup_lat')),
+    pickup_lng: nullableNumber(form.get('pickup_lng')),
+    checkout_lat: nullableNumber(form.get('checkout_lat')),
+    checkout_lng: nullableNumber(form.get('checkout_lng')),
+    geofence_radius_m: toNumber(form.get('geofence_radius_m'), 120),
+    stock_default_method: form.get('stock_default_method'),
+    report_schedule_mode: form.get('report_schedule_mode'),
+    report_times: parseReportTimes(form.get('report_times')),
+  }), 'Outlet tersimpan.');
+}
+
+async function handleOwnerProductSubmit(event) {
+  event.preventDefault();
+  const form = new FormData(event.currentTarget);
+  const profile = store.getState().profile;
+  await submitOwnerForm(event.currentTarget, () => catalogRepository.saveProduct({
+    tenant_id: profile.tenant_id,
+    name: form.get('name'),
+    general_sale_price: toNumber(form.get('general_sale_price')),
+    hpp: toNumber(form.get('hpp')),
+    default_qty: toNumber(form.get('default_qty')),
+  }), 'Produk tersimpan.');
+}
+
+async function handleOwnerPriceSubmit(event) {
+  event.preventDefault();
+  const form = new FormData(event.currentTarget);
+  const profile = store.getState().profile;
+  await submitOwnerForm(event.currentTarget, () => catalogRepository.applyOutletPrice({
+    tenant_id: profile.tenant_id,
+    outlet_id: form.get('outlet_id'),
+    product_id: form.get('product_id'),
+    sale_price: toNumber(form.get('sale_price')),
+  }), 'Harga outlet diterapkan.');
+}
+
+async function submitOwnerForm(form, action, successMessage) {
+  form.querySelectorAll('button, input, select, textarea').forEach((node) => {
+    node.disabled = true;
+  });
+  try {
+    await action();
+    toast.success(successMessage);
+    store.setState({
+      ownerDashboard: null,
+      ownerDashboardError: null,
+      ownerInputLoaded: false,
+      ownerInputLoading: false,
+    });
+    form.reset();
+  } catch (error) {
+    toast.error(error.message || 'Gagal menyimpan data.');
+  } finally {
+    form.querySelectorAll('button, input, select, textarea').forEach((node) => {
+      node.disabled = false;
+    });
+  }
+}
+
+function nullableNumber(value) {
+  return value === '' || value === null ? null : Number(value);
+}
+
+function parseReportTimes(value) {
+  return String(value || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
 
 function renderSaleForm(state) {
