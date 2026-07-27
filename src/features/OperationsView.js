@@ -97,7 +97,7 @@ function renderOwnerInput(state) {
     ${state.ownerInputLoading && !state.ownerInputLoaded ? '<div class="skeleton block"></div>' : ''}
 
     <div class="segmented sticky" role="tablist">
-      <button class="active" data-owner-tab="expense">Pengeluaran</button>
+      <button class="active" data-owner-tab="expense">Biaya</button>
       <button data-owner-tab="payroll">Payroll</button>
       <button data-owner-tab="outlet">Outlet</button>
       <button data-owner-tab="product">Produk</button>
