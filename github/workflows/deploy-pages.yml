@@ -23,30 +23,32 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: actions/configure-pages@v5
-
       - name: Prepare static site
         env:
           SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
         run: |
-          mkdir -p .pages
-          cp index.html .pages/index.html
-          cp -R public .pages/public
-          touch .pages/.nojekyll
           python - <<'PY'
           import os
           from pathlib import Path
 
-          p = Path(".pages/index.html")
-          html = p.read_text(encoding="utf-8")
-          html = html.replace("__SUPABASE_URL__", os.environ.get("SUPABASE_URL", ""))
-          html = html.replace("__SUPABASE_PUBLISHABLE_KEY__", os.environ.get("SUPABASE_KEY", ""))
-          p.write_text(html, encoding="utf-8")
-          PY
+          index_path = Path("index.html")
+          html = index_path.read_text(encoding="utf-8")
+          supabase_url = os.environ.get("SUPABASE_URL", "")
+          supabase_key = os.environ.get("SUPABASE_KEY", "")
 
+          if supabase_url:
+              html = html.replace("__SUPABASE_URL__", supabase_url)
+          if supabase_key:
+              html = html.replace("__SUPABASE_PUBLISHABLE_KEY__", supabase_key)
+
+          Path(".pages").mkdir(exist_ok=True)
+          Path(".pages/index.html").write_text(html, encoding="utf-8")
+          PY
+          cp -R public .pages/public
+          touch .pages/.nojekyll
       - uses: actions/upload-pages-artifact@v4
         with:
           path: .pages
-
       - id: deployment
         uses: actions/deploy-pages@v5
