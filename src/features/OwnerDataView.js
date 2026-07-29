@@ -486,9 +486,9 @@ function renderEditorFields(section, row) {
 }
 
 async function saveRow(section, form, row) {
+  const values = new FormData(form);
   disableForm(form, true);
   try {
-    const values = new FormData(form);
     const profile = store.getState().profile;
 
     if (section === 'employees') {
