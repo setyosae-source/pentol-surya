@@ -33,18 +33,21 @@ Deploy ulang dua function ini setiap mengambil ZIP terbaru yang mengubah folder 
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_PUBLISHABLE_KEY`
 
-2. Jalankan build:
+2. Push repository ke branch `main`.
 
-```bash
-npm install
-npm run build
-```
+3. GitHub Actions akan menyiapkan static site otomatis:
 
-3. Publish folder `dist`.
+- `index.html` dipakai sebagai frontend utama.
+- Supabase URL/key disuntikkan dari secrets.
+- Folder `public` disalin untuk icon dan manifest.
+- Tidak ada Vite build, sehingga deploy lebih cepat dan cache lebih mudah dikontrol.
+
+Kalau file dibuka lokal tanpa GitHub Actions, aplikasi akan menampilkan setup screen untuk memasukkan Supabase URL dan publishable key.
 
 ## Catatan Keamanan
 
 - Jangan taruh `service_role` di `src`, `.env`, atau GitHub Pages.
+- `service_role` hanya boleh disimpan sebagai Supabase Edge Function secret.
 - Karyawan tidak boleh melihat HPP dan laba di UI. RLS tetap membatasi tenant dan role, tetapi untuk produksi lanjut sebaiknya buat view khusus karyawan tanpa kolom HPP.
 - Reset PIN dan pembuatan user karyawan harus melalui server-side Edge Function.
 - Untuk fitur finansial sensitif, set JWT expiry Supabase lebih pendek dan aktifkan MFA untuk owner.

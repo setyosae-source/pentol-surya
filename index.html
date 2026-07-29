@@ -1,18 +1,2132 @@
 <!doctype html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#f97316" />
-    <meta name="description" content="Pentol Surya - sistem operasional multi outlet." />
-    <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.svg" />
-    <title>Pentol Surya</title>
-  </head>
-  <body>
-    <noscript>Aplikasi Pentol Surya membutuhkan JavaScript.</noscript>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f97316">
+  <meta name="description" content="Pentol Surya - sistem operasional multi outlet.">
+  <link rel="manifest" href="./public/manifest.webmanifest">
+  <link rel="icon" href="./public/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./public/icons/apple-touch-icon.svg">
+  <title>Pentol Surya</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #fff7ed;
+      --surface: #fffaf4;
+      --panel: #ffffff;
+      --panel-soft: #ffedd5;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #fed7aa;
+      --primary: #f97316;
+      --primary-dark: #ea580c;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --shadow: 0 18px 45px rgba(124, 45, 18, .14);
+      --radius: 8px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .app {
+      min-height: 100vh;
+    }
+
+    .center-screen {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .auth-card, .setup-card {
+      width: min(420px, 100%);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #ff7a1a, #ea580c);
+      color: #fff;
+      font-weight: 900;
+      letter-spacing: .04em;
+      flex: 0 0 auto;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+
+    .brand-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 5px;
+      background: var(--panel-soft);
+      border-radius: var(--radius);
+      margin: 12px 0 18px;
+    }
+
+    .tab-btn {
+      border: 0;
+      background: transparent;
+      border-radius: 7px;
+      color: var(--muted);
+      padding: 10px 8px;
+      font-weight: 800;
+    }
+
+    .tab-btn.active {
+      background: #fff;
+      color: var(--primary-dark);
+      box-shadow: 0 6px 16px rgba(234, 88, 12, .12);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .form-grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field.full, .full { grid-column: 1 / -1; }
+
+    label {
+      font-weight: 850;
+      color: #172033;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid #fdba74;
+      background: #fff7ed;
+      color: var(--text);
+      border-radius: 8px;
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 88px;
+      resize: vertical;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, .16);
+    }
+
+    .btn {
+      min-height: 44px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-weight: 900;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, #ff7a1a, #f97316);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .btn.ghost {
+      border-color: #fdba74;
+      background: #fffaf4;
+      color: #334155;
+    }
+
+    .btn.danger {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: #fff;
+    }
+
+    .btn.small {
+      min-height: 34px;
+      padding: 7px 10px;
+      font-size: 12px;
+    }
+
+    .help {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+    }
+
+    .sidebar {
+      background: #fffaf4;
+      border-right: 1px solid var(--line);
+      padding: 14px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 20;
+    }
+
+    .sidebar-head {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 6px 4px 18px;
+    }
+
+    .nav-group {
+      margin: 15px 0 8px;
+      color: #9a3412;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .nav-item {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 11px 12px;
+      border-radius: 8px;
+      text-align: left;
+      font-weight: 850;
+    }
+
+    .nav-item span:first-child {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .nav-item.active {
+      color: var(--primary-dark);
+      background: #ffedd5;
+    }
+
+    .main {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 15;
+      min-height: 70px;
+      background: rgba(255, 250, 244, .94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 16px;
+    }
+
+    .topbar-left, .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .burger {
+      width: 38px;
+      height: 38px;
+      border: 1px solid #fdba74;
+      background: #fffaf4;
+      border-radius: 8px;
+      display: none;
+      place-items: center;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #dcfce7;
+      color: #166534;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .content {
+      padding: 18px;
+      max-width: 1180px;
+      width: 100%;
+    }
+
+    .page-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #9a3412;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(26px, 4vw, 38px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .page-desc {
+      margin: 8px 0 0;
+      color: var(--muted);
+      max-width: 720px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .kpi-card, .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+
+    .kpi-label {
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    .kpi-value {
+      margin-top: 6px;
+      font-size: 22px;
+      font-weight: 950;
+      color: #0f172a;
+    }
+
+    .panel {
+      margin-top: 12px;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-weight: 950;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+
+    th, td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #ffedd5;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      color: #475569;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      background: #fff7ed;
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 4px 9px;
+      background: #f1f5f9;
+      color: #475569;
+      font-weight: 800;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .badge.ok {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge.warn {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .empty {
+      padding: 22px;
+      text-align: center;
+      color: var(--muted);
+      background: #fffaf4;
+      border: 1px dashed var(--line);
+      border-radius: var(--radius);
+    }
+
+    .skeleton {
+      min-height: 96px;
+      border-radius: var(--radius);
+      background: linear-gradient(90deg, #ffedd5 25%, #fff7ed 38%, #ffedd5 63%);
+      background-size: 400% 100%;
+      animation: shimmer 1.2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 100% 0; }
+      100% { background-position: 0 0; }
+    }
+
+    .fab {
+      position: fixed;
+      right: max(18px, env(safe-area-inset-right));
+      bottom: max(18px, env(safe-area-inset-bottom));
+      z-index: 12;
+      width: 58px;
+      height: 58px;
+      border-radius: 999px;
+      border: 0;
+      background: linear-gradient(135deg, #ff7a1a, #ea580c);
+      color: #fff;
+      font-size: 30px;
+      line-height: 1;
+      box-shadow: 0 15px 35px rgba(234, 88, 12, .34);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      background: rgba(15, 23, 42, .48);
+      display: grid;
+      place-items: center;
+      padding: 16px;
+    }
+
+    .modal {
+      width: min(760px, 100%);
+      max-height: min(88vh, 760px);
+      overflow: auto;
+      background: #fff;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .modal-head {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #fff;
+      padding: 16px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid #ffedd5;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 950;
+    }
+
+    .modal-body {
+      padding: 16px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 9px;
+      margin-top: 16px;
+    }
+
+    .toast-area {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      width: min(520px, calc(100vw - 28px));
+      display: grid;
+      gap: 8px;
+      z-index: 60;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: #0f172a;
+      color: #fff;
+      border-radius: 8px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+      font-weight: 800;
+    }
+
+    .toast.error { background: #dc2626; }
+    .toast.success { background: #16a34a; }
+
+    .drawer-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 18;
+      background: rgba(15, 23, 42, .32);
+    }
+
+    .code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      color: #475569;
+    }
+
+    @media (max-width: 980px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: min(84vw, 310px);
+        transform: translateX(-105%);
+        transition: transform .2s ease;
+      }
+      body.drawer-open .sidebar { transform: translateX(0); }
+      body.drawer-open .drawer-overlay { display: block; }
+      .burger { display: grid; }
+      .content { padding: 14px; }
+      .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .topbar .brand-subtitle { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      .form-grid.two { grid-template-columns: 1fr; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .page-head { display: block; }
+      .topbar { padding: 9px 11px; }
+      .topbar .logo { width: 36px; height: 36px; font-size: 12px; }
+      .topbar-actions { gap: 6px; }
+      .status { display: none; }
+      h1 { font-size: 28px; }
+      .fab { bottom: 16px; right: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <noscript>Aplikasi Pentol Surya membutuhkan JavaScript.</noscript>
+  <div id="app" class="app"></div>
+  <div id="modal-root"></div>
+  <div id="toast-root" class="toast-area" aria-live="polite"></div>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.110.8';
+
+    const BUILD_SUPABASE_URL = '__SUPABASE_URL__';
+    const BUILD_SUPABASE_KEY = '__SUPABASE_PUBLISHABLE_KEY__';
+    const CONFIG_STORAGE_KEY = 'pentol_surya_config_v1';
+    const CACHE_PREFIX = 'pentol-surya';
+
+    const app = document.querySelector('#app');
+    const modalRoot = document.querySelector('#modal-root');
+    const toastRoot = document.querySelector('#toast-root');
+    let supabase = null;
+
+    const state = {
+      config: resolveConfig(),
+      session: null,
+      user: null,
+      profile: null,
+      route: 'dashboard',
+      authMode: 'owner',
+      cache: {},
+      formContext: null,
+    };
+
+    const ownerNav = [
+      { group: 'Pemantauan', items: [
+        { key: 'dashboard', label: 'Dashboard', icon: 'HM' },
+        { key: 'shifts', label: 'Shift aktif', icon: 'SH' },
+        { key: 'locations', label: 'Lokasi', icon: 'GPS' },
+        { key: 'audit', label: 'Audit log', icon: 'AU' },
+      ] },
+      { group: 'Master data', items: [
+        { key: 'employees', label: 'Karyawan', icon: 'KR' },
+        { key: 'outlets', label: 'Outlet', icon: 'OT' },
+        { key: 'products', label: 'Produk', icon: 'PR' },
+        { key: 'prices', label: 'Harga outlet', icon: 'HG' },
+      ] },
+      { group: 'Keuangan', items: [
+        { key: 'expenses', label: 'Pengeluaran umum', icon: 'PG' },
+        { key: 'payroll', label: 'Periode gaji', icon: 'GJ' },
+      ] },
+      { group: 'Akun', items: [
+        { key: 'settings', label: 'Setting', icon: 'ST' },
+      ] },
+    ];
+
+    const tableConfigs = {
+      employees: {
+        eyebrow: 'Tim outlet',
+        title: 'Karyawan',
+        desc: 'Data karyawan, outlet default, komponen gaji, dan reset PIN.',
+        empty: 'Belum ada karyawan tersimpan.',
+        addLabel: 'Tambah karyawan',
+        load: loadEmployees,
+        columns: [
+          { label: 'Nama', value: row => row.user_profiles?.full_name || '-' },
+          { label: 'Kode', value: row => row.employee_code || '-' },
+          { label: 'Nomor HP', value: row => row.phone || '-' },
+          { label: 'Outlet', value: row => row.default_outlet?.name || '-' },
+          { label: 'Upah/jam', value: row => money(row.hourly_rate) },
+          { label: 'Status', value: row => badge(row.active, row.active ? 'Aktif' : 'Nonaktif') },
+        ],
+        fields: () => [
+          { name: 'full_name', label: 'Nama lengkap', required: true, value: row => row.user_profiles?.full_name },
+          { name: 'employee_code', label: 'Kode karyawan', required: true },
+          { name: 'phone', label: 'Nomor HP', required: true, inputmode: 'tel' },
+          { name: 'pin', label: 'PIN awal', type: 'password', required: true, createOnly: true, inputmode: 'numeric', maxlength: 6, pattern: '[0-9]{6}' },
+          { name: 'default_outlet_id', label: 'Outlet default', type: 'select', options: outletOptions },
+          { name: 'hourly_rate', label: 'Upah per jam', type: 'number', defaultValue: 5000 },
+          { name: 'meal_allowance', label: 'Uang makan', type: 'number', defaultValue: 10000 },
+          { name: 'transport_allowance', label: 'Transport', type: 'number', defaultValue: 0 },
+          { name: 'active', label: 'Status', type: 'select', options: activeOptions, defaultValue: 'true', editOnly: true },
+        ],
+      },
+      outlets: {
+        eyebrow: 'Multi outlet',
+        title: 'Outlet',
+        desc: 'Alamat, koordinat operasional, radius geofence, dan metode stok default.',
+        empty: 'Belum ada outlet tersimpan.',
+        addLabel: 'Tambah outlet',
+        load: loadOutletsAll,
+        columns: [
+          { label: 'Nama', value: row => row.name },
+          { label: 'Alamat', value: row => row.address || '-' },
+          { label: 'Radius', value: row => `${row.geofence_radius_m || 0} m` },
+          { label: 'Metode stok', value: row => stockMethodLabel(row.stock_default_method) },
+          { label: 'Status', value: row => badge(row.active, row.active ? 'Aktif' : 'Nonaktif') },
+        ],
+        fields: () => [
+          { name: 'name', label: 'Nama outlet', required: true },
+          { name: 'address', label: 'Alamat', type: 'textarea', full: true },
+          { name: 'pickup_lat', label: 'Latitude ambil barang', type: 'number', step: 'any' },
+          { name: 'pickup_lng', label: 'Longitude ambil barang', type: 'number', step: 'any' },
+          { name: 'sale_lat', label: 'Latitude jualan', type: 'number', step: 'any' },
+          { name: 'sale_lng', label: 'Longitude jualan', type: 'number', step: 'any' },
+          { name: 'checkout_lat', label: 'Latitude absen pulang', type: 'number', step: 'any' },
+          { name: 'checkout_lng', label: 'Longitude absen pulang', type: 'number', step: 'any' },
+          { name: 'geofence_radius_m', label: 'Radius geofence meter', type: 'number', defaultValue: 120 },
+          { name: 'stock_default_method', label: 'Stok awal default', type: 'select', options: stockMethodOptions, defaultValue: 'default_qty' },
+          { name: 'report_schedule_mode', label: 'Jadwal laporan', type: 'select', options: reportModeOptions, defaultValue: 'free' },
+          { name: 'active', label: 'Status', type: 'select', options: activeOptions, defaultValue: 'true' },
+        ],
+      },
+      products: {
+        eyebrow: 'Master produk',
+        title: 'Produk',
+        desc: 'Harga umum, HPP, qty default, dan status aktif produk.',
+        empty: 'Belum ada produk tersimpan.',
+        addLabel: 'Tambah produk',
+        load: loadProductsAll,
+        columns: [
+          { label: 'Nama', value: row => row.name },
+          { label: 'Harga umum', value: row => money(row.general_sale_price) },
+          { label: 'HPP terakhir', value: row => money(row.hpp) },
+          { label: 'Qty default', value: row => numberText(row.default_qty) },
+          { label: 'Status', value: row => badge(row.active, row.active ? 'Aktif' : 'Nonaktif') },
+        ],
+        fields: () => [
+          { name: 'name', label: 'Nama produk', required: true },
+          { name: 'general_sale_price', label: 'Harga jual umum', type: 'number', defaultValue: 0 },
+          { name: 'hpp', label: 'HPP', type: 'number', defaultValue: 0 },
+          { name: 'default_qty', label: 'Qty default', type: 'number', defaultValue: 0 },
+          { name: 'active', label: 'Status', type: 'select', options: activeOptions, defaultValue: 'true' },
+        ],
+      },
+      prices: {
+        eyebrow: 'Harga khusus',
+        title: 'Harga outlet',
+        desc: 'Atur harga produk per outlet. Transaksi lama tetap memakai harga snapshot.',
+        empty: 'Belum ada harga khusus outlet.',
+        addLabel: 'Tambah harga',
+        load: loadOutletPrices,
+        columns: [
+          { label: 'Outlet', value: row => row.outlets?.name || '-' },
+          { label: 'Produk', value: row => row.products?.name || '-' },
+          { label: 'Harga', value: row => money(row.sale_price) },
+          { label: 'Mulai berlaku', value: row => dateTimeText(row.valid_from) },
+          { label: 'Status', value: row => badge(row.active, row.active ? 'Aktif' : 'Nonaktif') },
+        ],
+        fields: () => [
+          { name: 'outlet_id', label: 'Outlet', type: 'select', options: outletOptions, required: true },
+          { name: 'product_id', label: 'Produk', type: 'select', options: productOptions, required: true },
+          { name: 'sale_price', label: 'Harga jual outlet', type: 'number', required: true },
+        ],
+      },
+      expenses: {
+        eyebrow: 'Keuangan owner',
+        title: 'Pengeluaran umum',
+        desc: 'Biaya yang tidak terkait shift atau outlet tertentu.',
+        empty: 'Belum ada pengeluaran umum.',
+        addLabel: 'Tambah pengeluaran',
+        load: loadGeneralExpenses,
+        columns: [
+          { label: 'Tanggal', value: row => dateText(row.occurred_at) },
+          { label: 'Kategori', value: row => row.category },
+          { label: 'Jumlah', value: row => money(row.amount) },
+          { label: 'Catatan', value: row => row.note || '-' },
+        ],
+        fields: () => [
+          { name: 'occurred_at', label: 'Tanggal', type: 'date', defaultValue: todayDate() },
+          { name: 'category', label: 'Kategori', required: true, placeholder: 'Bahan baku, sewa, gas, perbaikan' },
+          { name: 'amount', label: 'Jumlah', type: 'number', required: true },
+          { name: 'note', label: 'Catatan', type: 'textarea', full: true },
+        ],
+      },
+      payroll: {
+        eyebrow: 'Gaji',
+        title: 'Periode gaji',
+        desc: 'Buat periode manual, finalkan, lalu tandai sudah dibayar.',
+        empty: 'Belum ada periode gaji.',
+        addLabel: 'Tambah periode',
+        load: loadPayrollPeriods,
+        columns: [
+          { label: 'Nama periode', value: row => row.name },
+          { label: 'Mulai', value: row => dateText(row.starts_on) },
+          { label: 'Selesai', value: row => dateText(row.ends_on) },
+          { label: 'Status', value: row => badge(row.status !== 'draft', payrollStatusLabel(row.status)) },
+        ],
+        fields: () => [
+          { name: 'name', label: 'Nama periode', required: true, placeholder: 'Gaji Minggu 4 Juli' },
+          { name: 'starts_on', label: 'Mulai', type: 'date', required: true },
+          { name: 'ends_on', label: 'Selesai', type: 'date', required: true },
+          { name: 'status', label: 'Status', type: 'select', options: payrollStatusOptions, defaultValue: 'draft' },
+        ],
+      },
+      shifts: {
+        eyebrow: 'Operasional',
+        title: 'Shift aktif',
+        desc: 'Pantau karyawan yang sedang bekerja dan status laporan shift.',
+        empty: 'Tidak ada shift aktif.',
+        readonly: true,
+        load: loadActiveShifts,
+        columns: [
+          { label: 'Karyawan', value: row => row.employees?.user_profiles?.full_name || row.employees?.employee_code || '-' },
+          { label: 'Outlet', value: row => row.outlets?.name || '-' },
+          { label: 'Status', value: row => badge(true, shiftStatusLabel(row.status)) },
+          { label: 'Masuk', value: row => dateTimeText(row.checkin_at) },
+          { label: 'Catatan', value: row => row.notes || '-' },
+        ],
+      },
+      locations: {
+        eyebrow: 'Monitoring',
+        title: 'Lokasi karyawan',
+        desc: 'Posisi terakhir yang dikirim selama shift berjalan.',
+        empty: 'Belum ada data lokasi.',
+        readonly: true,
+        load: loadLatestLocations,
+        columns: [
+          { label: 'Karyawan', value: row => row.employees?.user_profiles?.full_name || row.employees?.employee_code || '-' },
+          { label: 'Outlet', value: row => row.outlets?.name || '-' },
+          { label: 'Update', value: row => dateTimeText(row.created_at) },
+          { label: 'Jarak', value: row => row.distance_from_outlet_m == null ? '-' : `${numberText(row.distance_from_outlet_m)} m` },
+          { label: 'Status', value: row => badge(row.inside_radius, row.inside_radius ? 'Dalam radius' : 'Luar radius') },
+        ],
+      },
+      audit: {
+        eyebrow: 'Kontrol data',
+        title: 'Audit log',
+        desc: 'Riwayat perubahan data, actor, alasan, dan waktu perubahan.',
+        empty: 'Belum ada audit log.',
+        readonly: true,
+        load: loadAuditLogs,
+        columns: [
+          { label: 'Waktu', value: row => dateTimeText(row.created_at) },
+          { label: 'Tabel', value: row => row.table_name },
+          { label: 'Aksi', value: row => row.action },
+          { label: 'Record', value: row => `<span class="code">${esc(shortId(row.record_id))}</span>` },
+          { label: 'Alasan', value: row => row.reason || '-' },
+        ],
+      },
+    };
+
+    boot();
+
+    async function boot() {
+      unregisterOldServiceWorker();
+      routeFromHash();
+      if (!state.config.ready) {
+        renderSetup();
+        return;
+      }
+
+      supabase = createClient(state.config.url, state.config.key, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+        },
+      });
+
+      supabase.auth.onAuthStateChange(async (_event, session) => {
+        state.session = session;
+        state.user = session?.user || null;
+        state.cache = {};
+        if (session) await loadProfile();
+        render();
+      });
+
+      const { data } = await supabase.auth.getSession();
+      state.session = data.session;
+      state.user = data.session?.user || null;
+      if (state.session) await loadProfile();
+      render();
+    }
+
+    function resolveConfig() {
+      const saved = readJson(localStorage.getItem(CONFIG_STORAGE_KEY)) || {};
+      const buildUrl = cleanConfigValue(BUILD_SUPABASE_URL);
+      const buildKey = cleanConfigValue(BUILD_SUPABASE_KEY);
+      const url = isPlaceholder(buildUrl) ? saved.url : buildUrl;
+      const key = isPlaceholder(buildKey) ? saved.key : buildKey;
+      return {
+        url: String(url || '').trim(),
+        key: String(key || '').trim(),
+        ready: !isPlaceholder(url) && !isPlaceholder(key) && String(url || '').startsWith('https://') && String(key || '').length > 20,
+      };
+    }
+
+    function cleanConfigValue(value) {
+      return String(value || '').trim();
+    }
+
+    function isPlaceholder(value) {
+      return !value || /^__.+__$/.test(String(value));
+    }
+
+    function renderSetup() {
+      app.innerHTML = `
+        <div class="center-screen">
+          <section class="setup-card">
+            ${brandHtml()}
+            <h1>Setup koneksi</h1>
+            <p class="page-desc">Masukkan URL project Supabase dan publishable key. Setelah deploy GitHub Pages, nilai ini bisa otomatis diisi dari repository secrets.</p>
+            <form class="form-grid" data-submit="save-config">
+              <div class="field">
+                <label for="supabase-url">Supabase URL</label>
+                <input id="supabase-url" name="url" value="${esc(state.config.url)}" placeholder="https://project-ref.supabase.co" required>
+              </div>
+              <div class="field">
+                <label for="supabase-key">Publishable key / anon public</label>
+                <input id="supabase-key" name="key" value="${esc(state.config.key)}" placeholder="sb_publishable_..." required>
+              </div>
+              <button class="btn primary" type="submit">Simpan koneksi</button>
+            </form>
+          </section>
+        </div>`;
+    }
+
+    function render() {
+      if (!state.config.ready) return renderSetup();
+      if (!state.session) return renderLogin();
+      if (!state.profile) return renderProfileMissing();
+      if (isOwner()) return renderOwnerShell();
+      return renderEmployeeShell();
+    }
+
+    function renderLogin() {
+      app.innerHTML = `
+        <div class="center-screen">
+          <section class="auth-card">
+            ${brandHtml()}
+            <div class="tabs" role="tablist">
+              <button class="tab-btn ${state.authMode === 'employee' ? 'active' : ''}" type="button" data-auth-mode="employee">Karyawan</button>
+              <button class="tab-btn ${state.authMode === 'owner' ? 'active' : ''}" type="button" data-auth-mode="owner">Owner / Manager</button>
+            </div>
+            ${state.authMode === 'owner' ? ownerLoginHtml() : employeeLoginHtml()}
+          </section>
+        </div>`;
+    }
+
+    function ownerLoginHtml() {
+      return `
+        <form class="form-grid" data-submit="owner-login">
+          <div class="field">
+            <label>Email</label>
+            <input name="email" type="email" autocomplete="username" placeholder="owner@email.com" required>
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input name="password" type="password" autocomplete="current-password" required>
+          </div>
+          <button class="btn primary" type="submit">Masuk Dashboard</button>
+        </form>`;
+    }
+
+    function employeeLoginHtml() {
+      return `
+        <form class="form-grid" data-submit="employee-login">
+          <div class="field">
+            <label>Kode karyawan / nomor HP</label>
+            <input name="identifier" autocomplete="username" placeholder="PS001 atau 0857..." required>
+          </div>
+          <div class="field">
+            <label>PIN 6 digit</label>
+            <input name="pin" type="password" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" autocomplete="current-password" required>
+          </div>
+          <button class="btn primary" type="submit">Masuk Shift</button>
+        </form>`;
+    }
+
+    function renderProfileMissing() {
+      app.innerHTML = `
+        <div class="center-screen">
+          <section class="auth-card">
+            ${brandHtml()}
+            <h1>Akun belum terhubung</h1>
+            <p class="page-desc">Login berhasil, tetapi data profil belum ada di tabel user_profiles.</p>
+            <button class="btn primary" type="button" data-action="logout">Keluar</button>
+          </section>
+        </div>`;
+    }
+
+    function renderOwnerShell() {
+      app.innerHTML = `
+        <div class="shell">
+          <aside class="sidebar">
+            <div class="sidebar-head">${brandHtml('small')}</div>
+            ${ownerNav.map(group => `
+              <div class="nav-group">${esc(group.group)}</div>
+              ${group.items.map(item => `
+                <button class="nav-item ${state.route === item.key ? 'active' : ''}" type="button" data-route="${item.key}">
+                  <span><span class="badge">${esc(item.icon)}</span>${esc(item.label)}</span>
+                  <span>›</span>
+                </button>`).join('')}
+            `).join('')}
+          </aside>
+          <div class="drawer-overlay" data-action="close-drawer"></div>
+          <main class="main">
+            <header class="topbar">
+              <div class="topbar-left">
+                <button class="burger" type="button" data-action="open-drawer" aria-label="Buka menu">≡</button>
+                <div class="brand-block" style="margin:0">
+                  <div class="logo">PS</div>
+                  <div>
+                    <p class="brand-title">Pentol Surya</p>
+                    <div class="brand-subtitle">${esc(state.profile.full_name)} · ${esc(state.profile.role)}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="topbar-actions">
+                <span class="status">Online</span>
+                <button class="btn ghost small" type="button" data-action="logout">Keluar</button>
+              </div>
+            </header>
+            <section class="content" id="page"></section>
+          </main>
+        </div>`;
+      renderOwnerPage();
+    }
+
+    function renderEmployeeShell() {
+      app.innerHTML = `
+        <div class="shell">
+          <aside class="sidebar">
+            <div class="sidebar-head">${brandHtml('small')}</div>
+            <div class="nav-group">Shift karyawan</div>
+            <button class="nav-item active" type="button"><span><span class="badge">HM</span>Dashboard</span><span>›</span></button>
+          </aside>
+          <main class="main">
+            <header class="topbar">
+              <div class="topbar-left">
+                <button class="burger" type="button" data-action="open-drawer" aria-label="Buka menu">≡</button>
+                <div class="brand-block" style="margin:0">
+                  <div class="logo">PS</div>
+                  <div>
+                    <p class="brand-title">Pentol Surya</p>
+                    <div class="brand-subtitle">${esc(state.profile.full_name)} · karyawan</div>
+                  </div>
+                </div>
+              </div>
+              <button class="btn ghost small" type="button" data-action="logout">Keluar</button>
+            </header>
+            <section class="content">
+              <div class="page-head">
+                <div>
+                  <p class="eyebrow">Operasional</p>
+                  <h1>Shift karyawan</h1>
+                  <p class="page-desc">Mode full HTML karyawan dibuat ringan untuk login dan validasi akses. Menu operasional detail tetap memakai tabel Supabase yang sama dan akan dipindahkan bertahap dari versi modular.</p>
+                </div>
+              </div>
+              <div class="dashboard-grid">
+                <div class="kpi-card"><div class="kpi-label">Status</div><div class="kpi-value">Siap shift</div></div>
+                <div class="kpi-card"><div class="kpi-label">Role</div><div class="kpi-value">Karyawan</div></div>
+              </div>
+            </section>
+          </main>
+        </div>`;
+    }
+
+    async function renderOwnerPage() {
+      const page = document.querySelector('#page');
+      if (!page) return;
+      document.body.classList.remove('drawer-open');
+      if (state.route === 'dashboard') {
+        page.innerHTML = dashboardSkeleton();
+        await renderDashboard();
+        return;
+      }
+      if (state.route === 'settings') {
+        renderSettingsPage(page);
+        return;
+      }
+      const config = tableConfigs[state.route] || tableConfigs.employees;
+      page.innerHTML = pageSkeleton(config);
+      try {
+        const rows = await config.load();
+        state.cache[state.route] = rows;
+        page.innerHTML = tablePageHtml(state.route, config, rows);
+      } catch (error) {
+        page.innerHTML = errorHtml(config, error);
+        toast(error.message || 'Data gagal dimuat.', 'error');
+      }
+    }
+
+    function dashboardSkeleton() {
+      return `
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">Owner</p>
+            <h1>Dashboard</h1>
+            <p class="page-desc">Ringkasan pemantauan. Input data sudah dipindah ke menu sidebar masing-masing.</p>
+          </div>
+        </div>
+        <div class="dashboard-grid">
+          <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+        </div>
+        <div class="panel skeleton"></div>`;
+    }
+
+    async function renderDashboard() {
+      const page = document.querySelector('#page');
+      const range = todayRange();
+      const [kpiResult, shiftsResult, locationsResult, productResult, outletResult] = await Promise.allSettled([
+        supabase.rpc('dashboard_kpis', { range_start: range.start, range_end: range.end }),
+        loadActiveShifts(),
+        loadLatestLocations(),
+        loadProductPerformance(range),
+        loadTopOutlets(range),
+      ]);
+
+      const kpis = kpiResult.value?.data || {};
+      const activeShifts = valueOrEmpty(shiftsResult);
+      const locations = valueOrEmpty(locationsResult);
+      const products = valueOrEmpty(productResult);
+      const outlets = valueOrEmpty(outletResult);
+
+      page.innerHTML = `
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">Owner</p>
+            <h1>Dashboard</h1>
+            <p class="page-desc">Ringkasan hari ini. Input data ada di sidebar: Karyawan, Outlet, Produk, Harga, Pengeluaran, dan Gaji.</p>
+          </div>
+        </div>
+        <div class="dashboard-grid">
+          ${kpiCard('Penjualan', money(kpis.sales))}
+          ${kpiCard('Cash flow', money(kpis.cash_flow))}
+          ${kpiCard('Estimasi laba', money(kpis.estimated_profit))}
+          ${kpiCard('Shift aktif', activeShifts.length)}
+          ${kpiCard('Cash', money(kpis.cash))}
+          ${kpiCard('QRIS', money(kpis.qris))}
+          ${kpiCard('Transfer', money(kpis.transfer))}
+          ${kpiCard('HPP + terbuang', money(Number(kpis.hpp || 0) + Number(kpis.waste_hpp || 0)))}
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span>Shift aktif</span><button class="btn ghost small" data-route="shifts">Lihat semua</button></div>
+          ${miniTable(activeShifts.slice(0, 6), ['Karyawan', 'Outlet', 'Status', 'Masuk'], row => [
+            row.employees?.user_profiles?.full_name || row.employees?.employee_code || '-',
+            row.outlets?.name || '-',
+            shiftStatusLabel(row.status),
+            dateTimeText(row.checkin_at),
+          ])}
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span>Lokasi terakhir</span><button class="btn ghost small" data-route="locations">Lihat semua</button></div>
+          ${miniTable(locations.slice(0, 6), ['Karyawan', 'Outlet', 'Update', 'Radius'], row => [
+            row.employees?.user_profiles?.full_name || row.employees?.employee_code || '-',
+            row.outlets?.name || '-',
+            dateTimeText(row.created_at),
+            row.inside_radius ? 'Dalam radius' : 'Luar radius',
+          ])}
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span>Produk terlaris</span><span class="badge">Hari ini</span></div>
+          ${miniTable(products, ['Produk', 'Qty', 'Omzet'], row => [row.name, numberText(row.qty), money(row.amount)])}
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span>Top outlet</span><span class="badge">Hari ini</span></div>
+          ${miniTable(outlets, ['Outlet', 'Penjualan'], row => [row.name, money(row.amount)])}
+        </div>`;
+    }
+
+    function pageSkeleton(config) {
+      return `
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">${esc(config.eyebrow)}</p>
+            <h1>${esc(config.title)}</h1>
+            <p class="page-desc">${esc(config.desc)}</p>
+          </div>
+        </div>
+        <div class="skeleton"></div>`;
+    }
+
+    function tablePageHtml(key, config, rows) {
+      return `
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">${esc(config.eyebrow)}</p>
+            <h1>${esc(config.title)}</h1>
+            <p class="page-desc">${esc(config.desc)}</p>
+          </div>
+        </div>
+        ${rows.length ? dataTableHtml(key, config, rows) : `<div class="empty">${esc(config.empty)}</div>`}
+        ${config.readonly ? '' : `<button class="fab" type="button" title="${esc(config.addLabel)}" data-open-form="${key}">+</button>`}`;
+    }
+
+    function dataTableHtml(key, config, rows) {
+      return `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                ${config.columns.map(column => `<th>${esc(column.label)}</th>`).join('')}
+                ${config.readonly ? '' : '<th>Aksi</th>'}
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(row => `
+                <tr>
+                  ${config.columns.map(column => `<td>${safeCell(column.value(row))}</td>`).join('')}
+                  ${config.readonly ? '' : `<td>${rowActionsHtml(key, row)}</td>`}
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        ${config.readonly ? '' : `<button class="fab" type="button" title="${esc(config.addLabel)}" data-open-form="${key}">+</button>`}`;
+    }
+
+    function rowActionsHtml(key, row) {
+      const reset = key === 'employees'
+        ? `<button class="btn ghost small" type="button" data-reset-pin="${esc(row.user_id)}" data-row-id="${esc(row.id)}">Reset PIN</button>`
+        : '';
+      return `
+        <div class="row-actions">
+          <button class="btn ghost small" type="button" data-open-form="${key}" data-id="${esc(row.id)}">Edit</button>
+          ${reset}
+          <button class="btn danger small" type="button" data-delete="${key}" data-id="${esc(row.id)}">Hapus</button>
+        </div>`;
+    }
+
+    function renderSettingsPage(page) {
+      page.innerHTML = `
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">Akun</p>
+            <h1>Setting</h1>
+            <p class="page-desc">Koneksi aplikasi dan status akun login.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span>Koneksi Supabase</span><span class="badge ok">Aktif</span></div>
+          <div class="form-grid">
+            <div class="field">
+              <label>Project URL</label>
+              <input value="${esc(state.config.url)}" readonly>
+            </div>
+            <button class="btn ghost" type="button" data-action="reset-config">Reset koneksi lokal</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span>Akun</span><span class="badge">${esc(state.profile.role)}</span></div>
+          <p class="page-desc">${esc(state.profile.full_name)} · ${esc(state.user?.email || state.profile.phone || '-')}</p>
+        </div>`;
+    }
+
+    function errorHtml(config, error) {
+      return `
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">${esc(config.eyebrow)}</p>
+            <h1>${esc(config.title)}</h1>
+            <p class="page-desc">${esc(config.desc)}</p>
+          </div>
+        </div>
+        <div class="empty"><strong>Data belum bisa dimuat.</strong><br>${esc(error.message || error)}</div>`;
+    }
+
+    async function loadProfile() {
+      const { data: userResult, error: userError } = await supabase.auth.getUser();
+      if (userError) throw userError;
+      state.user = userResult.user;
+      if (!state.user) {
+        state.profile = null;
+        return;
+      }
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('id', state.user.id)
+        .maybeSingle();
+      if (error) throw error;
+      state.profile = data;
+    }
+
+    function isOwner() {
+      return ['owner', 'manager'].includes(state.profile?.role);
+    }
+
+    async function loadEmployees() {
+      const { data, error } = await supabase
+        .from('employees')
+        .select('*, user_profiles(full_name, active), default_outlet:outlets(name)')
+        .order('employee_code');
+      if (error) throw error;
+      return data || [];
+    }
+
+    async function loadOutletsAll() {
+      const { data, error } = await supabase
+        .from('outlets')
+        .select('*')
+        .order('name');
+      if (error) throw error;
+      state.cache.outlets = data || [];
+      return data || [];
+    }
+
+    async function loadActiveOutlets() {
+      if (state.cache.activeOutlets) return state.cache.activeOutlets;
+      const { data, error } = await supabase
+        .from('outlets')
+        .select('*')
+        .eq('active', true)
+        .order('name');
+      if (error) throw error;
+      state.cache.activeOutlets = data || [];
+      return data || [];
+    }
+
+    async function loadProductsAll() {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, product_categories(name)')
+        .order('name');
+      if (error) throw error;
+      const products = await attachLatestCosts(data || []);
+      state.cache.products = products;
+      return products;
+    }
+
+    async function loadActiveProducts() {
+      if (state.cache.activeProducts) return state.cache.activeProducts;
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('active', true)
+        .order('name');
+      if (error) throw error;
+      state.cache.activeProducts = data || [];
+      return data || [];
+    }
+
+    async function attachLatestCosts(products) {
+      if (!products.length) return products;
+      const { data, error } = await supabase
+        .from('product_costs')
+        .select('product_id, hpp, valid_from')
+        .in('product_id', products.map(product => product.id))
+        .order('valid_from', { ascending: false });
+      if (error) throw error;
+      const latest = new Map();
+      (data || []).forEach(row => {
+        if (!latest.has(row.product_id)) latest.set(row.product_id, row.hpp);
+      });
+      return products.map(product => ({ ...product, hpp: latest.get(product.id) ?? 0 }));
+    }
+
+    async function loadOutletPrices() {
+      const { data, error } = await supabase
+        .from('outlet_product_prices')
+        .select('*, outlets(id, name), products(id, name)')
+        .eq('active', true)
+        .order('valid_from', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    }
+
+    async function loadGeneralExpenses() {
+      const { data, error } = await supabase
+        .from('general_expenses')
+        .select('*')
+        .order('occurred_at', { ascending: false })
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    }
+
+    async function loadPayrollPeriods() {
+      const { data, error } = await supabase
+        .from('payroll_periods')
+        .select('*')
+        .order('starts_on', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    }
+
+    async function loadActiveShifts() {
+      const { data, error } = await supabase
+        .from('shifts')
+        .select('*, employees(employee_code, phone, user_profiles(full_name)), outlets(name, sale_lat, sale_lng, geofence_radius_m)')
+        .in('status', ['active', 'final_reported'])
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    }
+
+    async function loadLatestLocations() {
+      const { data, error } = await supabase
+        .from('location_pings')
+        .select('*, employees(employee_code, user_profiles(full_name)), outlets(name)')
+        .order('created_at', { ascending: false })
+        .limit(50);
+      if (error) throw error;
+      return uniqueBy(data || [], row => row.shift_id);
+    }
+
+    async function loadAuditLogs() {
+      const { data, error } = await supabase
+        .from('audit_logs')
+        .select('id, table_name, action, record_id, reason, created_at, actor_id')
+        .order('created_at', { ascending: false })
+        .limit(60);
+      if (error) throw error;
+      return data || [];
+    }
+
+    async function loadProductPerformance(range) {
+      const { data, error } = await supabase
+        .from('sale_items')
+        .select('qty, subtotal, products(name), sales!inner(occurred_at)')
+        .gte('sales.occurred_at', range.start)
+        .lt('sales.occurred_at', range.end);
+      if (error) throw error;
+      const map = new Map();
+      (data || []).forEach(row => {
+        const name = row.products?.name || 'Produk';
+        const current = map.get(name) || { name, qty: 0, amount: 0 };
+        current.qty += Number(row.qty || 0);
+        current.amount += Number(row.subtotal || 0);
+        map.set(name, current);
+      });
+      return [...map.values()].sort((a, b) => b.amount - a.amount).slice(0, 8);
+    }
+
+    async function loadTopOutlets(range) {
+      const { data, error } = await supabase
+        .from('sales')
+        .select('total_amount, outlets(name), occurred_at')
+        .gte('occurred_at', range.start)
+        .lt('occurred_at', range.end);
+      if (error) throw error;
+      const map = new Map();
+      (data || []).forEach(row => {
+        const name = row.outlets?.name || 'Outlet';
+        const current = map.get(name) || { name, amount: 0 };
+        current.amount += Number(row.total_amount || 0);
+        map.set(name, current);
+      });
+      return [...map.values()].sort((a, b) => b.amount - a.amount).slice(0, 8);
+    }
+
+    async function openForm(resourceKey, id = null) {
+      const config = tableConfigs[resourceKey];
+      if (!config || config.readonly) return;
+      await ensureLookups(resourceKey);
+      const row = id ? (state.cache[resourceKey] || []).find(item => item.id === id) : null;
+      state.formContext = { resourceKey, id };
+      const fields = config.fields().filter(field => !(field.createOnly && row) && !(field.editOnly && !row));
+      openModal(row ? `Edit ${config.title}` : config.addLabel, `
+        <form class="form-grid two" data-submit="save-resource">
+          ${fields.map(field => fieldHtml(field, row)).join('')}
+          <div class="modal-actions full">
+            <button class="btn ghost" type="button" data-action="close-modal">Batal</button>
+            <button class="btn primary" type="submit">Simpan</button>
+          </div>
+        </form>
+      `);
+    }
+
+    async function ensureLookups(resourceKey) {
+      if (['employees', 'prices'].includes(resourceKey)) await loadActiveOutlets();
+      if (resourceKey === 'prices') await loadActiveProducts();
+    }
+
+    function fieldHtml(field, row) {
+      const rawValue = fieldValue(field, row);
+      const required = field.required ? 'required' : '';
+      const full = field.full || field.type === 'textarea' ? ' full' : '';
+      const attrs = [
+        required,
+        field.step ? `step="${esc(field.step)}"` : '',
+        field.inputmode ? `inputmode="${esc(field.inputmode)}"` : '',
+        field.maxlength ? `maxlength="${esc(field.maxlength)}"` : '',
+        field.pattern ? `pattern="${esc(field.pattern)}"` : '',
+        field.placeholder ? `placeholder="${esc(field.placeholder)}"` : '',
+      ].filter(Boolean).join(' ');
+
+      if (field.type === 'select') {
+        const options = typeof field.options === 'function' ? field.options() : field.options;
+        return `
+          <div class="field${full}">
+            <label>${esc(field.label)}</label>
+            <select name="${esc(field.name)}" ${required}>
+              ${options.map(option => `<option value="${esc(option.value)}" ${String(option.value) === String(rawValue) ? 'selected' : ''}>${esc(option.label)}</option>`).join('')}
+            </select>
+          </div>`;
+      }
+
+      if (field.type === 'textarea') {
+        return `
+          <div class="field${full}">
+            <label>${esc(field.label)}</label>
+            <textarea name="${esc(field.name)}" ${attrs}>${esc(rawValue)}</textarea>
+          </div>`;
+      }
+
+      return `
+        <div class="field${full}">
+          <label>${esc(field.label)}</label>
+          <input name="${esc(field.name)}" type="${esc(field.type || 'text')}" value="${esc(rawValue)}" ${attrs}>
+        </div>`;
+    }
+
+    function fieldValue(field, row) {
+      if (row && typeof field.value === 'function') return field.value(row) ?? '';
+      if (row && row[field.name] !== undefined && row[field.name] !== null) {
+        if (typeof row[field.name] === 'boolean') return String(row[field.name]);
+        return row[field.name];
+      }
+      return field.defaultValue ?? '';
+    }
+
+    async function saveResource(form) {
+      const context = state.formContext;
+      if (!context) return;
+      const config = tableConfigs[context.resourceKey];
+      const row = context.id ? (state.cache[context.resourceKey] || []).find(item => item.id === context.id) : null;
+      const fields = config.fields().filter(field => !(field.createOnly && row) && !(field.editOnly && !row));
+      const values = formValues(form, fields);
+      disableForm(form, true);
+      try {
+        await persistResource(context.resourceKey, values, row);
+        closeModal();
+        state.cache = {};
+        toast('Data berhasil disimpan.', 'success');
+        await renderOwnerPage();
+      } catch (error) {
+        toast(error.message || 'Data gagal disimpan.', 'error');
+      } finally {
+        disableForm(form, false);
+      }
+    }
+
+    function formValues(form, fields) {
+      const data = new FormData(form);
+      const values = {};
+      fields.forEach(field => {
+        let value = data.get(field.name);
+        if (field.type === 'number') value = value === '' || value == null ? null : Number(value);
+        if (field.type === 'select' && ['active'].includes(field.name)) value = value === 'true';
+        if (typeof value === 'string') value = value.trim();
+        if (value === '') value = null;
+        values[field.name] = value;
+      });
+      return values;
+    }
+
+    async function persistResource(resourceKey, values, row) {
+      if (resourceKey === 'employees') return saveEmployee(values, row);
+      if (resourceKey === 'outlets') return upsert('outlets', values, row);
+      if (resourceKey === 'products') return saveProduct(values, row);
+      if (resourceKey === 'prices') return saveOutletPrice(values, row);
+      if (resourceKey === 'expenses') return upsert('general_expenses', values, row, { created_by: state.profile.id });
+      if (resourceKey === 'payroll') return upsert('payroll_periods', values, row, { created_by: state.profile.id });
+      throw new Error('Resource tidak dikenal.');
+    }
+
+    async function saveEmployee(values, row) {
+      if (!row) {
+        const pin = String(values.pin || '').trim();
+        if (!/^[0-9]{6}$/.test(pin)) throw new Error('PIN awal harus 6 digit.');
+        return adminFunction('admin-create-employee', {
+          full_name: values.full_name,
+          employee_code: values.employee_code,
+          phone: values.phone,
+          pin,
+          default_outlet_id: values.default_outlet_id || null,
+          hourly_rate: values.hourly_rate ?? 5000,
+          meal_allowance: values.meal_allowance ?? 10000,
+          transport_allowance: values.transport_allowance ?? 0,
+        });
+      }
+
+      const profileUpdate = cleanObject({
+        full_name: values.full_name,
+        employee_code: values.employee_code,
+        phone: values.phone,
+        active: values.active,
+      });
+      const employeeUpdate = cleanObject({
+        employee_code: values.employee_code,
+        phone: values.phone,
+        default_outlet_id: values.default_outlet_id || null,
+        hourly_rate: values.hourly_rate,
+        meal_allowance: values.meal_allowance,
+        transport_allowance: values.transport_allowance,
+        active: values.active,
+      });
+      const { error: profileError } = await supabase.from('user_profiles').update(profileUpdate).eq('id', row.user_id);
+      if (profileError) throw profileError;
+      const { error } = await supabase.from('employees').update(employeeUpdate).eq('id', row.id);
+      if (error) throw error;
+    }
+
+    async function saveProduct(values, row) {
+      const { hpp, ...productValues } = values;
+      const payload = cleanObject(productValues);
+      const query = row
+        ? supabase.from('products').update(payload).eq('id', row.id).select().single()
+        : supabase.from('products').insert({ ...payload, tenant_id: state.profile.tenant_id }).select().single();
+      const { data, error } = await query;
+      if (error) throw error;
+      if (hpp !== null && hpp !== undefined) {
+        const { error: hppError } = await supabase.from('product_costs').insert({
+          tenant_id: state.profile.tenant_id,
+          product_id: data.id,
+          hpp,
+          created_by: state.profile.id,
+        });
+        if (hppError) throw hppError;
+      }
+      return data;
+    }
+
+    async function saveOutletPrice(values, row) {
+      const payload = cleanObject(values);
+      const query = row
+        ? supabase.from('outlet_product_prices').update({ sale_price: payload.sale_price }).eq('id', row.id)
+        : supabase.from('outlet_product_prices').insert({ ...payload, tenant_id: state.profile.tenant_id, created_by: state.profile.id });
+      const { error } = await query;
+      if (error) throw error;
+    }
+
+    async function upsert(table, values, row, extraInsert = {}) {
+      const payload = cleanObject(values);
+      const query = row
+        ? supabase.from(table).update(payload).eq('id', row.id)
+        : supabase.from(table).insert({ ...payload, ...extraInsert, tenant_id: state.profile.tenant_id });
+      const { error } = await query;
+      if (error) throw error;
+    }
+
+    async function deleteResource(resourceKey, id) {
+      const config = tableConfigs[resourceKey];
+      const row = (state.cache[resourceKey] || []).find(item => item.id === id);
+      if (!row || !config || config.readonly) return;
+      openModal(`Hapus ${config.title}`, `
+        <p>Yakin hapus data ini? Untuk master data, status akan dibuat nonaktif supaya riwayat lama tetap aman.</p>
+        <div class="modal-actions">
+          <button class="btn ghost" type="button" data-action="close-modal">Batal</button>
+          <button class="btn danger" type="button" data-confirm-delete="${esc(resourceKey)}" data-id="${esc(id)}">Hapus</button>
+        </div>
+      `);
+    }
+
+    async function confirmDelete(resourceKey, id) {
+      const row = (state.cache[resourceKey] || []).find(item => item.id === id);
+      try {
+        if (resourceKey === 'employees') {
+          const profileResult = await supabase.from('user_profiles').update({ active: false }).eq('id', row.user_id);
+          if (profileResult.error) throw profileResult.error;
+          const employeeResult = await supabase.from('employees').update({ active: false }).eq('id', id);
+          if (employeeResult.error) throw employeeResult.error;
+        } else if (['outlets', 'products', 'prices'].includes(resourceKey)) {
+          const table = resourceKey === 'prices' ? 'outlet_product_prices' : resourceKey;
+          const result = await supabase.from(table).update({ active: false }).eq('id', id);
+          if (result.error) throw result.error;
+        } else if (resourceKey === 'expenses') {
+          const result = await supabase.from('general_expenses').delete().eq('id', id);
+          if (result.error) throw result.error;
+        } else if (resourceKey === 'payroll') {
+          const result = await supabase.from('payroll_periods').delete().eq('id', id);
+          if (result.error) throw result.error;
+        }
+        closeModal();
+        state.cache = {};
+        toast('Data berhasil dihapus.', 'success');
+        await renderOwnerPage();
+      } catch (error) {
+        toast(error.message || 'Data gagal dihapus.', 'error');
+      }
+    }
+
+    async function openResetPin(userId, rowId) {
+      const row = (state.cache.employees || []).find(item => item.id === rowId);
+      state.formContext = { userId };
+      openModal('Reset PIN karyawan', `
+        <p class="page-desc">Karyawan: ${esc(row?.user_profiles?.full_name || row?.employee_code || '-')}</p>
+        <form class="form-grid" data-submit="reset-pin">
+          <div class="field">
+            <label>PIN baru</label>
+            <input name="new_pin" type="password" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required>
+          </div>
+          <div class="modal-actions">
+            <button class="btn ghost" type="button" data-action="close-modal">Batal</button>
+            <button class="btn primary" type="submit">Reset PIN</button>
+          </div>
+        </form>
+      `);
+    }
+
+    async function resetPin(form) {
+      const values = new FormData(form);
+      const newPin = String(values.get('new_pin') || '').trim();
+      if (!/^[0-9]{6}$/.test(newPin)) {
+        toast('PIN baru harus 6 digit.', 'error');
+        return;
+      }
+      disableForm(form, true);
+      try {
+        await adminFunction('admin-reset-pin', {
+          user_id: state.formContext.userId,
+          new_pin: newPin,
+        });
+        closeModal();
+        toast('PIN karyawan berhasil direset.', 'success');
+      } catch (error) {
+        toast(error.message || 'Reset PIN gagal.', 'error');
+      } finally {
+        disableForm(form, false);
+      }
+    }
+
+    async function adminFunction(functionName, body) {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) throw error;
+      const token = data.session?.access_token;
+      if (!token) throw new Error('Sesi owner tidak aktif. Silakan login ulang.');
+      let response;
+      try {
+        response = await fetch(`${state.config.url}/functions/v1/${functionName}`, {
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${token}`,
+            apikey: state.config.key,
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        });
+      } catch {
+        throw new Error(`Edge Function ${functionName} belum bisa diakses. Deploy function dengan --no-verify-jwt dan pastikan SERVICE_ROLE_KEY sudah diset.`);
+      }
+      const payload = await response.json().catch(() => null);
+      if (!response.ok || payload?.error) throw new Error(functionErrorMessage(payload, functionName));
+      return payload;
+    }
+
+    function functionErrorMessage(payload, functionName) {
+      const messages = {
+        EMPLOYEE_CODE_EXISTS: 'Kode karyawan sudah dipakai.',
+        PHONE_EXISTS: 'Nomor HP sudah dipakai.',
+        INVALID_PAYLOAD: 'Data belum lengkap atau PIN bukan 6 digit.',
+        UNAUTHORIZED: 'Sesi owner tidak valid. Silakan login ulang.',
+        FORBIDDEN: 'Akun ini tidak punya akses owner/manager.',
+        TARGET_NOT_FOUND: 'Karyawan tidak ditemukan.',
+        METHOD_NOT_ALLOWED: 'Metode request Edge Function tidak valid.',
+      };
+      if (payload?.error === 'INTERNAL_ERROR' && payload?.message) {
+        return `Edge Function ${functionName} error: ${payload.message}`;
+      }
+      return messages[payload?.error] || `Edge Function ${functionName} gagal diproses.`;
+    }
+
+    document.addEventListener('click', async event => {
+      const modeButton = event.target.closest('[data-auth-mode]');
+      if (modeButton) {
+        state.authMode = modeButton.dataset.authMode;
+        renderLogin();
+        return;
+      }
+
+      const routeButton = event.target.closest('[data-route]');
+      if (routeButton) {
+        state.route = routeButton.dataset.route;
+        history.replaceState(null, '', `#/${state.route}`);
+        renderOwnerShell();
+        return;
+      }
+
+      const openButton = event.target.closest('[data-open-form]');
+      if (openButton) {
+        await openForm(openButton.dataset.openForm, openButton.dataset.id || null);
+        return;
+      }
+
+      const deleteButton = event.target.closest('[data-delete]');
+      if (deleteButton) {
+        await deleteResource(deleteButton.dataset.delete, deleteButton.dataset.id);
+        return;
+      }
+
+      const confirmButton = event.target.closest('[data-confirm-delete]');
+      if (confirmButton) {
+        await confirmDelete(confirmButton.dataset.confirmDelete, confirmButton.dataset.id);
+        return;
+      }
+
+      const resetButton = event.target.closest('[data-reset-pin]');
+      if (resetButton) {
+        await openResetPin(resetButton.dataset.resetPin, resetButton.dataset.rowId);
+        return;
+      }
+
+      const action = event.target.closest('[data-action]')?.dataset.action;
+      if (action === 'open-drawer') document.body.classList.add('drawer-open');
+      if (action === 'close-drawer') document.body.classList.remove('drawer-open');
+      if (action === 'close-modal') closeModal();
+      if (action === 'logout') await logout();
+      if (action === 'reset-config') {
+        localStorage.removeItem(CONFIG_STORAGE_KEY);
+        location.reload();
+      }
+    });
+
+    document.addEventListener('submit', async event => {
+      const form = event.target.closest('form');
+      if (!form?.dataset.submit) return;
+      event.preventDefault();
+      const action = form.dataset.submit;
+      if (action === 'save-config') return saveConfig(form);
+      if (action === 'owner-login') return ownerLogin(form);
+      if (action === 'employee-login') return employeeLogin(form);
+      if (action === 'save-resource') return saveResource(form);
+      if (action === 'reset-pin') return resetPin(form);
+    });
+
+    window.addEventListener('hashchange', () => {
+      routeFromHash();
+      if (state.session && isOwner()) renderOwnerShell();
+    });
+
+    function saveConfig(form) {
+      const data = new FormData(form);
+      localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify({
+        url: String(data.get('url') || '').trim(),
+        key: String(data.get('key') || '').trim(),
+      }));
+      location.reload();
+    }
+
+    async function ownerLogin(form) {
+      const data = new FormData(form);
+      disableForm(form, true);
+      try {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: String(data.get('email') || '').trim(),
+          password: String(data.get('password') || ''),
+        });
+        if (error) throw error;
+      } catch (error) {
+        toast(error.message || 'Login gagal.', 'error');
+      } finally {
+        disableForm(form, false);
+      }
+    }
+
+    async function employeeLogin(form) {
+      const data = new FormData(form);
+      const identifier = String(data.get('identifier') || '').trim();
+      const pin = String(data.get('pin') || '').trim();
+      if (!/^[0-9]{6}$/.test(pin)) {
+        toast('PIN harus 6 digit.', 'error');
+        return;
+      }
+      disableForm(form, true);
+      try {
+        const { data: resolved, error } = await supabase.rpc('resolve_employee_login', {
+          identifier_input: identifier,
+        });
+        if (error) throw error;
+        if (!resolved?.found) throw new Error('Kode karyawan atau nomor HP tidak ditemukan.');
+        const credentials = resolved.email
+          ? { email: resolved.email, password: pin }
+          : { phone: resolved.phone, password: pin };
+        const result = await supabase.auth.signInWithPassword(credentials);
+        if (result.error) throw result.error;
+      } catch (error) {
+        toast(error.message || 'Login karyawan gagal.', 'error');
+      } finally {
+        disableForm(form, false);
+      }
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
+      state.session = null;
+      state.user = null;
+      state.profile = null;
+      state.cache = {};
+      renderLogin();
+    }
+
+    function openModal(title, body) {
+      modalRoot.innerHTML = `
+        <div class="modal-backdrop">
+          <section class="modal" role="dialog" aria-modal="true">
+            <div class="modal-head">
+              <div>
+                <h2 class="modal-title">${esc(title)}</h2>
+                <p class="help">Form ringan, data tersimpan langsung ke Supabase.</p>
+              </div>
+              <button class="btn ghost small" type="button" data-action="close-modal">X</button>
+            </div>
+            <div class="modal-body">${body}</div>
+          </section>
+        </div>`;
+    }
+
+    function closeModal() {
+      modalRoot.innerHTML = '';
+      state.formContext = null;
+    }
+
+    function disableForm(form, disabled) {
+      [...form.elements].forEach(element => {
+        element.disabled = disabled;
+      });
+    }
+
+    function brandHtml(size = '') {
+      return `
+        <div class="brand-block">
+          <div class="logo">PS</div>
+          <div>
+            <p class="brand-title" style="${size === 'small' ? 'font-size:15px' : ''}">Pentol Surya</p>
+            <div class="brand-subtitle">Sistem operasional multi outlet.</div>
+          </div>
+        </div>`;
+    }
+
+    function kpiCard(label, value) {
+      return `<div class="kpi-card"><div class="kpi-label">${esc(label)}</div><div class="kpi-value">${esc(value)}</div></div>`;
+    }
+
+    function miniTable(rows, headers, mapRow) {
+      if (!rows.length) return '<div class="empty">Belum ada data.</div>';
+      return `
+        <div class="table-wrap">
+          <table>
+            <thead><tr>${headers.map(header => `<th>${esc(header)}</th>`).join('')}</tr></thead>
+            <tbody>
+              ${rows.map(row => `<tr>${mapRow(row).map(value => `<td>${safeCell(value)}</td>`).join('')}</tr>`).join('')}
+            </tbody>
+          </table>
+        </div>`;
+    }
+
+    function safeCell(value) {
+      const text = value == null || value === '' ? '-' : String(value);
+      if (text.includes('<span') || text.includes('<div') || text.includes('<button')) return text;
+      return esc(text);
+    }
+
+    function badge(ok, text) {
+      return `<span class="badge ${ok ? 'ok' : 'warn'}">${esc(text)}</span>`;
+    }
+
+    function activeOptions() {
+      return [
+        { value: 'true', label: 'Aktif' },
+        { value: 'false', label: 'Nonaktif' },
+      ];
+    }
+
+    function stockMethodOptions() {
+      return [
+        { value: 'default_qty', label: 'Qty default' },
+        { value: 'previous_remaining', label: 'Sisa shift sebelumnya' },
+      ];
+    }
+
+    function reportModeOptions() {
+      return [
+        { value: 'free', label: 'Bebas' },
+        { value: 'scheduled', label: 'Jam tertentu' },
+      ];
+    }
+
+    function payrollStatusOptions() {
+      return [
+        { value: 'draft', label: 'Draft' },
+        { value: 'final', label: 'Final' },
+        { value: 'paid', label: 'Sudah dibayar' },
+      ];
+    }
+
+    function outletOptions() {
+      return [
+        { value: '', label: 'Pilih outlet' },
+        ...(state.cache.activeOutlets || []).map(outlet => ({ value: outlet.id, label: outlet.name })),
+      ];
+    }
+
+    function productOptions() {
+      return [
+        { value: '', label: 'Pilih produk' },
+        ...(state.cache.activeProducts || []).map(product => ({ value: product.id, label: product.name })),
+      ];
+    }
+
+    function stockMethodLabel(value) {
+      return value === 'previous_remaining' ? 'Sisa shift sebelumnya' : 'Qty default';
+    }
+
+    function payrollStatusLabel(value) {
+      return { draft: 'Draft', final: 'Final', paid: 'Sudah dibayar' }[value] || value || '-';
+    }
+
+    function shiftStatusLabel(value) {
+      return {
+        draft: 'Draft',
+        active: 'Aktif',
+        final_reported: 'Laporan akhir',
+        closed: 'Selesai',
+        cancelled: 'Dibatalkan',
+      }[value] || value || '-';
+    }
+
+    function valueOrEmpty(result) {
+      if (result.status === 'fulfilled') return Array.isArray(result.value) ? result.value : [];
+      return [];
+    }
+
+    function uniqueBy(list, keyFn) {
+      const map = new Map();
+      list.forEach(item => {
+        const key = keyFn(item);
+        if (!map.has(key)) map.set(key, item);
+      });
+      return [...map.values()];
+    }
+
+    function todayRange() {
+      const start = new Date();
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(start);
+      end.setDate(end.getDate() + 1);
+      return { start: start.toISOString(), end: end.toISOString() };
+    }
+
+    function todayDate() {
+      const date = new Date();
+      const offset = date.getTimezoneOffset();
+      return new Date(date.getTime() - offset * 60000).toISOString().slice(0, 10);
+    }
+
+    function money(value) {
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        maximumFractionDigits: 0,
+      }).format(Number(value || 0));
+    }
+
+    function numberText(value) {
+      return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 2 }).format(Number(value || 0));
+    }
+
+    function dateText(value) {
+      if (!value) return '-';
+      return new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(new Date(value));
+    }
+
+    function dateTimeText(value) {
+      if (!value) return '-';
+      return new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value));
+    }
+
+    function shortId(value) {
+      return value ? String(value).slice(0, 8) : '-';
+    }
+
+    function cleanObject(object) {
+      return Object.fromEntries(Object.entries(object).filter(([, value]) => value !== undefined && value !== null && value !== ''));
+    }
+
+    function readJson(value) {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return null;
+      }
+    }
+
+    function esc(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      }[char]));
+    }
+
+    function toast(message, type = '') {
+      const node = document.createElement('div');
+      node.className = `toast ${type}`;
+      node.textContent = message;
+      toastRoot.appendChild(node);
+      setTimeout(() => node.remove(), 4200);
+    }
+
+    function routeFromHash() {
+      const hash = location.hash.replace(/^#\/?/, '');
+      const route = hash.split('/').filter(Boolean).pop();
+      const validRoutes = ['dashboard', ...Object.keys(tableConfigs), 'settings'];
+      state.route = validRoutes.includes(route) ? route : 'dashboard';
+    }
+
+    function unregisterOldServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations()
+          .then(registrations => registrations.forEach(registration => registration.unregister()))
+          .catch(() => {});
+      }
+      if ('caches' in window) {
+        caches.keys()
+          .then(keys => keys.filter(key => key.includes(CACHE_PREFIX)).forEach(key => caches.delete(key)))
+          .catch(() => {});
+      }
+    }
+  </script>
+</body>
 </html>

@@ -28,6 +28,7 @@ if (missing.length) {
 }
 
 const migration = fs.readFileSync('supabase/migrations/001_initial_schema.sql', 'utf8');
+const indexHtml = fs.readFileSync('index.html', 'utf8');
 const frontendSupabaseClient = fs.readFileSync('src/core/supabaseClient.js', 'utf8');
 const createEmployeeFunction = fs.readFileSync('supabase/functions/admin-create-employee/index.ts', 'utf8');
 const checks = [
@@ -36,6 +37,9 @@ const checks = [
   ['Storage bucket', /shift-photos/i],
   ['Dashboard KPI RPC', /dashboard_kpis/i],
   ['Employee login resolver', /resolve_employee_login/i],
+  ['Full HTML frontend uses Supabase CDN', /esm\.sh\/@supabase\/supabase-js@2\.110\.8/i.test(indexHtml)],
+  ['Full HTML frontend has sidebar data routes', /key: 'employees'/i.test(indexHtml) && /key: 'outlets'/i.test(indexHtml)],
+  ['Static frontend unregisters old service worker cache', /unregisterOldServiceWorker/i.test(indexHtml)],
   ['Frontend avoids custom CORS headers', !/x-application-name/i.test(frontendSupabaseClient)],
   ['Employee function uses server-side internal email', /employees\.pentolsurya\.app/i.test(createEmployeeFunction)],
 ];

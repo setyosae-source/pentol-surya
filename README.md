@@ -5,20 +5,21 @@ Pentol Surya adalah aplikasi operasional multi outlet untuk absensi, stok, penju
 ## Stack
 
 - HTML5, CSS3, JavaScript ES6 modules
-- Vite
+- Full HTML static frontend (`index.html`)
 - Supabase Auth, Database, Storage, Realtime
-- PWA offline shell
+- PWA manifest ringan
 - GitHub Pages compatible
 
 ## Quick Start
 
-```bash
-npm install
-cp .env.example .env
-npm run dev
-```
+Frontend utama sekarang adalah `index.html` tunggal. Untuk cek lokal, buka `index.html` langsung di browser atau jalankan static server sederhana.
 
-Isi `.env` dengan Supabase URL dan publishable key. Jangan pernah menaruh `service_role` key di frontend.
+Supabase URL dan publishable key bisa diisi lewat setup screen saat file dibuka lokal. Untuk GitHub Pages, workflow akan mengambil nilai dari repository secrets:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+
+Jangan pernah menaruh `service_role` key di frontend.
 
 ## Supabase Setup
 
@@ -40,17 +41,11 @@ Panduan lengkap ada di `docs/demo-data.md`.
 
 ## GitHub Pages
 
-Build memakai `base: './'`, sehingga hasil `dist/` dapat dipakai di GitHub Pages.
-
-```bash
-npm run build
-```
+Workflow `.github/workflows/deploy-pages.yml` tidak menjalankan Vite build. Workflow hanya menyiapkan `index.html`, menyuntikkan Supabase URL/key dari secrets, menyalin folder `public`, lalu deploy ke GitHub Pages.
 
 ## Struktur
 
-- `src/core`: router, Supabase client, state, helpers, offline queue.
-- `src/data`: repository data per domain.
-- `src/features`: layar utama aplikasi.
-- `src/ui`: komponen UI kecil reusable.
+- `index.html`: frontend full HTML yang dipakai GitHub Pages.
+- `src`: arsip versi modular untuk pengembangan lanjutan bila diperlukan.
 - `supabase`: migration dan Edge Function.
 - `docs`: catatan roadmap dan deployment.
