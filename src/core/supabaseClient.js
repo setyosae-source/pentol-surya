@@ -8,11 +8,6 @@ export const supabase = isSupabaseConfigured()
         persistSession: true,
         detectSessionInUrl: true,
       },
-      global: {
-        headers: {
-          'x-application-name': 'pentol-surya-pwa',
-        },
-      },
     })
   : null;
 

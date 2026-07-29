@@ -46,7 +46,25 @@ Deno.serve(async (request) => {
       return json({ error: 'INVALID_PAYLOAD' }, 400);
     }
 
-    const internalEmail = `${emailPart(caller.tenant_id)}.${emailPart(employeeCode)}@employee.pentol-surya.local`;
+    const { data: existingCode, error: existingCodeError } = await serviceClient
+      .from('user_profiles')
+      .select('id')
+      .eq('tenant_id', caller.tenant_id)
+      .ilike('employee_code', employeeCode)
+      .maybeSingle();
+    if (existingCodeError) throw existingCodeError;
+    if (existingCode) return json({ error: 'EMPLOYEE_CODE_EXISTS' }, 409);
+
+    const { data: existingPhone, error: existingPhoneError } = await serviceClient
+      .from('user_profiles')
+      .select('id')
+      .eq('tenant_id', caller.tenant_id)
+      .eq('phone', phone)
+      .maybeSingle();
+    if (existingPhoneError) throw existingPhoneError;
+    if (existingPhone) return json({ error: 'PHONE_EXISTS' }, 409);
+
+    const internalEmail = `${emailPart(caller.tenant_id)}.${emailPart(employeeCode)}@employees.pentolsurya.app`;
     const { data: created, error: createError } = await serviceClient.auth.admin.createUser({
       email: internalEmail,
       password: pin,

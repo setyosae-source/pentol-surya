@@ -28,15 +28,22 @@ if (missing.length) {
 }
 
 const migration = fs.readFileSync('supabase/migrations/001_initial_schema.sql', 'utf8');
+const frontendSupabaseClient = fs.readFileSync('src/core/supabaseClient.js', 'utf8');
+const createEmployeeFunction = fs.readFileSync('supabase/functions/admin-create-employee/index.ts', 'utf8');
 const checks = [
   ['RLS enabled', /enable row level security/i],
   ['Audit trigger', /audit_row_changes/i],
   ['Storage bucket', /shift-photos/i],
   ['Dashboard KPI RPC', /dashboard_kpis/i],
   ['Employee login resolver', /resolve_employee_login/i],
+  ['Frontend avoids custom CORS headers', !/x-application-name/i.test(frontendSupabaseClient)],
+  ['Employee function uses server-side internal email', /employees\.pentolsurya\.app/i.test(createEmployeeFunction)],
 ];
 
-const failed = checks.filter(([, pattern]) => !pattern.test(migration));
+const failed = checks.filter(([, pattern]) => {
+  if (typeof pattern === 'boolean') return !pattern;
+  return !pattern.test(migration);
+});
 if (failed.length) {
   console.error('Migration checks failed:');
   failed.forEach(([label]) => console.error(`- ${label}`));

@@ -1,4 +1,5 @@
 import { requireSupabase, supabase } from '../core/supabaseClient.js';
+import { appConfig } from '../core/config.js';
 import { validatePin } from '../core/validators.js';
 
 export const authRepository = {
@@ -74,23 +75,13 @@ export const authRepository = {
   },
 
   async resetEmployeePin({ userId, newPin }) {
-    const client = requireSupabase();
     if (!validatePin(newPin)) throw new Error('PIN baru harus 6 digit.');
-    const { data, error } = await client.functions.invoke('admin-reset-pin', {
-      body: { user_id: userId, new_pin: newPin },
-    });
-    if (error) throw explainFunctionError(error, 'admin-reset-pin');
-    return data;
+    return invokeAdminFunction('admin-reset-pin', { user_id: userId, new_pin: newPin });
   },
 
   async createEmployee(payload) {
-    const client = requireSupabase();
     if (!validatePin(payload.pin)) throw new Error('PIN awal harus 6 digit.');
-    const { data, error } = await client.functions.invoke('admin-create-employee', {
-      body: payload,
-    });
-    if (error) throw explainFunctionError(error, 'admin-create-employee');
-    return data;
+    return invokeAdminFunction('admin-create-employee', payload);
   },
 
   async signOut() {
@@ -100,14 +91,56 @@ export const authRepository = {
   },
 };
 
-function explainFunctionError(error, functionName) {
-  const message = String(error?.message || '');
-  if (
-    message.includes('Failed to send a request to the Edge Function')
-    || message.includes('FunctionsFetchError')
-    || message.includes('fetch')
-  ) {
-    return new Error(`Edge Function ${functionName} belum bisa diakses. Deploy function dengan --no-verify-jwt dan pastikan SERVICE_ROLE_KEY sudah diset.`);
+async function invokeAdminFunction(functionName, body) {
+  const client = requireSupabase();
+  const { data: sessionData, error: sessionError } = await client.auth.getSession();
+  if (sessionError) throw sessionError;
+  const accessToken = sessionData.session?.access_token;
+  if (!accessToken) throw new Error('Sesi owner tidak aktif. Silakan login ulang.');
+
+  let response;
+  try {
+    response = await fetch(`${appConfig.supabaseUrl}/functions/v1/${functionName}`, {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+        apikey: appConfig.supabasePublishableKey,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+  } catch {
+    throw new Error(`Edge Function ${functionName} belum bisa diakses. Upload frontend terbaru atau deploy function dengan --no-verify-jwt, lalu pastikan SERVICE_ROLE_KEY sudah diset.`);
   }
-  return error;
+
+  const data = await readJson(response);
+  if (!response.ok || data?.error) {
+    throw new Error(functionErrorMessage(data, functionName));
+  }
+  return data;
+}
+
+async function readJson(response) {
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
+}
+
+function functionErrorMessage(data, functionName) {
+  const messages = {
+    EMPLOYEE_CODE_EXISTS: 'Kode karyawan sudah dipakai.',
+    PHONE_EXISTS: 'Nomor HP sudah dipakai.',
+    INVALID_PAYLOAD: 'Data belum lengkap atau PIN bukan 6 digit.',
+    UNAUTHORIZED: 'Sesi owner tidak valid. Silakan login ulang.',
+    FORBIDDEN: 'Akun ini tidak punya akses owner/manager.',
+    TARGET_NOT_FOUND: 'Karyawan tidak ditemukan.',
+    METHOD_NOT_ALLOWED: 'Metode request Edge Function tidak valid.',
+  };
+
+  if (data?.error === 'INTERNAL_ERROR' && data?.message) {
+    return `Edge Function ${functionName} error: ${data.message}`;
+  }
+  return messages[data?.error] || `Edge Function ${functionName} gagal diproses.`;
 }

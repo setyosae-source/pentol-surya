@@ -25,7 +25,7 @@ Isi `.env` dengan Supabase URL dan publishable key. Jangan pernah menaruh `servi
 1. Buat project Supabase.
 2. Jalankan SQL di `supabase/migrations/001_initial_schema.sql`.
 3. Buat bucket Storage `shift-photos` bila belum dibuat oleh migration.
-4. Deploy Edge Function `admin-create-employee` dan `admin-reset-pin` dengan `--no-verify-jwt`.
+4. Deploy Edge Function `admin-create-employee` dan `admin-reset-pin` dengan `--no-verify-jwt`. Untuk update terbaru, deploy ulang function wajib agar tambah karyawan memakai email internal dan tidak bergantung Phone Auth.
 5. Buat user owner pertama melalui Supabase Auth, lalu isi `user_profiles` dengan role `owner`.
 
 ## Demo Data

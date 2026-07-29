@@ -21,6 +21,7 @@ supabase functions deploy admin-create-employee --no-verify-jwt
 ```
 
 `--no-verify-jwt` diperlukan agar browser bisa melewati request CORS `OPTIONS`. Function tetap aman karena kode function memvalidasi session owner/manager sebelum memakai `service_role`.
+Deploy ulang dua function ini setiap mengambil ZIP terbaru yang mengubah folder `supabase/functions`.
 
 5. Buat user owner pertama di Supabase Auth.
 6. Tambahkan record `tenants` dan `user_profiles` role `owner`.
