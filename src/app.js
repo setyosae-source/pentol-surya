@@ -11,6 +11,7 @@ import { authRepository } from './data/authRepository.js';
 import { LoginView } from './features/LoginView.js';
 import { EmployeeDashboard } from './features/EmployeeDashboard.js';
 import { OwnerDashboard } from './features/OwnerDashboard.js';
+import { OwnerDataView } from './features/OwnerDataView.js';
 import { OperationsView } from './features/OperationsView.js';
 import { ShiftFinalView } from './features/ShiftFinalView.js';
 import { SettingsView } from './features/SettingsView.js';
@@ -21,6 +22,13 @@ const routes = {
   '/operations': OperationsView,
   '/shift/final': ShiftFinalView,
   '/owner': OwnerDashboard,
+  '/owner/employees': () => OwnerDataView({ section: 'employees' }),
+  '/owner/outlets': () => OwnerDataView({ section: 'outlets' }),
+  '/owner/products': () => OwnerDataView({ section: 'products' }),
+  '/owner/prices': () => OwnerDataView({ section: 'prices' }),
+  '/owner/expenses': () => OwnerDataView({ section: 'expenses' }),
+  '/owner/payroll': () => OwnerDataView({ section: 'payroll' }),
+  '/owner/audit': () => OwnerDataView({ section: 'audit' }),
   '/settings': SettingsView,
 };
 

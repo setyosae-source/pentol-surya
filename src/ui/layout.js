@@ -10,7 +10,7 @@ export function renderShell({ profile, activeRoute, body }) {
   queueMicrotask(bindShellEvents);
 
   return `
-    <div class="app-frame">
+    <div class="app-frame ${isEmployee ? 'employee-frame' : 'owner-frame'}">
       <header class="topbar">
         <a class="brand" href="#/${isEmployee ? 'employee' : 'owner'}" aria-label="Pentol Surya">
           <span class="brand-mark small">PS</span>
@@ -26,9 +26,10 @@ export function renderShell({ profile, activeRoute, body }) {
           <button class="icon-button" data-action="logout" title="Keluar" aria-label="Keluar">OUT</button>
         </div>
       </header>
+      ${isEmployee ? '' : nav}
       <main class="page">${body}</main>
       ${isEmployee ? '<a class="fab" href="#/operations" aria-label="Tambah operasional">+</a>' : ''}
-      ${nav}
+      ${isEmployee ? nav : ''}
     </div>
   `;
 }
@@ -46,9 +47,15 @@ function employeeNav(activeRoute) {
 
 function ownerNav(activeRoute) {
   return `
-    <nav class="bottom-nav">
-      ${navItem('/owner', 'Dashboard', 'HM', activeRoute)}
-      ${navItem('/operations', 'Input', '+', activeRoute)}
+    <nav class="side-nav" aria-label="Menu owner">
+      ${navItem('/owner', 'Dashboard', 'DB', activeRoute)}
+      ${navItem('/owner/employees', 'Karyawan', 'KR', activeRoute)}
+      ${navItem('/owner/outlets', 'Outlet', 'OT', activeRoute)}
+      ${navItem('/owner/products', 'Produk', 'PR', activeRoute)}
+      ${navItem('/owner/prices', 'Harga', 'HG', activeRoute)}
+      ${navItem('/owner/expenses', 'Biaya', 'BY', activeRoute)}
+      ${navItem('/owner/payroll', 'Payroll', 'PY', activeRoute)}
+      ${navItem('/owner/audit', 'Audit', 'AU', activeRoute)}
       ${navItem('/settings', 'Setting', 'ST', activeRoute)}
     </nav>
   `;

@@ -1,6 +1,4 @@
 import { authRepository } from '../data/authRepository.js';
-import { employeeRepository } from '../data/employeeRepository.js';
-import { catalogRepository } from '../data/catalogRepository.js';
 import { appConfig } from '../core/config.js';
 import { store } from '../core/store.js';
 import { toast } from '../core/toast.js';
@@ -79,66 +77,14 @@ VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...</pre>
     ${profile?.role !== 'employee' ? `
       <section class="surface stack">
         <div class="section-title">
-          <strong>Tambah karyawan</strong>
-          <small>Login memakai nomor HP atau kode karyawan dan PIN</small>
+          <strong>Manajemen data</strong>
+          <small>Dibuka dari sidebar</small>
         </div>
-        <form class="grid three" data-form="create-employee">
-          <label class="field">
-            <span>Nama lengkap</span>
-            <input name="full_name" required />
-          </label>
-          <label class="field">
-            <span>Kode karyawan</span>
-            <input name="employee_code" placeholder="PS001" required />
-          </label>
-          <label class="field">
-            <span>Nomor HP</span>
-            <input name="phone" inputmode="tel" placeholder="+62812..." required />
-          </label>
-          <label class="field">
-            <span>PIN awal</span>
-            <input name="pin" type="password" inputmode="numeric" maxlength="6" required />
-          </label>
-          <label class="field">
-            <span>Outlet default</span>
-            <select name="default_outlet_id" data-outlet-select>
-              <option value="">Bebas dipilih karyawan</option>
-            </select>
-          </label>
-          <label class="field">
-            <span>Upah per jam</span>
-            <input name="hourly_rate" type="number" value="5000" min="0" />
-          </label>
-          <label class="field">
-            <span>Uang makan</span>
-            <input name="meal_allowance" type="number" value="10000" min="0" />
-          </label>
-          <label class="field">
-            <span>Transport</span>
-            <input name="transport_allowance" type="number" value="0" min="0" />
-          </label>
-          <button class="primary self-end" type="submit">Buat Karyawan</button>
-        </form>
-      </section>
-
-      <section class="surface stack" data-employee-pin-panel>
-        <div class="section-title">
-          <strong>Reset PIN karyawan</strong>
-          <small>Diproses lewat Edge Function dengan service role di server</small>
+        <div class="action-grid">
+          <a class="action-card" href="#/owner/employees"><strong>Karyawan</strong><span>Tambah, edit, nonaktifkan, dan reset PIN.</span></a>
+          <a class="action-card" href="#/owner/outlets"><strong>Outlet</strong><span>Kelola lokasi dan aturan outlet.</span></a>
+          <a class="action-card" href="#/owner/products"><strong>Produk</strong><span>Kelola produk, harga umum, dan HPP.</span></a>
         </div>
-        <form class="grid three" data-form="reset-pin">
-          <label class="field">
-            <span>Karyawan</span>
-            <select name="user_id" required data-employee-select>
-              <option value="">Memuat karyawan...</option>
-            </select>
-          </label>
-          <label class="field">
-            <span>PIN baru</span>
-            <input name="new_pin" type="password" inputmode="numeric" maxlength="6" required />
-          </label>
-          <button class="primary self-end" type="submit">Reset PIN</button>
-        </form>
       </section>
     ` : ''}
   `;
@@ -154,53 +100,6 @@ async function bindSettings() {
     }), 'PIN berhasil diganti.');
   });
 
-  const select = document.querySelector('[data-employee-select]');
-  const outletSelect = document.querySelector('[data-outlet-select]');
-  if (outletSelect) {
-    try {
-      const outlets = await catalogRepository.loadOutlets();
-      outletSelect.innerHTML = '<option value="">Bebas dipilih karyawan</option>' + outlets.map((outlet) => `
-        <option value="${outlet.id}">${outlet.name}</option>
-      `).join('');
-    } catch (error) {
-      toast.error(error.message || 'Gagal memuat outlet.');
-    }
-  }
-
-  if (select) {
-    try {
-      const employees = await employeeRepository.listEmployees();
-      select.innerHTML = '<option value="">Pilih karyawan</option>' + employees.map((employee) => `
-        <option value="${employee.user_id}">${employee.employee_code} - ${employee.user_profiles?.full_name || employee.phone}</option>
-      `).join('');
-    } catch (error) {
-      toast.error(error.message || 'Gagal memuat daftar karyawan.');
-    }
-  }
-
-  document.querySelector('[data-form="create-employee"]')?.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    await submit(event.currentTarget, () => authRepository.createEmployee({
-      full_name: form.get('full_name'),
-      employee_code: form.get('employee_code'),
-      phone: form.get('phone'),
-      pin: form.get('pin'),
-      default_outlet_id: form.get('default_outlet_id') || null,
-      hourly_rate: form.get('hourly_rate'),
-      meal_allowance: form.get('meal_allowance'),
-      transport_allowance: form.get('transport_allowance'),
-    }), 'Karyawan berhasil dibuat.');
-  });
-
-  document.querySelector('[data-form="reset-pin"]')?.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    await submit(event.currentTarget, () => authRepository.resetEmployeePin({
-      userId: form.get('user_id'),
-      newPin: form.get('new_pin'),
-    }), 'PIN karyawan berhasil direset.');
-  });
 }
 
 async function submit(form, action, successMessage) {

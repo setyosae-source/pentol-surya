@@ -84,26 +84,67 @@ export const ownerRepository = {
     return data || [];
   },
 
-  async addGeneralExpense(payload) {
+  async listGeneralExpenses() {
     const client = requireSupabase();
     const { data, error } = await client
       .from('general_expenses')
-      .insert(payload)
-      .select()
-      .single();
+      .select('*')
+      .order('occurred_at', { ascending: false })
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return data || [];
+  },
+
+  async addGeneralExpense(payload) {
+    return this.saveGeneralExpense(payload);
+  },
+
+  async saveGeneralExpense(payload) {
+    const client = requireSupabase();
+    const record = cleanBlank(payload);
+    const request = record.id
+      ? client.from('general_expenses').update(record).eq('id', record.id).select().single()
+      : client.from('general_expenses').insert(record).select().single();
+    const { data, error } = await request;
     if (error) throw error;
     return data;
   },
 
-  async createPayrollPeriod(payload) {
+  async deleteGeneralExpense(id) {
+    const client = requireSupabase();
+    const { error } = await client.from('general_expenses').delete().eq('id', id);
+    if (error) throw error;
+  },
+
+  async listPayrollPeriods() {
     const client = requireSupabase();
     const { data, error } = await client
       .from('payroll_periods')
-      .insert(payload)
-      .select()
-      .single();
+      .select('*')
+      .order('starts_on', { ascending: false });
+    if (error) throw error;
+    return data || [];
+  },
+
+  async createPayrollPeriod(payload) {
+    return this.savePayrollPeriod(payload);
+  },
+
+  async savePayrollPeriod(payload) {
+    const client = requireSupabase();
+    const record = cleanBlank(payload);
+    const request = record.id
+      ? client.from('payroll_periods').update(record).eq('id', record.id).select().single()
+      : client.from('payroll_periods').insert(record).select().single();
+    const { data, error } = await request;
     if (error) throw error;
     return data;
+  },
+
+  async deletePayrollPeriod(id) {
+    const client = requireSupabase();
+    const { error } = await client.from('payroll_periods').delete().eq('id', id);
+    if (error) throw error;
   },
 };
 
@@ -114,4 +155,10 @@ function uniqueBy(list, keyFn) {
     if (!map.has(key)) map.set(key, item);
   });
   return [...map.values()];
+}
+
+function cleanBlank(record) {
+  return Object.fromEntries(
+    Object.entries(record).filter(([, value]) => value !== '' && value !== undefined),
+  );
 }

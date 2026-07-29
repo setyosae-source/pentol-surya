@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pentol-surya-v2';
+const CACHE_NAME = 'pentol-surya-v3';
 const APP_SHELL = [
   './',
   './index.html',

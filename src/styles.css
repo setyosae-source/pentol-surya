@@ -84,6 +84,10 @@ noscript {
   padding-bottom: calc(5.25rem + env(safe-area-inset-bottom));
 }
 
+.owner-frame {
+  padding-bottom: 0;
+}
+
 .topbar {
   position: sticky;
   top: 0;
@@ -188,6 +192,13 @@ noscript {
   width: min(1180px, 100%);
   margin: 0 auto;
   padding: 1rem;
+}
+
+.owner-frame .page {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0;
+  padding-left: calc(4.85rem + 0.85rem);
 }
 
 .auth-screen,
@@ -493,6 +504,59 @@ noscript {
   border-top: 1px solid var(--line);
 }
 
+.side-nav {
+  position: fixed;
+  top: 4.65rem;
+  bottom: 0;
+  left: 0;
+  z-index: 25;
+  width: 4.85rem;
+  display: grid;
+  align-content: start;
+  gap: 0.35rem;
+  padding: 0.75rem 0.55rem calc(0.75rem + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  border-right: 1px solid var(--line);
+  backdrop-filter: blur(16px);
+}
+
+.side-nav a {
+  display: grid;
+  justify-items: center;
+  gap: 0.18rem;
+  min-width: 0;
+  padding: 0.55rem 0.35rem;
+  border-radius: 0.75rem;
+  color: var(--muted);
+}
+
+.side-nav a.active {
+  color: var(--primary-strong);
+  background: var(--surface-2);
+}
+
+.side-nav span {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.65rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.side-nav small {
+  max-width: 100%;
+  overflow: hidden;
+  color: inherit;
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .fab {
   position: fixed;
   right: 1rem;
@@ -508,6 +572,10 @@ noscript {
   font-size: 1.6rem;
   font-weight: 900;
   box-shadow: var(--shadow);
+}
+
+.owner-fab {
+  bottom: calc(1rem + env(safe-area-inset-bottom));
 }
 
 .bottom-nav a {
@@ -567,6 +635,119 @@ noscript {
   border: 1px dashed var(--line);
   border-radius: 0.8rem;
   background: color-mix(in srgb, var(--surface-2) 55%, transparent);
+}
+
+.data-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.data-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.25rem 0 0.5rem;
+}
+
+.data-heading small {
+  color: var(--primary-strong);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.data-heading h1 {
+  margin: 0.15rem 0 0.2rem;
+  font-size: clamp(1.55rem, 4vw, 2.15rem);
+  line-height: 1.1;
+}
+
+.data-heading p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.data-surface {
+  overflow: hidden;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  min-width: 48rem;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.85rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.data-table th {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 850;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.data-table td small {
+  display: block;
+  margin-top: 0.18rem;
+  color: var(--muted);
+}
+
+.data-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.table-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.compact-button {
+  min-height: 2.15rem;
+  border-radius: 0.6rem;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.82rem;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: end center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.48);
+}
+
+.modal-card {
+  width: min(100%, 42rem);
+  max-height: min(88vh, 46rem);
+  overflow: auto;
+  padding: 1rem;
+  border-radius: 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
 }
 
 .skeleton {
@@ -644,6 +825,10 @@ noscript {
     padding: 1.5rem;
   }
 
+  .owner-frame .page {
+    padding-left: 18rem;
+  }
+
   .grid.three {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -670,6 +855,33 @@ noscript {
   .fab {
     right: calc(50% - min(590px, 50vw) + 1.5rem);
     bottom: 6rem;
+  }
+
+  .owner-fab {
+    right: 1.5rem;
+    bottom: 1.5rem;
+  }
+
+  .side-nav {
+    top: 4.8rem;
+    width: 16rem;
+    padding: 1rem;
+  }
+
+  .side-nav a {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    justify-items: start;
+    gap: 0.75rem;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .side-nav small {
+    font-size: 0.9rem;
+  }
+
+  .modal-backdrop {
+    place-items: center;
   }
 
   .toast-host {

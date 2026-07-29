@@ -39,23 +39,19 @@ export const authRepository = {
     if (!validatePin(pin)) throw new Error('PIN harus 6 digit.');
 
     const cleanIdentifier = String(identifier || '').trim();
-    const looksPhone = /^[+0-9][0-9\s-]{5,}$/.test(cleanIdentifier);
-    let credentials = looksPhone ? { phone: cleanIdentifier, password: pin } : null;
-
-    if (!credentials) {
-      const { data, error } = await client.rpc('resolve_employee_login', {
-        identifier_input: cleanIdentifier,
-      });
-      if (error) throw error;
-      if (!data?.found) throw new Error('Kode karyawan tidak ditemukan.');
-      credentials = data.email
-        ? { email: data.email, password: pin }
-        : { phone: data.phone, password: pin };
-    }
-
-    const { data, error } = await client.auth.signInWithPassword(credentials);
+    const { data, error } = await client.rpc('resolve_employee_login', {
+      identifier_input: cleanIdentifier,
+    });
     if (error) throw error;
-    return data;
+    if (!data?.found) throw new Error('Kode karyawan atau nomor HP tidak ditemukan.');
+
+    const credentials = data.email
+      ? { email: data.email, password: pin }
+      : { phone: data.phone, password: pin };
+
+    const result = await client.auth.signInWithPassword(credentials);
+    if (result.error) throw result.error;
+    return result.data;
   },
 
   async updatePin({ currentPin, newPin }) {
@@ -83,7 +79,7 @@ export const authRepository = {
     const { data, error } = await client.functions.invoke('admin-reset-pin', {
       body: { user_id: userId, new_pin: newPin },
     });
-    if (error) throw error;
+    if (error) throw explainFunctionError(error, 'admin-reset-pin');
     return data;
   },
 
@@ -93,7 +89,7 @@ export const authRepository = {
     const { data, error } = await client.functions.invoke('admin-create-employee', {
       body: payload,
     });
-    if (error) throw error;
+    if (error) throw explainFunctionError(error, 'admin-create-employee');
     return data;
   },
 
@@ -103,3 +99,15 @@ export const authRepository = {
     if (error) throw error;
   },
 };
+
+function explainFunctionError(error, functionName) {
+  const message = String(error?.message || '');
+  if (
+    message.includes('Failed to send a request to the Edge Function')
+    || message.includes('FunctionsFetchError')
+    || message.includes('fetch')
+  ) {
+    return new Error(`Edge Function ${functionName} belum bisa diakses. Deploy function dengan --no-verify-jwt dan pastikan SERVICE_ROLE_KEY sudah diset.`);
+  }
+  return error;
+}

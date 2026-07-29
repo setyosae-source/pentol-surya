@@ -2,40 +2,46 @@ import { requireSupabase } from '../core/supabaseClient.js';
 import { store } from '../core/store.js';
 
 export const catalogRepository = {
-  async loadOutlets() {
+  async loadOutlets({ force = false, includeInactive = false } = {}) {
     const cached = store.getState();
-    if (cached.outletsLoaded) return cached.outlets;
+    if (!force && !includeInactive && cached.outletsLoaded) return cached.outlets;
 
     const client = requireSupabase();
-    const { data, error } = await client
+    let query = client
       .from('outlets')
       .select('*')
-      .eq('active', true)
       .order('name');
+
+    if (!includeInactive) query = query.eq('active', true);
+
+    const { data, error } = await query;
     if (error) throw error;
-    store.setState({ outlets: data || [], outletsLoaded: true });
+    if (!includeInactive) store.setState({ outlets: data || [], outletsLoaded: true });
     return data || [];
   },
 
-  async loadProducts(outletId = null) {
+  async loadProducts(outletId = null, { force = false, includeInactive = false } = {}) {
     const cached = store.getState();
-    if (cached.productsLoadedFor === (outletId || 'all')) {
+    if (!force && !includeInactive && cached.productsLoadedFor === (outletId || 'all')) {
       return cached.products;
     }
 
     const client = requireSupabase();
     const profile = store.getState().profile;
     const canViewCost = ['owner', 'manager'].includes(profile?.role);
-    const { data: products, error } = await client
+    let productQuery = client
       .from('products')
       .select('*, product_categories(name)')
-      .eq('active', true)
       .order('name');
+
+    if (!includeInactive) productQuery = productQuery.eq('active', true);
+
+    const { data: products, error } = await productQuery;
     if (error) throw error;
 
     if (!outletId) {
       const withCosts = await attachCosts(products || [], canViewCost);
-      store.setState({ products: withCosts, productsLoadedFor: 'all' });
+      if (!includeInactive) store.setState({ products: withCosts, productsLoadedFor: 'all' });
       return withCosts;
     }
 
@@ -75,6 +81,19 @@ export const catalogRepository = {
     return data;
   },
 
+  async deleteOutlet(id) {
+    const client = requireSupabase();
+    const { data, error } = await client
+      .from('outlets')
+      .update({ active: false })
+      .eq('id', id)
+      .select()
+      .single();
+    if (error) throw error;
+    store.setState({ outletsLoaded: false });
+    return data;
+  },
+
   async saveProduct(payload) {
     const client = requireSupabase();
     const { hpp, ...productPayload } = payload;
@@ -98,15 +117,56 @@ export const catalogRepository = {
     return data;
   },
 
-  async saveOutletPrice({ tenant_id, outlet_id, product_id, sale_price }) {
+  async deleteProduct(id) {
     const client = requireSupabase();
     const { data, error } = await client
-      .from('outlet_product_prices')
-      .insert({ tenant_id, outlet_id, product_id, sale_price })
+      .from('products')
+      .update({ active: false })
+      .eq('id', id)
       .select()
       .single();
     if (error) throw error;
     store.setState({ productsLoadedFor: null });
+    return data;
+  },
+
+  async loadOutletPrices({ force = false } = {}) {
+    const cached = store.getState();
+    if (!force && cached.outletPricesLoaded) return cached.outletPrices || [];
+
+    const client = requireSupabase();
+    const { data, error } = await client
+      .from('outlet_product_prices')
+      .select('*, outlets(id, name), products(id, name)')
+      .eq('active', true)
+      .order('valid_from', { ascending: false });
+    if (error) throw error;
+    store.setState({ outletPrices: data || [], outletPricesLoaded: true });
+    return data || [];
+  },
+
+  async saveOutletPrice({ id, tenant_id, outlet_id, product_id, sale_price }) {
+    const client = requireSupabase();
+    const record = cleanBlank({ tenant_id, outlet_id, product_id, sale_price });
+    const request = id
+      ? client.from('outlet_product_prices').update({ sale_price }).eq('id', id).select('*, outlets(id, name), products(id, name)').single()
+      : client.from('outlet_product_prices').insert(record).select('*, outlets(id, name), products(id, name)').single();
+    const { data, error } = await request;
+    if (error) throw error;
+    store.setState({ productsLoadedFor: null, outletPricesLoaded: false });
+    return data;
+  },
+
+  async deleteOutletPrice(id) {
+    const client = requireSupabase();
+    const { data, error } = await client
+      .from('outlet_product_prices')
+      .update({ active: false })
+      .eq('id', id)
+      .select('*, outlets(id, name), products(id, name)')
+      .single();
+    if (error) throw error;
+    store.setState({ productsLoadedFor: null, outletPricesLoaded: false });
     return data;
   },
 
@@ -125,7 +185,7 @@ export const catalogRepository = {
       .insert(rows)
       .select();
     if (error) throw error;
-    store.setState({ productsLoadedFor: null });
+    store.setState({ productsLoadedFor: null, outletPricesLoaded: false });
     return data || [];
   },
 };

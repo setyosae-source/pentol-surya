@@ -30,13 +30,62 @@ export const employeeRepository = {
     return { employee, assignments: assignments || [] };
   },
 
-  async listEmployees() {
+  async listEmployees({ includeInactive = false } = {}) {
     const client = requireSupabase();
-    const { data, error } = await client
+    let query = client
       .from('employees')
-      .select('*, user_profiles(full_name, role, active)')
+      .select('*, user_profiles(full_name, role, active), default_outlet:outlets(name)')
       .order('employee_code');
+
+    if (!includeInactive) query = query.eq('active', true);
+
+    const { data, error } = await query;
     if (error) throw error;
     return data || [];
   },
+
+  async updateEmployee(id, payload) {
+    const client = requireSupabase();
+    const { user_id, full_name, employee_code, phone, active, ...employeeFields } = payload;
+
+    if (user_id) {
+      const profileUpdate = cleanBlank({ full_name, employee_code, phone, active });
+      if (Object.keys(profileUpdate).length) {
+        const { error: profileError } = await client
+          .from('user_profiles')
+          .update(profileUpdate)
+          .eq('id', user_id);
+        if (profileError) throw profileError;
+      }
+    }
+
+    const employeeUpdate = cleanBlank({
+      ...employeeFields,
+      employee_code,
+      phone,
+      active,
+    });
+
+    const { data, error } = await client
+      .from('employees')
+      .update(employeeUpdate)
+      .eq('id', id)
+      .select('*, user_profiles(full_name, role, active), default_outlet:outlets(name)')
+      .single();
+    if (error) throw error;
+    return data;
+  },
+
+  async deactivateEmployee(employee) {
+    return this.updateEmployee(employee.id, {
+      user_id: employee.user_id,
+      active: false,
+    });
+  },
 };
+
+function cleanBlank(record) {
+  return Object.fromEntries(
+    Object.entries(record).filter(([, value]) => value !== '' && value !== undefined),
+  );
+}

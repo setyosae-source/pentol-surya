@@ -25,8 +25,18 @@ Isi `.env` dengan Supabase URL dan publishable key. Jangan pernah menaruh `servi
 1. Buat project Supabase.
 2. Jalankan SQL di `supabase/migrations/001_initial_schema.sql`.
 3. Buat bucket Storage `shift-photos` bila belum dibuat oleh migration.
-4. Deploy Edge Function `admin-reset-pin` untuk reset PIN oleh owner.
+4. Deploy Edge Function `admin-create-employee` dan `admin-reset-pin` dengan `--no-verify-jwt`.
 5. Buat user owner pertama melalui Supabase Auth, lalu isi `user_profiles` dengan role `owner`.
+
+## Demo Data
+
+Untuk crosscheck semua layar dengan data dummy lengkap, buat minimal 1 karyawan dari sidebar `Karyawan`, lalu jalankan:
+
+```text
+supabase/seed-demo-data.sql
+```
+
+Panduan lengkap ada di `docs/demo-data.md`.
 
 ## GitHub Pages
 
