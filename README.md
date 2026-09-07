@@ -6,6 +6,7 @@ Pentol Surya adalah aplikasi operasional multi outlet untuk absensi, stok, penju
 
 - HTML5, CSS3, JavaScript ES6 modules
 - Full HTML static frontend (`index.html`)
+- Tema brand terang/gelap berbasis warna Pentol Surya
 - Supabase Auth, Database, Storage, Realtime
 - PWA manifest ringan
 - GitHub Pages compatible

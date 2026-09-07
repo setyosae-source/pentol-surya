@@ -1,8 +1,9 @@
-const CACHE_NAME = 'pentol-surya-v5';
+const CACHE_NAME = 'pentol-surya-v6';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
+  './brand/pentol-surya-logo.png',
   './icons/icon.svg',
   './icons/apple-touch-icon.svg',
 ];

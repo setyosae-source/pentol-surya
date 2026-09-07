@@ -5,6 +5,7 @@ const requiredFiles = [
   'index.html',
   'public/manifest.webmanifest',
   'public/service-worker.js',
+  'public/brand/pentol-surya-logo.png',
   'src/main.js',
   'src/app.js',
   'src/styles.css',
@@ -40,6 +41,9 @@ const checks = [
   ['Full HTML frontend uses Supabase CDN', /esm\.sh\/@supabase\/supabase-js@2\.110\.8/i.test(indexHtml)],
   ['Full HTML frontend has sidebar data routes', /key: 'employees'/i.test(indexHtml) && /key: 'outlets'/i.test(indexHtml)],
   ['Static frontend unregisters old service worker cache', /unregisterOldServiceWorker/i.test(indexHtml)],
+  ['Brand theme has light and dark options', /THEME_STORAGE_KEY/i.test(indexHtml) && /data-theme-set="light"/i.test(indexHtml) && /data-theme-set="dark"/i.test(indexHtml)],
+  ['Brand logo is used by frontend', /pentol-surya-logo\.png/i.test(indexHtml)],
+  ['Frontend avoids overly heavy font weight', !/font-weight:\s*(?:8|9|750)/.test(indexHtml)],
   ['Frontend avoids custom CORS headers', !/x-application-name/i.test(frontendSupabaseClient)],
   ['Employee function uses server-side internal email', /employees\.pentolsurya\.app/i.test(createEmployeeFunction)],
 ];

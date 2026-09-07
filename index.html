@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f97316">
+  <meta name="theme-color" content="#111111" id="theme-color-meta">
   <meta name="description" content="Pentol Surya - sistem operasional multi outlet.">
   <link rel="manifest" href="./public/manifest.webmanifest">
   <link rel="icon" href="./public/icons/icon.svg" type="image/svg+xml">
@@ -12,31 +12,61 @@
   <style>
     :root {
       color-scheme: light;
-      --bg: #fff7ed;
-      --surface: #fffaf4;
+      --bg: #f8f1eb;
+      --surface: #fffaf5;
       --panel: #ffffff;
-      --panel-soft: #ffedd5;
-      --text: #0f172a;
-      --muted: #64748b;
-      --line: #fed7aa;
-      --primary: #f97316;
-      --primary-dark: #ea580c;
-      --danger: #dc2626;
-      --success: #16a34a;
-      --shadow: 0 18px 45px rgba(124, 45, 18, .14);
+      --panel-soft: #fff0e6;
+      --field: #fffaf5;
+      --text: #1c1715;
+      --muted: #736761;
+      --line: #ead5c7;
+      --line-strong: #dfb49e;
+      --primary: #d80c0c;
+      --primary-dark: #a90707;
+      --accent: #ff6a00;
+      --accent-soft: #fff0df;
+      --danger: #d80c0c;
+      --success: #148448;
+      --brand-black: #111111;
+      --shadow: 0 16px 34px rgba(35, 18, 12, .12);
       --radius: 8px;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Segoe UI", Roboto, Arial, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0d0b0b;
+      --surface: #141111;
+      --panel: #191515;
+      --panel-soft: #241716;
+      --field: #120f0f;
+      --text: #fff8f0;
+      --muted: #c7b7ad;
+      --line: #392423;
+      --line-strong: #6f2a25;
+      --primary: #f02727;
+      --primary-dark: #ff4b3f;
+      --accent: #ff7a1a;
+      --accent-soft: #2a1713;
+      --danger: #ff4b4b;
+      --success: #37b66a;
+      --brand-black: #050505;
+      --shadow: 0 18px 42px rgba(0, 0, 0, .36);
     }
 
     * { box-sizing: border-box; }
     html, body { min-height: 100%; }
     body {
       margin: 0;
-      background: var(--bg);
+      background:
+        radial-gradient(circle at top right, rgba(216, 12, 12, .08), transparent 32vw),
+        var(--bg);
       color: var(--text);
       font-size: 14px;
       line-height: 1.45;
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      font-weight: 400;
     }
 
     button, input, select, textarea {
@@ -60,6 +90,103 @@
       padding: 18px;
     }
 
+    .login-screen {
+      min-height: 100vh;
+      min-height: 100svh;
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      align-items: center;
+      padding: clamp(20px, 5vw, 72px);
+      overflow: hidden;
+      background-color: #080606;
+      background-image:
+        linear-gradient(90deg, rgba(5, 3, 3, .90) 0%, rgba(8, 4, 4, .70) 38%, rgba(8, 3, 3, .18) 72%, rgba(3, 2, 2, .46) 100%),
+        linear-gradient(180deg, rgba(0, 0, 0, .20), rgba(0, 0, 0, .38)),
+        url('./public/brand/pentol-surya-login-bg.jpg');
+      background-size: cover;
+      background-position: center 54%;
+    }
+
+    .login-screen::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 78% 60%, rgba(216, 12, 12, .12), transparent 34%),
+        linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, .36));
+    }
+
+    .login-shell {
+      width: min(1240px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(320px, 430px) 1fr;
+      align-items: center;
+    }
+
+    .login-card {
+      width: 100%;
+      padding: clamp(22px, 3vw, 30px);
+      border-color: rgba(255, 255, 255, .24);
+      border-radius: 20px;
+      background: rgba(255, 250, 245, .94);
+      box-shadow: 0 26px 70px rgba(0, 0, 0, .42);
+      backdrop-filter: blur(16px) saturate(115%);
+      -webkit-backdrop-filter: blur(16px) saturate(115%);
+    }
+
+    body[data-theme="dark"] .login-card {
+      background: rgba(18, 14, 14, .91);
+      border-color: rgba(255, 255, 255, .15);
+    }
+
+    .login-card .brand-block {
+      margin-bottom: 22px;
+    }
+
+    .login-card .brand-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .login-card .brand-subtitle {
+      font-size: 12px;
+    }
+
+    .login-heading {
+      margin-bottom: 17px;
+    }
+
+    .login-heading h1 {
+      margin: 0;
+      font-size: clamp(25px, 3vw, 32px);
+      line-height: 1.12;
+      font-weight: 700;
+    }
+
+    .login-heading p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .login-card .tabs {
+      margin: 0 0 18px;
+    }
+
+    .login-card input {
+      background: color-mix(in srgb, var(--field) 94%, transparent);
+    }
+
+    .login-card .btn.primary {
+      margin-top: 2px;
+      min-height: 48px;
+      box-shadow: 0 12px 24px rgba(216, 12, 12, .20);
+    }
+
     .auth-card, .setup-card {
       width: min(420px, 100%);
       background: var(--panel);
@@ -67,6 +194,7 @@
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding: 20px;
+      position: relative;
     }
 
     .brand-block {
@@ -77,23 +205,44 @@
     }
 
     .logo {
-      width: 42px;
-      height: 42px;
+      width: 46px;
+      height: 46px;
       display: grid;
       place-items: center;
-      border-radius: 8px;
-      background: linear-gradient(135deg, #ff7a1a, #ea580c);
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--brand-black);
       color: #fff;
-      font-weight: 900;
-      letter-spacing: .04em;
+      border: 1px solid rgba(216, 12, 12, .62);
+      box-shadow: 0 8px 20px rgba(216, 12, 12, .18);
       flex: 0 0 auto;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: .04em;
+    }
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
     }
 
     .brand-title {
       margin: 0;
       font-size: 19px;
       line-height: 1.1;
-      font-weight: 900;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .brand-small .logo {
+      width: 40px;
+      height: 40px;
+    }
+
+    .brand-small .brand-title {
+      font-size: 15px;
     }
 
     .brand-subtitle {
@@ -118,13 +267,13 @@
       border-radius: 7px;
       color: var(--muted);
       padding: 10px 8px;
-      font-weight: 800;
+      font-weight: 650;
     }
 
     .tab-btn.active {
-      background: #fff;
-      color: var(--primary-dark);
-      box-shadow: 0 6px 16px rgba(234, 88, 12, .12);
+      background: var(--panel);
+      color: var(--primary);
+      box-shadow: 0 6px 16px rgba(216, 12, 12, .10);
     }
 
     .form-grid {
@@ -145,15 +294,15 @@
     .field.full, .full { grid-column: 1 / -1; }
 
     label {
-      font-weight: 850;
-      color: #172033;
+      font-weight: 650;
+      color: var(--text);
     }
 
     input, select, textarea {
       width: 100%;
       min-height: 44px;
-      border: 1px solid #fdba74;
-      background: #fff7ed;
+      border: 1px solid var(--line-strong);
+      background: var(--field);
       color: var(--text);
       border-radius: 8px;
       padding: 11px 12px;
@@ -167,7 +316,7 @@
 
     input:focus, select:focus, textarea:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(249, 115, 22, .16);
+      box-shadow: 0 0 0 3px rgba(216, 12, 12, .14);
     }
 
     .btn {
@@ -175,25 +324,25 @@
       border: 1px solid transparent;
       border-radius: 8px;
       padding: 10px 14px;
-      font-weight: 900;
+      font-weight: 700;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      background: #fff;
+      background: var(--panel);
       color: var(--text);
     }
 
     .btn.primary {
-      background: linear-gradient(135deg, #ff7a1a, #f97316);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
       color: #fff;
       border-color: var(--primary);
     }
 
     .btn.ghost {
-      border-color: #fdba74;
-      background: #fffaf4;
-      color: #334155;
+      border-color: var(--line-strong);
+      background: var(--surface);
+      color: var(--text);
     }
 
     .btn.danger {
@@ -221,7 +370,7 @@
     }
 
     .sidebar {
-      background: #fffaf4;
+      background: var(--surface);
       border-right: 1px solid var(--line);
       padding: 14px;
       position: sticky;
@@ -240,10 +389,10 @@
 
     .nav-group {
       margin: 15px 0 8px;
-      color: #9a3412;
+      color: var(--primary);
       font-size: 11px;
-      font-weight: 950;
-      letter-spacing: .06em;
+      font-weight: 700;
+      letter-spacing: .08em;
       text-transform: uppercase;
     }
 
@@ -251,7 +400,7 @@
       width: 100%;
       border: 0;
       background: transparent;
-      color: #475569;
+      color: var(--muted);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -259,7 +408,7 @@
       padding: 11px 12px;
       border-radius: 8px;
       text-align: left;
-      font-weight: 850;
+      font-weight: 650;
     }
 
     .nav-item span:first-child {
@@ -270,8 +419,8 @@
     }
 
     .nav-item.active {
-      color: var(--primary-dark);
-      background: #ffedd5;
+      color: var(--primary);
+      background: var(--accent-soft);
     }
 
     .main {
@@ -285,7 +434,7 @@
       top: 0;
       z-index: 15;
       min-height: 70px;
-      background: rgba(255, 250, 244, .94);
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--line);
       display: flex;
@@ -305,8 +454,8 @@
     .burger {
       width: 38px;
       height: 38px;
-      border: 1px solid #fdba74;
-      background: #fffaf4;
+      border: 1px solid var(--line-strong);
+      background: var(--panel);
       border-radius: 8px;
       display: none;
       place-items: center;
@@ -320,10 +469,49 @@
       min-height: 30px;
       padding: 6px 10px;
       border-radius: 999px;
-      background: #dcfce7;
-      color: #166534;
+      background: color-mix(in srgb, var(--success) 16%, transparent);
+      color: var(--success);
       font-size: 12px;
       white-space: nowrap;
+    }
+
+    .theme-toggle, .theme-choice {
+      min-height: 34px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--text);
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .theme-toggle {
+      color: var(--primary);
+    }
+
+    .theme-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .theme-choice.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .card-theme {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+    }
+
+    .card-theme + .brand-block {
+      padding-right: 112px;
     }
 
     .content {
@@ -342,10 +530,10 @@
 
     .eyebrow {
       margin: 0 0 4px;
-      color: #9a3412;
+      color: var(--primary);
       font-size: 11px;
-      font-weight: 950;
-      letter-spacing: .06em;
+      font-weight: 700;
+      letter-spacing: .08em;
       text-transform: uppercase;
     }
 
@@ -354,6 +542,7 @@
       font-size: clamp(26px, 4vw, 38px);
       line-height: 1.05;
       letter-spacing: 0;
+      font-weight: 700;
     }
 
     .page-desc {
@@ -377,15 +566,15 @@
 
     .kpi-label {
       color: var(--muted);
-      font-weight: 800;
+      font-weight: 650;
       font-size: 12px;
     }
 
     .kpi-value {
       margin-top: 6px;
       font-size: 22px;
-      font-weight: 950;
-      color: #0f172a;
+      font-weight: 700;
+      color: var(--text);
     }
 
     .panel {
@@ -398,14 +587,14 @@
       justify-content: space-between;
       gap: 10px;
       margin-bottom: 10px;
-      font-weight: 950;
+      font-weight: 700;
     }
 
     .table-wrap {
       overflow-x: auto;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: #fff;
+      background: var(--panel);
     }
 
     table {
@@ -416,17 +605,17 @@
 
     th, td {
       padding: 11px 12px;
-      border-bottom: 1px solid #ffedd5;
+      border-bottom: 1px solid var(--line);
       text-align: left;
       vertical-align: middle;
     }
 
     th {
-      color: #475569;
+      color: var(--muted);
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: .04em;
-      background: #fff7ed;
+      background: var(--panel-soft);
       white-space: nowrap;
     }
 
@@ -445,28 +634,28 @@
       align-items: center;
       border-radius: 999px;
       padding: 4px 9px;
-      background: #f1f5f9;
-      color: #475569;
-      font-weight: 800;
+      background: color-mix(in srgb, var(--muted) 12%, transparent);
+      color: var(--muted);
+      font-weight: 650;
       font-size: 12px;
       white-space: nowrap;
     }
 
     .badge.ok {
-      background: #dcfce7;
-      color: #166534;
+      background: color-mix(in srgb, var(--success) 16%, transparent);
+      color: var(--success);
     }
 
     .badge.warn {
-      background: #fef3c7;
-      color: #92400e;
+      background: color-mix(in srgb, var(--accent) 18%, transparent);
+      color: var(--accent);
     }
 
     .empty {
       padding: 22px;
       text-align: center;
       color: var(--muted);
-      background: #fffaf4;
+      background: var(--surface);
       border: 1px dashed var(--line);
       border-radius: var(--radius);
     }
@@ -474,7 +663,7 @@
     .skeleton {
       min-height: 96px;
       border-radius: var(--radius);
-      background: linear-gradient(90deg, #ffedd5 25%, #fff7ed 38%, #ffedd5 63%);
+      background: linear-gradient(90deg, var(--panel-soft) 25%, var(--surface) 38%, var(--panel-soft) 63%);
       background-size: 400% 100%;
       animation: shimmer 1.2s infinite;
     }
@@ -493,18 +682,18 @@
       height: 58px;
       border-radius: 999px;
       border: 0;
-      background: linear-gradient(135deg, #ff7a1a, #ea580c);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
       color: #fff;
       font-size: 30px;
       line-height: 1;
-      box-shadow: 0 15px 35px rgba(234, 88, 12, .34);
+      box-shadow: 0 15px 35px rgba(216, 12, 12, .30);
     }
 
     .modal-backdrop {
       position: fixed;
       inset: 0;
       z-index: 40;
-      background: rgba(15, 23, 42, .48);
+      background: rgba(0, 0, 0, .56);
       display: grid;
       place-items: center;
       padding: 16px;
@@ -514,7 +703,7 @@
       width: min(760px, 100%);
       max-height: min(88vh, 760px);
       overflow: auto;
-      background: #fff;
+      background: var(--panel);
       border-radius: 10px;
       border: 1px solid var(--line);
       box-shadow: var(--shadow);
@@ -524,19 +713,19 @@
       position: sticky;
       top: 0;
       z-index: 1;
-      background: #fff;
+      background: var(--panel);
       padding: 16px;
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
       gap: 12px;
-      border-bottom: 1px solid #ffedd5;
+      border-bottom: 1px solid var(--line);
     }
 
     .modal-title {
       margin: 0;
       font-size: 18px;
-      font-weight: 950;
+      font-weight: 700;
     }
 
     .modal-body {
@@ -563,12 +752,12 @@
     }
 
     .toast {
-      background: #0f172a;
+      background: var(--brand-black);
       color: #fff;
       border-radius: 8px;
       padding: 12px 14px;
       box-shadow: var(--shadow);
-      font-weight: 800;
+      font-weight: 650;
     }
 
     .toast.error { background: #dc2626; }
@@ -585,7 +774,7 @@
     .code {
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 12px;
-      color: #475569;
+      color: var(--muted);
     }
 
     @media (max-width: 980px) {
@@ -606,6 +795,24 @@
     }
 
     @media (max-width: 640px) {
+      .login-screen {
+        align-items: end;
+        padding: 74px 14px 18px;
+        background-position: 62% center;
+        background-image:
+          linear-gradient(180deg, rgba(0, 0, 0, .18) 0%, rgba(0, 0, 0, .34) 38%, rgba(0, 0, 0, .82) 100%),
+          url('./public/brand/pentol-surya-login-bg.jpg');
+      }
+      .login-shell { grid-template-columns: 1fr; }
+      .login-card {
+        width: min(430px, 100%);
+        margin: 0 auto;
+        padding: 20px;
+        border-radius: 18px;
+      }
+      .login-card .brand-block { margin-bottom: 17px; }
+      .login-heading { margin-bottom: 14px; }
+      .login-heading h1 { font-size: 25px; }
       .form-grid.two { grid-template-columns: 1fr; }
       .dashboard-grid { grid-template-columns: 1fr; }
       .page-head { display: block; }
@@ -630,6 +837,7 @@
     const BUILD_SUPABASE_URL = '__SUPABASE_URL__';
     const BUILD_SUPABASE_KEY = '__SUPABASE_PUBLISHABLE_KEY__';
     const CONFIG_STORAGE_KEY = 'pentol_surya_config_v1';
+    const THEME_STORAGE_KEY = 'pentol_surya_theme_v1';
     const CACHE_PREFIX = 'pentol-surya';
 
     const app = document.querySelector('#app');
@@ -644,6 +852,7 @@
       profile: null,
       route: 'dashboard',
       authMode: 'owner',
+      theme: resolveTheme(),
       cache: {},
       formContext: null,
     };
@@ -859,6 +1068,7 @@
     boot();
 
     async function boot() {
+      applyTheme();
       unregisterOldServiceWorker();
       routeFromHash();
       if (!state.config.ready) {
@@ -902,6 +1112,42 @@
       };
     }
 
+    function resolveTheme() {
+      const saved = localStorage.getItem(THEME_STORAGE_KEY);
+      if (saved === 'light' || saved === 'dark') return saved;
+      return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    function applyTheme() {
+      document.body.dataset.theme = state.theme;
+      const meta = document.querySelector('#theme-color-meta');
+      if (meta) meta.setAttribute('content', state.theme === 'dark' ? '#111111' : '#d80c0c');
+    }
+
+    function setTheme(theme) {
+      state.theme = theme === 'dark' ? 'dark' : 'light';
+      localStorage.setItem(THEME_STORAGE_KEY, state.theme);
+      applyTheme();
+      document.querySelectorAll('[data-theme-label]').forEach(node => {
+        node.textContent = themeLabel();
+      });
+      document.querySelectorAll('[data-theme-set]').forEach(node => {
+        node.classList.toggle('active', node.dataset.themeSet === state.theme);
+      });
+    }
+
+    function toggleTheme() {
+      setTheme(state.theme === 'dark' ? 'light' : 'dark');
+    }
+
+    function themeLabel() {
+      return state.theme === 'dark' ? 'Tema gelap' : 'Tema terang';
+    }
+
+    function themeToggleHtml() {
+      return `<button class="theme-toggle" type="button" data-action="toggle-theme" title="Ganti tema"><span data-theme-label>${themeLabel()}</span></button>`;
+    }
+
     function cleanConfigValue(value) {
       return String(value || '').trim();
     }
@@ -914,6 +1160,7 @@
       app.innerHTML = `
         <div class="center-screen">
           <section class="setup-card">
+            <div class="card-theme">${themeToggleHtml()}</div>
             ${brandHtml()}
             <h1>Setup koneksi</h1>
             <p class="page-desc">Masukkan URL project Supabase dan publishable key. Setelah deploy GitHub Pages, nilai ini bisa otomatis diisi dari repository secrets.</p>
@@ -942,15 +1189,22 @@
 
     function renderLogin() {
       app.innerHTML = `
-        <div class="center-screen">
-          <section class="auth-card">
-            ${brandHtml()}
-            <div class="tabs" role="tablist">
-              <button class="tab-btn ${state.authMode === 'employee' ? 'active' : ''}" type="button" data-auth-mode="employee">Karyawan</button>
-              <button class="tab-btn ${state.authMode === 'owner' ? 'active' : ''}" type="button" data-auth-mode="owner">Owner / Manager</button>
-            </div>
-            ${state.authMode === 'owner' ? ownerLoginHtml() : employeeLoginHtml()}
-          </section>
+        <div class="login-screen">
+          <div class="login-shell">
+            <section class="auth-card login-card">
+              <div class="card-theme">${themeToggleHtml()}</div>
+              ${brandHtml()}
+              <div class="login-heading">
+                <h1>Selamat datang</h1>
+                <p>Masuk untuk menjalankan operasional Pentol Surya.</p>
+              </div>
+              <div class="tabs" role="tablist" aria-label="Jenis akun">
+                <button class="tab-btn ${state.authMode === 'employee' ? 'active' : ''}" type="button" data-auth-mode="employee">Karyawan</button>
+                <button class="tab-btn ${state.authMode === 'owner' ? 'active' : ''}" type="button" data-auth-mode="owner">Owner / Manager</button>
+              </div>
+              ${state.authMode === 'owner' ? ownerLoginHtml() : employeeLoginHtml()}
+            </section>
+          </div>
         </div>`;
     }
 
@@ -988,6 +1242,7 @@
       app.innerHTML = `
         <div class="center-screen">
           <section class="auth-card">
+            <div class="card-theme">${themeToggleHtml()}</div>
             ${brandHtml()}
             <h1>Akun belum terhubung</h1>
             <p class="page-desc">Login berhasil, tetapi data profil belum ada di tabel user_profiles.</p>
@@ -1015,8 +1270,8 @@
             <header class="topbar">
               <div class="topbar-left">
                 <button class="burger" type="button" data-action="open-drawer" aria-label="Buka menu">≡</button>
-                <div class="brand-block" style="margin:0">
-                  <div class="logo">PS</div>
+                <div class="brand-block brand-small" style="margin:0">
+                  ${logoHtml()}
                   <div>
                     <p class="brand-title">Pentol Surya</p>
                     <div class="brand-subtitle">${esc(state.profile.full_name)} · ${esc(state.profile.role)}</div>
@@ -1024,6 +1279,7 @@
                 </div>
               </div>
               <div class="topbar-actions">
+                ${themeToggleHtml()}
                 <span class="status">Online</span>
                 <button class="btn ghost small" type="button" data-action="logout">Keluar</button>
               </div>
@@ -1046,15 +1302,18 @@
             <header class="topbar">
               <div class="topbar-left">
                 <button class="burger" type="button" data-action="open-drawer" aria-label="Buka menu">≡</button>
-                <div class="brand-block" style="margin:0">
-                  <div class="logo">PS</div>
+                <div class="brand-block brand-small" style="margin:0">
+                  ${logoHtml()}
                   <div>
                     <p class="brand-title">Pentol Surya</p>
                     <div class="brand-subtitle">${esc(state.profile.full_name)} · karyawan</div>
                   </div>
                 </div>
               </div>
-              <button class="btn ghost small" type="button" data-action="logout">Keluar</button>
+              <div class="topbar-actions">
+                ${themeToggleHtml()}
+                <button class="btn ghost small" type="button" data-action="logout">Keluar</button>
+              </div>
             </header>
             <section class="content">
               <div class="page-head">
@@ -1253,6 +1512,14 @@
               <input value="${esc(state.config.url)}" readonly>
             </div>
             <button class="btn ghost" type="button" data-action="reset-config">Reset koneksi lokal</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span>Tema tampilan</span><span class="badge">${themeLabel()}</span></div>
+          <p class="page-desc">Warna mengikuti karakter jualan Pentol Surya, dengan opsi terang dan gelap.</p>
+          <div class="theme-options">
+            <button class="theme-choice ${state.theme === 'light' ? 'active' : ''}" type="button" data-theme-set="light">Terang</button>
+            <button class="theme-choice ${state.theme === 'dark' ? 'active' : ''}" type="button" data-theme-set="dark">Gelap</button>
           </div>
         </div>
         <div class="panel">
@@ -1777,6 +2044,12 @@
         return;
       }
 
+      const themeButton = event.target.closest('[data-theme-set]');
+      if (themeButton) {
+        setTheme(themeButton.dataset.themeSet);
+        return;
+      }
+
       const routeButton = event.target.closest('[data-route]');
       if (routeButton) {
         state.route = routeButton.dataset.route;
@@ -1813,6 +2086,7 @@
       if (action === 'open-drawer') document.body.classList.add('drawer-open');
       if (action === 'close-drawer') document.body.classList.remove('drawer-open');
       if (action === 'close-modal') closeModal();
+      if (action === 'toggle-theme') toggleTheme();
       if (action === 'logout') await logout();
       if (action === 'reset-config') {
         localStorage.removeItem(CONFIG_STORAGE_KEY);
@@ -1927,12 +2201,19 @@
 
     function brandHtml(size = '') {
       return `
-        <div class="brand-block">
-          <div class="logo">PS</div>
+        <div class="brand-block ${size === 'small' ? 'brand-small' : ''}">
+          ${logoHtml()}
           <div>
-            <p class="brand-title" style="${size === 'small' ? 'font-size:15px' : ''}">Pentol Surya</p>
+            <p class="brand-title">Pentol Surya</p>
             <div class="brand-subtitle">Sistem operasional multi outlet.</div>
           </div>
+        </div>`;
+    }
+
+    function logoHtml() {
+      return `
+        <div class="logo">
+          <img src="./public/brand/pentol-surya-logo.png" alt="Logo Pentol Surya" onerror="this.replaceWith(document.createTextNode('PS'))">
         </div>`;
     }
 
