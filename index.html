@@ -381,6 +381,129 @@
       font-size: 12px;
     }
 
+    .location-picker {
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel-soft);
+    }
+
+    .location-picker-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .location-picker-head .help {
+      margin-top: 3px;
+    }
+
+    .location-point-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin-bottom: 9px;
+    }
+
+    .location-point-tab {
+      min-height: 42px;
+      padding: 7px 6px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .location-point-tab.is-set::after {
+      content: ' ✓';
+      color: var(--success);
+    }
+
+    .location-point-tab.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .location-point-tab.active::after {
+      color: #fff;
+    }
+
+    .outlet-location-map {
+      width: 100%;
+      height: 330px;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--muted);
+    }
+
+    .map-loading,
+    .map-error {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .location-coordinate-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: 9px;
+    }
+
+    .location-coordinate-item {
+      min-width: 0;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .location-coordinate-item strong,
+    .location-coordinate-item span {
+      display: block;
+    }
+
+    .location-coordinate-item strong {
+      margin-bottom: 3px;
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .location-coordinate-item span {
+      overflow: hidden;
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 10px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .location-map-status {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .outlet-location-map .leaflet-control-attribution {
+      font-size: 9px;
+    }
+
+    body[data-theme="dark"] .outlet-location-map .leaflet-control-zoom a {
+      background: #211a18;
+      color: #fff;
+      border-color: #3b2a25;
+    }
+
     .shell {
       min-height: 100vh;
       display: grid;
@@ -1317,6 +1440,26 @@
         aspect-ratio: auto;
       }
 
+      .location-picker {
+        padding: 9px;
+      }
+
+      .location-picker-head {
+        display: grid;
+      }
+
+      .location-picker-head .btn {
+        width: 100%;
+      }
+
+      .outlet-location-map {
+        height: min(45svh, 320px);
+      }
+
+      .location-coordinate-list {
+        grid-template-columns: 1fr;
+      }
+
       .employee-bottom-nav {
         border-left: 0;
         border-right: 0;
@@ -1563,6 +1706,11 @@
     let activeCameraStream = null;
     let activeCameraKind = null;
     const employeePhotoPreviewUrls = new Map();
+    let leafletLoaderPromise = null;
+    let outletLocationMap = null;
+    let outletLocationMarkers = {};
+    let outletLocationAccuracyCircle = null;
+    let activeOutletLocationPoint = 'pickup';
 
     const state = {
       config: resolveConfig(),
@@ -1588,6 +1736,12 @@
       employeeProductsFor: null,
       employeePhotos: {},
     };
+
+    const outletLocationPoints = [
+      { key: 'pickup', label: 'Ambil barang', description: 'Lokasi pengambilan barang', color: '#ff6a00' },
+      { key: 'sale', label: 'Jualan', description: 'Lokasi berjualan', color: '#d80c0c' },
+      { key: 'checkout', label: 'Absen pulang', description: 'Lokasi absen pulang', color: '#148448' },
+    ];
 
     const ownerNav = [
       { group: 'Pemantauan', items: [
@@ -1682,12 +1836,7 @@
         fields: () => [
           { name: 'name', label: 'Nama outlet', required: true },
           { name: 'address', label: 'Alamat', type: 'textarea', full: true },
-          { name: 'pickup_lat', label: 'Latitude ambil barang', type: 'number', step: 'any' },
-          { name: 'pickup_lng', label: 'Longitude ambil barang', type: 'number', step: 'any' },
-          { name: 'sale_lat', label: 'Latitude jualan', type: 'number', step: 'any' },
-          { name: 'sale_lng', label: 'Longitude jualan', type: 'number', step: 'any' },
-          { name: 'checkout_lat', label: 'Latitude absen pulang', type: 'number', step: 'any' },
-          { name: 'checkout_lng', label: 'Longitude absen pulang', type: 'number', step: 'any' },
+          { name: 'location_points', label: 'Titik lokasi', type: 'location-map', full: true },
           { name: 'geofence_radius_m', label: 'Radius geofence meter', type: 'number', defaultValue: 120 },
           { name: 'stock_default_method', label: 'Stok awal default', type: 'select', options: stockMethodOptions, defaultValue: 'default_qty' },
           { name: 'report_schedule_mode', label: 'Jadwal laporan', type: 'select', options: reportModeOptions, defaultValue: 'free' },
@@ -3270,6 +3419,7 @@
           </div>
         </form>
       `);
+      if (resourceKey === 'outlets') await initOutletLocationMap();
     }
 
     async function ensureLookups(resourceKey) {
@@ -3278,6 +3428,7 @@
     }
 
     function fieldHtml(field, row) {
+      if (field.type === 'location-map') return outletLocationPickerHtml(row);
       const rawValue = fieldValue(field, row);
       const required = field.required ? 'required' : '';
       const full = field.full || field.type === 'textarea' ? ' full' : '';
@@ -3316,6 +3467,258 @@
         </div>`;
     }
 
+    function outletLocationPickerHtml(row) {
+      const firstMissing = outletLocationPoints.find(point => !outletPointFromRow(row, point.key));
+      const initialPoint = firstMissing?.key || 'pickup';
+      activeOutletLocationPoint = initialPoint;
+      return `
+        <div class="field full location-picker" data-outlet-location-picker data-initial-point="${esc(initialPoint)}">
+          <div class="location-picker-head">
+            <div>
+              <label>Pilih titik melalui peta</label>
+              <p class="help">Pilih jenis titik, lalu sentuh lokasinya pada peta.</p>
+            </div>
+            <button class="btn primary small" type="button" data-action="use-current-outlet-location">⌖ Lokasi Anda</button>
+          </div>
+          <div class="location-point-tabs" role="tablist" aria-label="Jenis titik outlet">
+            ${outletLocationPoints.map(point => {
+              const coordinate = outletPointFromRow(row, point.key);
+              return `<button class="location-point-tab ${point.key === initialPoint ? 'active' : ''} ${coordinate ? 'is-set' : ''}" type="button" data-outlet-map-point="${esc(point.key)}">${esc(point.label)}</button>`;
+            }).join('')}
+          </div>
+          <div id="outlet-location-map" class="outlet-location-map"><div class="map-loading">Memuat peta…</div></div>
+          <p class="location-map-status" data-location-map-status>${esc(outletLocationPointDefinition(initialPoint).description)} sedang dipilih.</p>
+          <div class="location-coordinate-list">
+            ${outletLocationPoints.map(point => {
+              const coordinate = outletPointFromRow(row, point.key);
+              return `
+                <div class="location-coordinate-item">
+                  <strong>${esc(point.label)}</strong>
+                  <span data-outlet-coordinate="${esc(point.key)}">${coordinate ? esc(formatPickerCoordinate(coordinate.lat, coordinate.lng)) : 'Belum dipilih'}</span>
+                </div>`;
+            }).join('')}
+          </div>
+          ${outletLocationPoints.map(point => {
+            const coordinate = outletPointFromRow(row, point.key);
+            return `
+              <input type="hidden" name="${esc(point.key)}_lat" value="${coordinate ? esc(coordinate.lat) : ''}">
+              <input type="hidden" name="${esc(point.key)}_lng" value="${coordinate ? esc(coordinate.lng) : ''}">`;
+          }).join('')}
+        </div>`;
+    }
+
+    function outletLocationPointDefinition(kind) {
+      return outletLocationPoints.find(point => point.key === kind) || outletLocationPoints[0];
+    }
+
+    function outletPointFromRow(row, kind) {
+      const rawLat = row?.[`${kind}_lat`];
+      const rawLng = row?.[`${kind}_lng`];
+      if (rawLat === null || rawLat === undefined || rawLat === '' || rawLng === null || rawLng === undefined || rawLng === '') return null;
+      const lat = Number(rawLat);
+      const lng = Number(rawLng);
+      return validMapCoordinate(lat, lng) ? { lat, lng } : null;
+    }
+
+    function validMapCoordinate(lat, lng) {
+      if (lat === null || lat === undefined || lat === '' || lng === null || lng === undefined || lng === '') return false;
+      return Number.isFinite(Number(lat))
+        && Number.isFinite(Number(lng))
+        && Number(lat) >= -90
+        && Number(lat) <= 90
+        && Number(lng) >= -180
+        && Number(lng) <= 180
+        && !(Number(lat) === 0 && Number(lng) === 0);
+    }
+
+    function formatPickerCoordinate(lat, lng) {
+      return `${Number(lat).toFixed(7)}, ${Number(lng).toFixed(7)}`;
+    }
+
+    function ensureLeaflet() {
+      if (window.L) return Promise.resolve(window.L);
+      if (leafletLoaderPromise) return leafletLoaderPromise;
+
+      const cssId = 'leaflet-stylesheet';
+      if (!document.querySelector(`#${cssId}`)) {
+        const stylesheet = document.createElement('link');
+        stylesheet.id = cssId;
+        stylesheet.rel = 'stylesheet';
+        stylesheet.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        stylesheet.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+        stylesheet.crossOrigin = 'anonymous';
+        document.head.append(stylesheet);
+      }
+
+      const loader = new Promise((resolve, reject) => {
+        const existingScript = document.querySelector('#leaflet-script');
+        const script = existingScript || document.createElement('script');
+        let settled = false;
+        const finish = () => {
+          if (settled) return;
+          settled = true;
+          window.L ? resolve(window.L) : reject(new Error('Pustaka peta gagal dimuat.'));
+        };
+        const fail = () => {
+          if (settled) return;
+          settled = true;
+          reject(new Error('Peta tidak dapat dimuat. Periksa koneksi internet.'));
+        };
+        script.addEventListener('load', finish, { once: true });
+        script.addEventListener('error', fail, { once: true });
+        if (!existingScript) {
+          script.id = 'leaflet-script';
+          script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+          script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+          script.crossOrigin = 'anonymous';
+          document.head.append(script);
+        } else if (window.L) {
+          finish();
+        }
+        setTimeout(fail, 15000);
+      });
+
+      leafletLoaderPromise = loader.catch(error => {
+        leafletLoaderPromise = null;
+        throw error;
+      });
+      return leafletLoaderPromise;
+    }
+
+    async function initOutletLocationMap() {
+      destroyOutletLocationMap();
+      const mapElement = document.querySelector('#outlet-location-map');
+      if (!mapElement) return;
+      try {
+        const L = await ensureLeaflet();
+        if (!mapElement.isConnected) return;
+        mapElement.innerHTML = '';
+        outletLocationMap = L.map(mapElement, { zoomControl: true });
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; OpenStreetMap',
+        }).addTo(outletLocationMap);
+        outletLocationMap.on('click', event => {
+          setOutletLocationPoint(activeOutletLocationPoint, event.latlng.lat, event.latlng.lng);
+        });
+
+        const coordinates = outletLocationPoints
+          .map(point => ({ point, coordinate: outletPointFromForm(point.key) }))
+          .filter(item => item.coordinate);
+        coordinates.forEach(({ point, coordinate }) => {
+          drawOutletLocationMarker(point.key, coordinate.lat, coordinate.lng);
+        });
+
+        if (coordinates.length) {
+          const bounds = L.latLngBounds(coordinates.map(item => [item.coordinate.lat, item.coordinate.lng]));
+          outletLocationMap.fitBounds(bounds, { padding: [28, 28], maxZoom: 16 });
+        } else {
+          outletLocationMap.setView([-2.5, 118], 5);
+        }
+        requestAnimationFrame(() => outletLocationMap?.invalidateSize());
+      } catch (error) {
+        mapElement.innerHTML = `<div class="map-error">${esc(error.message || 'Peta gagal dimuat.')}<br>Gunakan tombol Lokasi Anda dan izinkan akses GPS.</div>`;
+      }
+    }
+
+    function outletPointFromForm(kind) {
+      const latInput = document.querySelector(`[name="${kind}_lat"]`);
+      const lngInput = document.querySelector(`[name="${kind}_lng"]`);
+      if (!latInput || !lngInput || latInput.value === '' || lngInput.value === '') return null;
+      const lat = Number(latInput.value);
+      const lng = Number(lngInput.value);
+      return validMapCoordinate(lat, lng) ? { lat, lng } : null;
+    }
+
+    function selectOutletLocationPoint(kind, panToPoint = true) {
+      activeOutletLocationPoint = outletLocationPointDefinition(kind).key;
+      document.querySelectorAll('[data-outlet-map-point]').forEach(button => {
+        button.classList.toggle('active', button.dataset.outletMapPoint === activeOutletLocationPoint);
+      });
+      const definition = outletLocationPointDefinition(activeOutletLocationPoint);
+      const status = document.querySelector('[data-location-map-status]');
+      if (status) status.textContent = `${definition.description} sedang dipilih. Sentuh peta untuk menentukan titik.`;
+      const coordinate = outletPointFromForm(activeOutletLocationPoint);
+      if (panToPoint && coordinate && outletLocationMap) {
+        outletLocationMap.setView([coordinate.lat, coordinate.lng], Math.max(outletLocationMap.getZoom(), 16));
+      }
+    }
+
+    function setOutletLocationPoint(kind, lat, lng, options = {}) {
+      if (!validMapCoordinate(lat, lng)) return;
+      const safeKind = outletLocationPointDefinition(kind).key;
+      const latitude = Number(lat);
+      const longitude = Number(lng);
+      const latInput = document.querySelector(`[name="${safeKind}_lat"]`);
+      const lngInput = document.querySelector(`[name="${safeKind}_lng"]`);
+      if (!latInput || !lngInput) return;
+      latInput.value = latitude.toFixed(7);
+      lngInput.value = longitude.toFixed(7);
+      const coordinateTextElement = document.querySelector(`[data-outlet-coordinate="${safeKind}"]`);
+      if (coordinateTextElement) coordinateTextElement.textContent = formatPickerCoordinate(latitude, longitude);
+      const tab = document.querySelector(`[data-outlet-map-point="${safeKind}"]`);
+      tab?.classList.add('is-set');
+      drawOutletLocationMarker(safeKind, latitude, longitude);
+      selectOutletLocationPoint(safeKind, false);
+      if (options.center && outletLocationMap) outletLocationMap.setView([latitude, longitude], 17);
+    }
+
+    function drawOutletLocationMarker(kind, lat, lng) {
+      if (!outletLocationMap || !window.L) return;
+      const definition = outletLocationPointDefinition(kind);
+      const existing = outletLocationMarkers[kind];
+      if (existing) {
+        existing.setLatLng([lat, lng]);
+        return;
+      }
+      outletLocationMarkers[kind] = window.L.circleMarker([lat, lng], {
+        radius: 9,
+        color: '#ffffff',
+        weight: 3,
+        fillColor: definition.color,
+        fillOpacity: 1,
+        bubblingMouseEvents: false,
+      })
+        .addTo(outletLocationMap)
+        .bindTooltip(definition.label);
+      outletLocationMarkers[kind].on('click', () => selectOutletLocationPoint(kind, false));
+    }
+
+    async function useCurrentOutletLocation(button) {
+      const originalText = button.textContent;
+      button.disabled = true;
+      button.textContent = 'Membaca GPS…';
+      try {
+        const location = await getDeviceLocation({ maximumAge: 0 });
+        setOutletLocationPoint(activeOutletLocationPoint, location.lat, location.lng, { center: true });
+        if (outletLocationMap && window.L) {
+          outletLocationAccuracyCircle?.remove();
+          outletLocationAccuracyCircle = window.L.circle([location.lat, location.lng], {
+            radius: Math.max(5, Number(location.accuracy || 0)),
+            color: '#2563eb',
+            weight: 1,
+            fillColor: '#60a5fa',
+            fillOpacity: .13,
+          }).addTo(outletLocationMap);
+        }
+        toast(`${outletLocationPointDefinition(activeOutletLocationPoint).label} diarahkan ke lokasi Anda.`, 'success');
+      } catch (error) {
+        toast(error.message || 'Lokasi Anda gagal dibaca.', 'error');
+      } finally {
+        button.disabled = false;
+        button.textContent = originalText;
+      }
+    }
+
+    function destroyOutletLocationMap() {
+      outletLocationAccuracyCircle = null;
+      outletLocationMarkers = {};
+      if (outletLocationMap) {
+        outletLocationMap.remove();
+        outletLocationMap = null;
+      }
+    }
+
     function fieldValue(field, row) {
       if (row && typeof field.value === 'function') return field.value(row) ?? '';
       if (row && row[field.name] !== undefined && row[field.name] !== null) {
@@ -3332,6 +3735,13 @@
       const row = context.id ? (state.cache[context.resourceKey] || []).find(item => String(item.id) === String(context.id)) : null;
       const fields = config.fields().filter(field => !(field.createOnly && row) && !(field.editOnly && !row));
       const values = formValues(form, fields);
+      if (context.resourceKey === 'outlets') {
+        const missingPoints = outletLocationPoints.filter(point => !validMapCoordinate(values[`${point.key}_lat`], values[`${point.key}_lng`]));
+        if (missingPoints.length) {
+          toast(`Tentukan titik ${missingPoints.map(point => point.label).join(', ')} melalui peta.`, 'error');
+          return;
+        }
+      }
       disableForm(form, true);
       try {
         await persistResource(context.resourceKey, values, row);
@@ -3350,6 +3760,15 @@
       const data = new FormData(form);
       const values = {};
       fields.forEach(field => {
+        if (field.type === 'location-map') {
+          outletLocationPoints.forEach(point => {
+            const rawLat = data.get(`${point.key}_lat`);
+            const rawLng = data.get(`${point.key}_lng`);
+            values[`${point.key}_lat`] = rawLat === '' || rawLat == null ? null : Number(rawLat);
+            values[`${point.key}_lng`] = rawLng === '' || rawLng == null ? null : Number(rawLng);
+          });
+          return;
+        }
         let value = data.get(field.name);
         if (field.type === 'number') value = value === '' || value == null ? null : Number(value);
         if (field.type === 'select' && ['active'].includes(field.name)) value = value === 'true';
@@ -4283,6 +4702,12 @@
         return;
       }
 
+      const outletMapPointButton = event.target.closest('[data-outlet-map-point]');
+      if (outletMapPointButton) {
+        selectOutletLocationPoint(outletMapPointButton.dataset.outletMapPoint);
+        return;
+      }
+
       const employeeRouteButton = event.target.closest('[data-employee-route]');
       if (employeeRouteButton) {
         navigateEmployee(
@@ -4366,6 +4791,10 @@
       }
       if (action === 'close-employee-camera') {
         closeEmployeeCamera();
+        return;
+      }
+      if (action === 'use-current-outlet-location') {
+        await useCurrentOutletLocation(actionButton);
         return;
       }
       if (action === 'open-drawer') document.body.classList.add('drawer-open');
@@ -4501,6 +4930,7 @@
     }
 
     function openModal(title, body) {
+      destroyOutletLocationMap();
       modalRoot.innerHTML = `
         <div class="modal-backdrop">
           <section class="modal" role="dialog" aria-modal="true">
@@ -4518,6 +4948,7 @@
 
     function closeModal() {
       stopEmployeeCamera();
+      destroyOutletLocationMap();
       modalRoot.innerHTML = '';
       state.formContext = null;
     }
