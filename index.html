@@ -758,6 +758,112 @@
       font-size: 11px;
     }
 
+    .camera-file-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .camera-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .photo-selection {
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      padding: 9px;
+      border: 1px dashed var(--line-strong);
+      border-radius: 9px;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .photo-selection.ready {
+      border-style: solid;
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .photo-selection img {
+      flex: 0 0 auto;
+      width: 56px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #111;
+    }
+
+    .photo-selection strong,
+    .photo-selection small {
+      display: block;
+      overflow-wrap: anywhere;
+    }
+
+    .photo-selection strong {
+      font-weight: 650;
+    }
+
+    .photo-selection small {
+      margin-top: 3px;
+      color: var(--muted);
+    }
+
+    .camera-modal {
+      width: min(520px, 100%);
+    }
+
+    .camera-view {
+      position: relative;
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #050505;
+    }
+
+    .camera-view video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .camera-loading {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      color: #fff;
+      text-align: center;
+      background: #050505;
+    }
+
+    .camera-controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .camera-hint {
+      margin: 9px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+    }
+
     .employee-account-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1205,6 +1311,11 @@
         padding: 11px;
       }
 
+      .camera-view {
+        height: min(58svh, 520px);
+        aspect-ratio: auto;
+      }
+
       .employee-bottom-nav {
         border-left: 0;
         border-right: 0;
@@ -1448,6 +1559,9 @@
     const modalRoot = document.querySelector('#modal-root');
     const toastRoot = document.querySelector('#toast-root');
     let supabase = null;
+    let activeCameraStream = null;
+    let activeCameraKind = null;
+    const employeePhotoPreviewUrls = new Map();
 
     const state = {
       config: resolveConfig(),
@@ -1471,6 +1585,7 @@
       employeeLoaded: false,
       employeeShiftLoaded: false,
       employeeProductsFor: null,
+      employeePhotos: {},
     };
 
     const ownerNav = [
@@ -2232,14 +2347,38 @@
               </select>
               ${locked ? `<input type="hidden" name="outlet_id" value="${esc(selectedOutletId)}">` : ''}
             </div>
-            <div class="field">
-              <label>Foto absen masuk</label>
-              <input name="photo" type="file" accept="image/*" capture="environment" required>
-            </div>
+            ${employeeCameraFieldHtml('checkin', 'Foto absen masuk')}
             <button class="btn primary" type="submit">Ambil GPS & Absen Masuk</button>
           </form>
           <div class="employee-note"><span>GPS</span><span>Aktifkan izin lokasi. Sistem akan memeriksa jarak terhadap titik pengambilan barang.</span></div>
         </div>`;
+    }
+
+    function employeeCameraFieldHtml(kind, label) {
+      const selectedPhoto = state.employeePhotos[kind];
+      return `
+        <div class="field">
+          <label>${esc(label)}</label>
+          <input class="camera-file-input" name="photo" type="file" accept="image/*" data-photo-input="${esc(kind)}" tabindex="-1">
+          <div class="camera-actions">
+            <button class="btn primary" type="button" data-action="open-employee-camera" data-camera-kind="${esc(kind)}">Buka Kamera</button>
+            <button class="btn ghost" type="button" data-action="choose-employee-photo" data-camera-kind="${esc(kind)}">Pilih Galeri</button>
+          </div>
+          <div class="photo-selection ${selectedPhoto ? 'ready' : ''}" data-photo-selection="${esc(kind)}">
+            ${selectedPhoto ? employeePhotoPreviewHtml(kind, selectedPhoto) : '<span>Belum ada foto dipilih.</span>'}
+          </div>
+        </div>`;
+    }
+
+    function employeePhotoPreviewHtml(kind, file) {
+      let previewUrl = employeePhotoPreviewUrls.get(kind);
+      if (!previewUrl) {
+        previewUrl = URL.createObjectURL(file);
+        employeePhotoPreviewUrls.set(kind, previewUrl);
+      }
+      return `
+        <img src="${esc(previewUrl)}" alt="Preview foto absen">
+        <div><strong>Foto siap digunakan</strong><small>${esc(file.name || 'foto-absen.jpg')}</small></div>`;
     }
 
     function renderEmployeeInitialReport() {
@@ -2445,7 +2584,7 @@
           )}
           <div class="panel">
             <form class="form-grid" data-submit="employee-checkout">
-              <div class="field"><label>Foto absen pulang</label><input name="photo" type="file" accept="image/*" capture="environment" required></div>
+              ${employeeCameraFieldHtml('checkout', 'Foto absen pulang')}
               <button class="btn danger" type="submit">Absen Pulang & Akhiri Shift</button>
             </form>
             <div class="employee-note"><span>GPS</span><span>Absen pulang hanya berhasil jika posisi berada dalam radius outlet.</span></div>
@@ -3389,10 +3528,194 @@
       }
     }
 
+    function employeeSelectedPhoto(values, kind) {
+      const inputPhoto = values.get('photo');
+      if (inputPhoto instanceof File && inputPhoto.size) return inputPhoto;
+      return state.employeePhotos[kind] || null;
+    }
+
+    function setEmployeePhoto(kind, file) {
+      if (!(file instanceof File) || !file.size || (file.type && !file.type.startsWith('image/'))) {
+        toast('File yang dipilih harus berupa foto.', 'error');
+        return false;
+      }
+
+      const oldPreviewUrl = employeePhotoPreviewUrls.get(kind);
+      if (oldPreviewUrl) URL.revokeObjectURL(oldPreviewUrl);
+      const previewUrl = URL.createObjectURL(file);
+      employeePhotoPreviewUrls.set(kind, previewUrl);
+      state.employeePhotos[kind] = file;
+
+      const input = document.querySelector(`[data-photo-input="${kind}"]`);
+      if (input && typeof DataTransfer !== 'undefined') {
+        try {
+          const transfer = new DataTransfer();
+          transfer.items.add(file);
+          input.files = transfer.files;
+        } catch {
+          // Safari tertentu tidak mengizinkan pengisian input file. State di atas tetap dipakai.
+        }
+      }
+
+      const selection = document.querySelector(`[data-photo-selection="${kind}"]`);
+      if (selection) {
+        selection.classList.add('ready');
+        selection.innerHTML = `
+          <img src="${esc(previewUrl)}" alt="Preview foto absen">
+          <div><strong>Foto siap digunakan</strong><small>${esc(file.name || 'foto-absen.jpg')}</small></div>`;
+      }
+      return true;
+    }
+
+    function clearEmployeePhoto(kind) {
+      const previewUrl = employeePhotoPreviewUrls.get(kind);
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      employeePhotoPreviewUrls.delete(kind);
+      delete state.employeePhotos[kind];
+      const input = document.querySelector(`[data-photo-input="${kind}"]`);
+      if (input) input.value = '';
+    }
+
+    function clearAllEmployeePhotos() {
+      [...employeePhotoPreviewUrls.values()].forEach(url => URL.revokeObjectURL(url));
+      employeePhotoPreviewUrls.clear();
+      state.employeePhotos = {};
+    }
+
+    function cameraModalHtml(kind, content, controls = '') {
+      return `
+        <div class="modal-backdrop">
+          <section class="modal camera-modal" role="dialog" aria-modal="true" aria-label="Kamera foto absen">
+            <div class="modal-head">
+              <div>
+                <h2 class="modal-title">Foto absen</h2>
+                <p class="help">Posisikan wajah dengan jelas di dalam kamera.</p>
+              </div>
+              <button class="btn ghost small" type="button" data-action="close-employee-camera">X</button>
+            </div>
+            <div class="modal-body">
+              ${content}
+              ${controls}
+              <p class="camera-hint">Foto hanya diunggah saat tombol absen ditekan.</p>
+            </div>
+          </section>
+        </div>`;
+    }
+
+    async function openEmployeeCamera(kind) {
+      const input = document.querySelector(`[data-photo-input="${kind}"]`);
+      if (!input) return;
+      if (!navigator.mediaDevices?.getUserMedia) {
+        toast('Kamera langsung tidak tersedia. Silakan pilih foto dari galeri.', 'error');
+        input.click();
+        return;
+      }
+
+      stopEmployeeCamera();
+      activeCameraKind = kind;
+      modalRoot.innerHTML = cameraModalHtml(
+        kind,
+        '<div class="camera-view"><div class="camera-loading">Membuka kamera…</div><video id="employee-camera-video" autoplay muted playsinline></video></div>',
+        `<div class="camera-controls">
+          <button class="btn primary" type="button" data-action="capture-employee-photo" data-camera-kind="${esc(kind)}" disabled>Ambil Foto</button>
+          <button class="btn ghost" type="button" data-action="choose-employee-photo" data-camera-kind="${esc(kind)}">Pilih Galeri</button>
+        </div>`,
+      );
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: 'environment' },
+            width: { ideal: 1280 },
+            height: { ideal: 1280 },
+          },
+          audio: false,
+        });
+        if (activeCameraKind !== kind) {
+          stream.getTracks().forEach(track => track.stop());
+          return;
+        }
+        activeCameraStream = stream;
+        const video = document.querySelector('#employee-camera-video');
+        if (!video) throw new Error('Tampilan kamera tidak tersedia.');
+        video.srcObject = stream;
+        await video.play();
+        const loading = video.parentElement?.querySelector('.camera-loading');
+        if (loading) loading.remove();
+        const captureButton = modalRoot.querySelector('[data-action="capture-employee-photo"]');
+        if (captureButton) captureButton.disabled = false;
+      } catch (error) {
+        const cameraStillOpen = activeCameraKind === kind;
+        stopEmployeeCamera();
+        if (!cameraStillOpen) return;
+        activeCameraKind = kind;
+        modalRoot.innerHTML = cameraModalHtml(
+          kind,
+          `<div class="empty">Kamera tidak dapat dibuka. Pastikan izin kamera aktif, atau gunakan foto dari galeri.<br><small>${esc(error?.message || '')}</small></div>`,
+          `<div class="camera-controls">
+            <button class="btn primary" type="button" data-action="choose-employee-photo" data-camera-kind="${esc(kind)}">Pilih Galeri</button>
+            <button class="btn ghost" type="button" data-action="close-employee-camera">Batal</button>
+          </div>`,
+        );
+      }
+    }
+
+    async function captureEmployeePhoto(kind, button) {
+      const video = document.querySelector('#employee-camera-video');
+      if (!video || !video.videoWidth || !video.videoHeight) {
+        toast('Kamera belum siap. Tunggu sebentar lalu coba lagi.', 'error');
+        return;
+      }
+
+      button.disabled = true;
+      try {
+        const scale = Math.min(1280 / video.videoWidth, 1280 / video.videoHeight, 1);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(video.videoWidth * scale));
+        canvas.height = Math.max(1, Math.round(video.videoHeight * scale));
+        const context = canvas.getContext('2d');
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const blob = await new Promise((resolve, reject) => canvas.toBlob(
+          result => result ? resolve(result) : reject(new Error('Foto gagal dibuat.')),
+          'image/jpeg',
+          .78,
+        ));
+        const file = new File([blob], `absen-${kind}-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        if (!setEmployeePhoto(kind, file)) return;
+        closeEmployeeCamera();
+        toast('Foto berhasil dipilih dan siap digunakan.', 'success');
+      } catch (error) {
+        toast(error.message || 'Foto gagal diambil.', 'error');
+        button.disabled = false;
+      }
+    }
+
+    function chooseEmployeePhoto(kind) {
+      const input = document.querySelector(`[data-photo-input="${kind}"]`);
+      closeEmployeeCamera();
+      if (input) {
+        input.value = '';
+        input.click();
+      }
+    }
+
+    function stopEmployeeCamera() {
+      const video = document.querySelector('#employee-camera-video');
+      if (video) video.srcObject = null;
+      activeCameraStream?.getTracks().forEach(track => track.stop());
+      activeCameraStream = null;
+      activeCameraKind = null;
+    }
+
+    function closeEmployeeCamera() {
+      stopEmployeeCamera();
+      modalRoot.innerHTML = '';
+    }
+
     async function employeeCheckIn(form) {
       const values = new FormData(form);
       const outletId = String(values.get('outlet_id') || '');
-      const photo = values.get('photo');
+      const photo = employeeSelectedPhoto(values, 'checkin');
       const outlet = state.employeeOutlets.find(item => String(item.id) === outletId)
         || state.employeeAssignments.map(item => item.outlets).find(item => String(item?.id) === outletId);
       if (!outlet) return toast('Outlet belum dipilih.', 'error');
@@ -3447,6 +3770,7 @@
         state.employeeShift = shift;
         state.employeeShiftLoaded = true;
         await loadEmployeeProducts(outlet.id);
+        clearEmployeePhoto('checkin');
         toast('Absen masuk berhasil.', 'success');
         navigateEmployee('home', '', true);
       } catch (error) {
@@ -3705,7 +4029,7 @@
     async function employeeCheckOut(form) {
       const values = new FormData(form);
       const shift = state.employeeShift;
-      const photo = values.get('photo');
+      const photo = employeeSelectedPhoto(values, 'checkout');
       if (!shift) return toast('Shift aktif tidak ditemukan.', 'error');
       if (!(photo instanceof File) || !photo.size) return toast('Foto absen pulang wajib diambil.', 'error');
 
@@ -3749,6 +4073,7 @@
         state.employeeShift = null;
         state.employeeShiftLoaded = true;
         state.employeeHistory = [];
+        clearEmployeePhoto('checkout');
         toast('Shift selesai. Terima kasih.', 'success');
         navigateEmployee('home', '', true);
       } catch (error) {
@@ -4023,6 +4348,23 @@
       }
 
       const action = event.target.closest('[data-action]')?.dataset.action;
+      const actionButton = event.target.closest('[data-action]');
+      if (action === 'open-employee-camera') {
+        await openEmployeeCamera(actionButton.dataset.cameraKind);
+        return;
+      }
+      if (action === 'capture-employee-photo') {
+        await captureEmployeePhoto(actionButton.dataset.cameraKind, actionButton);
+        return;
+      }
+      if (action === 'choose-employee-photo') {
+        chooseEmployeePhoto(actionButton.dataset.cameraKind);
+        return;
+      }
+      if (action === 'close-employee-camera') {
+        closeEmployeeCamera();
+        return;
+      }
       if (action === 'open-drawer') document.body.classList.add('drawer-open');
       if (action === 'close-drawer') document.body.classList.remove('drawer-open');
       if (action === 'close-modal') closeModal();
@@ -4033,6 +4375,13 @@
         localStorage.removeItem(CONFIG_STORAGE_KEY);
         location.reload();
       }
+    });
+
+    document.addEventListener('change', event => {
+      const photoInput = event.target.closest?.('[data-photo-input]');
+      if (!photoInput) return;
+      const file = photoInput.files?.[0];
+      if (file) setEmployeePhoto(photoInput.dataset.photoInput, file);
     });
 
     document.addEventListener('keydown', event => {
@@ -4133,6 +4482,8 @@
     }
 
     function resetEmployeeWorkspace() {
+      stopEmployeeCamera();
+      clearAllEmployeePhotos();
       state.employee = null;
       state.employeeAssignments = [];
       state.employeeOutlets = [];
@@ -4163,6 +4514,7 @@
     }
 
     function closeModal() {
+      stopEmployeeCamera();
       modalRoot.innerHTML = '';
       state.formContext = null;
     }
