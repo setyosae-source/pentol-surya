@@ -555,6 +555,215 @@
       overflow-x: clip;
     }
 
+    .employee-app {
+      min-height: 100vh;
+      min-height: 100svh;
+      width: 100%;
+    }
+
+    .employee-main {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      padding: 14px 14px calc(92px + env(safe-area-inset-bottom));
+    }
+
+    .employee-topbar {
+      min-height: 62px;
+    }
+
+    .employee-hero {
+      position: relative;
+      overflow: hidden;
+      padding: 18px;
+      border: 1px solid color-mix(in srgb, var(--primary) 36%, var(--line));
+      border-radius: 14px;
+      background:
+        radial-gradient(circle at 94% 0, rgba(255,255,255,.22), transparent 33%),
+        linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      box-shadow: 0 12px 28px rgba(216, 12, 12, .16);
+    }
+
+    .employee-hero .eyebrow,
+    .employee-hero .page-desc {
+      color: rgba(255,255,255,.86);
+    }
+
+    .employee-hero h1 {
+      font-size: clamp(24px, 7vw, 32px);
+    }
+
+    .employee-hero .page-desc {
+      max-width: 560px;
+    }
+
+    .employee-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.20);
+      font-size: 11px;
+    }
+
+    .employee-bottom-nav {
+      position: fixed;
+      z-index: 35;
+      left: 50%;
+      bottom: 0;
+      width: min(760px, 100%);
+      transform: translateX(-50%);
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 4px;
+      padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+      border: 1px solid var(--line);
+      border-bottom: 0;
+      border-radius: 14px 14px 0 0;
+      background: color-mix(in srgb, var(--surface) 94%, transparent);
+      box-shadow: 0 -10px 28px rgba(35, 18, 12, .10);
+      backdrop-filter: blur(14px);
+    }
+
+    .employee-nav-item {
+      min-width: 0;
+      min-height: 54px;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 2px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 650;
+    }
+
+    .employee-nav-item strong {
+      display: grid;
+      width: 26px;
+      height: 24px;
+      place-items: center;
+      color: inherit;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .employee-nav-item.active {
+      background: var(--accent-soft);
+      color: var(--primary);
+    }
+
+    .employee-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .employee-action {
+      min-height: 92px;
+      display: grid;
+      align-content: center;
+      gap: 5px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--panel);
+      color: var(--text);
+      text-align: left;
+    }
+
+    .employee-action strong {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .employee-action span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .employee-action.primary-action {
+      border-color: color-mix(in srgb, var(--primary) 42%, var(--line));
+      background: color-mix(in srgb, var(--accent-soft) 74%, var(--panel));
+    }
+
+    .employee-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin: 12px 0;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--panel-soft);
+    }
+
+    .employee-tab {
+      min-height: 38px;
+      padding: 7px 5px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .employee-tab.active {
+      background: var(--panel);
+      color: var(--primary);
+      box-shadow: 0 5px 14px rgba(35, 18, 12, .08);
+    }
+
+    .product-input-table {
+      table-layout: fixed;
+    }
+
+    .product-input-table th:nth-child(1),
+    .product-input-table td:nth-child(1) { width: 46%; }
+
+    .product-input-table th:nth-child(2),
+    .product-input-table td:nth-child(2) { width: 30%; }
+
+    .product-input-table th:nth-child(3),
+    .product-input-table td:nth-child(3) { width: 24%; }
+
+    .product-input-table input {
+      min-height: 38px;
+      padding: 7px 8px;
+      text-align: right;
+    }
+
+    .employee-form-title {
+      margin: 0 0 10px;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .employee-note {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 9px;
+      background: var(--panel-soft);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .employee-account-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
     .page-head {
       display: flex;
       align-items: flex-start;
@@ -976,6 +1185,38 @@
     @media (max-width: 760px) {
       body { font-size: 13px; }
 
+      .employee-main {
+        padding: 10px 10px calc(86px + env(safe-area-inset-bottom));
+      }
+
+      .employee-topbar {
+        min-height: 56px;
+      }
+
+      .employee-hero {
+        padding: 15px;
+        border-radius: 12px;
+      }
+
+      .employee-actions { gap: 7px; }
+
+      .employee-action {
+        min-height: 82px;
+        padding: 11px;
+      }
+
+      .employee-bottom-nav {
+        border-left: 0;
+        border-right: 0;
+        border-radius: 12px 12px 0 0;
+      }
+
+      .product-input-table th,
+      .product-input-table td {
+        padding: 7px 5px;
+        font-size: 11px;
+      }
+
       .content {
         padding: 12px;
         padding-bottom: calc(82px + env(safe-area-inset-bottom));
@@ -1177,6 +1418,9 @@
       .inline-detail-grid,
       .record-detail-grid { grid-template-columns: 1fr; }
       .detail-item.full { grid-column: auto; }
+      .employee-account-grid { grid-template-columns: 1fr; }
+      .employee-action strong { font-size: 13px; }
+      .employee-action span { font-size: 10px; }
     }
 
     @media (max-width: 330px) {
@@ -1216,6 +1460,17 @@
       cache: {},
       formContext: null,
       detailContext: null,
+      employeeRoute: 'home',
+      employeeOperation: 'sale',
+      employee: null,
+      employeeAssignments: [],
+      employeeOutlets: [],
+      employeeShift: null,
+      employeeProducts: [],
+      employeeHistory: [],
+      employeeLoaded: false,
+      employeeShiftLoaded: false,
+      employeeProductsFor: null,
     };
 
     const ownerNav = [
@@ -1529,9 +1784,12 @@
       });
 
       supabase.auth.onAuthStateChange(async (_event, session) => {
+        const previousUserId = state.user?.id || null;
+        const nextUserId = session?.user?.id || null;
         state.session = session;
         state.user = session?.user || null;
         state.cache = {};
+        if (previousUserId !== nextUserId) resetEmployeeWorkspace();
         if (session) await loadProfile();
         render();
       });
@@ -1737,45 +1995,582 @@
 
     function renderEmployeeShell() {
       app.innerHTML = `
-        <div class="shell">
-          <aside class="sidebar">
-            <div class="sidebar-head">${brandHtml('small')}</div>
-            <div class="nav-group">Shift karyawan</div>
-            <button class="nav-item active" type="button"><span><span class="badge">HM</span>Dashboard</span><span>›</span></button>
-          </aside>
-          <div class="drawer-overlay" data-action="close-drawer"></div>
-          <main class="main">
-            <header class="topbar">
-              <div class="topbar-left">
-                <button class="burger" type="button" data-action="open-drawer" aria-label="Buka menu">≡</button>
-                <div class="brand-block brand-small" style="margin:0">
-                  ${logoHtml()}
-                  <div>
-                    <p class="brand-title">Pentol Surya</p>
-                    <div class="brand-subtitle">${esc(state.profile.full_name)} · karyawan</div>
-                  </div>
-                </div>
-              </div>
-              <div class="topbar-actions">
-                ${themeToggleHtml()}
-                <button class="btn ghost small" type="button" data-action="logout">Keluar</button>
-              </div>
-            </header>
-            <section class="content">
-              <div class="page-head">
+        <div class="employee-app">
+          <header class="topbar employee-topbar">
+            <div class="topbar-left">
+              <div class="brand-block brand-small" style="margin:0">
+                ${logoHtml()}
                 <div>
-                  <p class="eyebrow">Operasional</p>
-                  <h1>Shift karyawan</h1>
-                  <p class="page-desc">Mode full HTML karyawan dibuat ringan untuk login dan validasi akses. Menu operasional detail tetap memakai tabel Supabase yang sama dan akan dipindahkan bertahap dari versi modular.</p>
+                  <p class="brand-title">Pentol Surya</p>
+                  <div class="brand-subtitle">${esc(state.profile.full_name)} · karyawan</div>
                 </div>
               </div>
-              <div class="dashboard-grid">
-                <div class="kpi-card"><div class="kpi-label">Status</div><div class="kpi-value">Siap shift</div></div>
-                <div class="kpi-card"><div class="kpi-label">Role</div><div class="kpi-value">Karyawan</div></div>
-              </div>
-            </section>
-          </main>
+            </div>
+            <div class="topbar-actions">
+              ${themeToggleHtml()}
+              <button class="btn ghost small" type="button" data-action="logout">Keluar</button>
+            </div>
+          </header>
+          <main class="employee-main" id="employee-page"></main>
+          <nav class="employee-bottom-nav" aria-label="Menu karyawan">
+            ${employeeNavButton('home', 'Beranda', 'HM')}
+            ${employeeNavButton('operations', 'Operasional', '+')}
+            ${employeeNavButton('close', 'Tutup Shift', 'OK')}
+            ${employeeNavButton('account', 'Akun', 'ST')}
+          </nav>
         </div>`;
+      renderEmployeePage();
+    }
+
+    function employeeNavButton(key, label, icon) {
+      return `
+        <button class="employee-nav-item ${state.employeeRoute === key ? 'active' : ''}" type="button" data-employee-route="${esc(key)}">
+          <strong>${esc(icon)}</strong><span>${esc(label)}</span>
+        </button>`;
+    }
+
+    async function renderEmployeePage() {
+      const page = document.querySelector('#employee-page');
+      if (!page) return;
+      page.innerHTML = '<div class="skeleton" style="min-height:180px"></div>';
+      try {
+        await loadEmployeeWorkspace();
+        if (!state.employee) {
+          page.innerHTML = '<div class="empty"><strong>Data karyawan belum terhubung.</strong><br>Hubungi owner untuk memeriksa profil karyawan.</div>';
+          return;
+        }
+        if (!state.employee.active) {
+          page.innerHTML = '<div class="empty"><strong>Akun karyawan tidak aktif.</strong><br>Hubungi owner untuk mengaktifkan kembali akun.</div>';
+          return;
+        }
+        if (state.employeeRoute === 'operations') {
+          page.innerHTML = renderEmployeeOperations();
+          return;
+        }
+        if (state.employeeRoute === 'close') {
+          page.innerHTML = renderEmployeeCloseShift();
+          return;
+        }
+        if (state.employeeRoute === 'account') {
+          await loadEmployeeHistory();
+          page.innerHTML = renderEmployeeAccount();
+          return;
+        }
+        page.innerHTML = await renderEmployeeHome();
+      } catch (error) {
+        page.innerHTML = `<div class="empty"><strong>Halaman karyawan belum bisa dimuat.</strong><br>${esc(error.message || error)}</div>`;
+        toast(error.message || 'Data karyawan gagal dimuat.', 'error');
+      }
+    }
+
+    async function loadEmployeeWorkspace({ forceShift = false } = {}) {
+      if (!state.employeeLoaded) {
+        const { data: employee, error } = await supabase
+          .from('employees')
+          .select('*, default_outlet:outlets(*)')
+          .eq('user_id', state.profile.id)
+          .maybeSingle();
+        if (error) throw error;
+
+        const employeeId = employee?.id || '00000000-0000-0000-0000-000000000000';
+        const [assignmentResult, outletResult] = await Promise.all([
+          supabase
+            .from('outlet_assignments')
+            .select('*, outlets(*)')
+            .eq('employee_id', employeeId)
+            .eq('active', true),
+          supabase
+            .from('outlets')
+            .select('*')
+            .eq('active', true)
+            .order('name'),
+        ]);
+        if (assignmentResult.error) throw assignmentResult.error;
+        if (outletResult.error) throw outletResult.error;
+
+        state.employee = employee;
+        state.employeeAssignments = assignmentResult.data || [];
+        state.employeeOutlets = outletResult.data || [];
+        state.employeeLoaded = true;
+      }
+
+      if (state.employee && (!state.employeeShiftLoaded || forceShift)) {
+        const { data, error } = await supabase
+          .from('shifts')
+          .select('*, outlets(*)')
+          .eq('employee_id', state.employee.id)
+          .in('status', ['draft', 'active', 'final_reported'])
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (error) throw error;
+        state.employeeShift = data || null;
+        state.employeeShiftLoaded = true;
+      }
+
+      const outletId = state.employeeShift?.outlet_id || state.employee?.default_outlet_id;
+      if (outletId && state.employeeProductsFor !== outletId) {
+        await loadEmployeeProducts(outletId);
+      }
+    }
+
+    async function loadEmployeeProducts(outletId) {
+      const [productResult, priceResult] = await Promise.all([
+        supabase
+          .from('products')
+          .select('*, product_categories(name)')
+          .eq('active', true)
+          .order('name'),
+        supabase
+          .from('outlet_product_prices')
+          .select('product_id, sale_price, valid_from')
+          .eq('outlet_id', outletId)
+          .eq('active', true)
+          .order('valid_from', { ascending: false }),
+      ]);
+      if (productResult.error) throw productResult.error;
+      if (priceResult.error) throw priceResult.error;
+
+      const latestPrices = new Map();
+      (priceResult.data || []).forEach(price => {
+        if (!latestPrices.has(price.product_id)) latestPrices.set(price.product_id, price.sale_price);
+      });
+      state.employeeProducts = (productResult.data || []).map(product => ({
+        ...product,
+        resolved_price: latestPrices.get(product.id) ?? product.general_sale_price,
+      }));
+      state.employeeProductsFor = outletId;
+    }
+
+    async function loadEmployeeHistory() {
+      const { data, error } = await supabase
+        .from('shifts')
+        .select('*, outlets(name)')
+        .eq('employee_id', state.employee.id)
+        .order('created_at', { ascending: false })
+        .limit(20);
+      if (error) throw error;
+      state.employeeHistory = data || [];
+    }
+
+    async function loadEmployeeShiftSummary(shiftId) {
+      const [saleResult, expenseResult, reportResult] = await Promise.all([
+        supabase.from('sales').select('id, payment_method, total_amount, occurred_at').eq('shift_id', shiftId),
+        supabase.from('outlet_expenses').select('id, amount, occurred_at').eq('shift_id', shiftId),
+        supabase.from('periodic_reports').select('reported_at').eq('shift_id', shiftId).order('reported_at', { ascending: false }).limit(1).maybeSingle(),
+      ]);
+      if (saleResult.error) throw saleResult.error;
+      if (expenseResult.error) throw expenseResult.error;
+      if (reportResult.error) throw reportResult.error;
+      const sales = saleResult.data || [];
+      const expenses = expenseResult.data || [];
+      return {
+        salesTotal: sales.reduce((total, row) => total + Number(row.total_amount || 0), 0),
+        transactionCount: sales.length,
+        expenseTotal: expenses.reduce((total, row) => total + Number(row.amount || 0), 0),
+        lastReportAt: reportResult.data?.reported_at || null,
+      };
+    }
+
+    async function renderEmployeeHome() {
+      const shift = state.employeeShift;
+      if (!shift) return renderEmployeeCheckIn();
+      if (!shift.initial_report_submitted_at) return renderEmployeeInitialReport();
+      if (shift.status === 'final_reported') return renderEmployeeAwaitCheckout();
+
+      const summary = await loadEmployeeShiftSummary(shift.id);
+      return `
+        ${employeeHeroHtml(
+          shift.outlets?.name || 'Outlet',
+          `Halo, ${state.profile.full_name}`,
+          `Shift aktif sejak ${dateTimeText(shift.checkin_at)}. Semua transaksi dicatat pada shift ini.`,
+          'Tahap 3 dari 4 · Operasional',
+        )}
+        <div class="dashboard-grid" style="margin-top:12px">
+          ${kpiCard('Penjualan', money(summary.salesTotal))}
+          ${kpiCard('Transaksi', numberText(summary.transactionCount))}
+          ${kpiCard('Pengeluaran', money(summary.expenseTotal))}
+          ${kpiCard('Jarak masuk', shift.checkin_distance_m == null ? '-' : `${numberText(shift.checkin_distance_m)} m`)}
+        </div>
+        <div class="employee-actions">
+          ${employeeActionButton('Penjualan', 'Cash, QRIS, transfer, atau piutang', 'operations', 'sale', true)}
+          ${employeeActionButton('Pengeluaran', 'Parkir, es batu, gas, transport', 'operations', 'expense')}
+          ${employeeActionButton('Supply', 'Catat tambahan stok produk', 'operations', 'supply')}
+          ${employeeActionButton('Laporan berkala', 'Stok fisik dan uang terkini', 'operations', 'periodic')}
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span>Status laporan</span><span class="badge ${summary.lastReportAt ? 'ok' : 'warn'}">${summary.lastReportAt ? 'Sudah ada' : 'Belum ada'}</span></div>
+          <p class="page-desc">${summary.lastReportAt ? `Terakhir dikirim ${dateTimeText(summary.lastReportAt)}.` : 'Kirim laporan berkala sesuai jadwal outlet.'}</p>
+          <div class="detail-actions">
+            <button class="btn ghost" type="button" data-action="send-employee-location">Kirim lokasi sekarang</button>
+            <button class="btn primary" type="button" data-employee-route="close">Tutup shift</button>
+          </div>
+        </div>`;
+    }
+
+    function renderEmployeeCheckIn() {
+      const employee = state.employee;
+      const assignedOutlets = state.employeeAssignments.map(item => item.outlets).filter(Boolean);
+      const outlets = assignedOutlets.length ? assignedOutlets : state.employeeOutlets;
+      const locked = Boolean(employee.default_outlet_id) || state.employeeAssignments.some(item => item.locked_by_owner);
+      const selectedOutletId = employee.default_outlet_id || state.employeeAssignments[0]?.outlet_id || '';
+      return `
+        ${employeeHeroHtml(
+          'Mulai kerja',
+          `Halo, ${state.profile.full_name}`,
+          'Absen masuk dilakukan di lokasi pengambilan barang. Jam kerja mulai dihitung setelah berhasil.',
+          'Tahap 1 dari 4 · Absen masuk',
+        )}
+        <div class="panel">
+          <h2 class="employee-form-title">Absen masuk</h2>
+          <form class="form-grid" data-submit="employee-checkin">
+            <div class="field">
+              <label>Outlet</label>
+              <select name="outlet_id" ${locked ? 'disabled' : ''} required>
+                <option value="">Pilih outlet</option>
+                ${outlets.map(outlet => `<option value="${esc(outlet.id)}" ${String(outlet.id) === String(selectedOutletId) ? 'selected' : ''}>${esc(outlet.name)}</option>`).join('')}
+              </select>
+              ${locked ? `<input type="hidden" name="outlet_id" value="${esc(selectedOutletId)}">` : ''}
+            </div>
+            <div class="field">
+              <label>Foto absen masuk</label>
+              <input name="photo" type="file" accept="image/*" capture="environment" required>
+            </div>
+            <button class="btn primary" type="submit">Ambil GPS & Absen Masuk</button>
+          </form>
+          <div class="employee-note"><span>GPS</span><span>Aktifkan izin lokasi. Sistem akan memeriksa jarak terhadap titik pengambilan barang.</span></div>
+        </div>`;
+    }
+
+    function renderEmployeeInitialReport() {
+      const shift = state.employeeShift;
+      return `
+        ${employeeHeroHtml(
+          shift.outlets?.name || 'Outlet',
+          'Laporan awal',
+          'Isi modal cash dan stok awal sebelum mulai mencatat penjualan.',
+          'Tahap 2 dari 4 · Laporan awal',
+        )}
+        <div class="panel">
+          <form class="form-grid" data-submit="employee-initial-report">
+            <div class="field">
+              <label>Modal awal cash</label>
+              <input name="opening_cash" type="number" inputmode="numeric" min="0" value="0" required>
+            </div>
+            <div>
+              <h2 class="employee-form-title">Stok awal</h2>
+              ${employeeProductInputTable(state.employeeProducts, 'stock', { valueKey: 'default_qty' })}
+            </div>
+            <div class="field">
+              <label>Catatan</label>
+              <textarea name="note" rows="2"></textarea>
+            </div>
+            <button class="btn primary" type="submit">Simpan Laporan Awal</button>
+          </form>
+        </div>`;
+    }
+
+    function renderEmployeeAwaitCheckout() {
+      const shift = state.employeeShift;
+      return `
+        ${employeeHeroHtml(
+          shift.outlets?.name || 'Outlet',
+          'Laporan akhir tersimpan',
+          'Tahap terakhir adalah absen pulang menggunakan GPS dan foto.',
+          'Tahap 4 dari 4 · Absen pulang',
+        )}
+        <div class="panel">
+          <p class="page-desc">Laporan akhir dikirim ${dateTimeText(shift.final_report_submitted_at)}.</p>
+          <button class="btn primary" style="width:100%;margin-top:12px" type="button" data-employee-route="close">Lanjut absen pulang</button>
+        </div>`;
+    }
+
+    function employeeHeroHtml(eyebrow, title, description, step) {
+      return `
+        <section class="employee-hero">
+          <p class="eyebrow">${esc(eyebrow)}</p>
+          <h1>${esc(title)}</h1>
+          <p class="page-desc">${esc(description)}</p>
+          ${step ? `<span class="employee-step">${esc(step)}</span>` : ''}
+        </section>`;
+    }
+
+    function employeeActionButton(title, description, route, operation = '', primary = false) {
+      return `
+        <button class="employee-action ${primary ? 'primary-action' : ''}" type="button" data-employee-route="${esc(route)}" ${operation ? `data-employee-op="${esc(operation)}"` : ''}>
+          <strong>${esc(title)}</strong><span>${esc(description)}</span>
+        </button>`;
+    }
+
+    function renderEmployeeOperations() {
+      const shift = state.employeeShift;
+      if (!shift || !shift.initial_report_submitted_at) {
+        return employeeUnavailableHtml('Operasional belum tersedia', 'Selesaikan absen masuk dan laporan awal terlebih dahulu.');
+      }
+      if (shift.status === 'final_reported') {
+        return employeeUnavailableHtml('Operasional sudah ditutup', 'Laporan akhir sudah tersimpan. Silakan lanjutkan absen pulang.');
+      }
+      const tab = state.employeeOperation;
+      return `
+        ${employeeHeroHtml(
+          shift.outlets?.name || 'Outlet',
+          'Operasional shift',
+          'Catat transaksi langsung saat terjadi agar laporan tetap akurat.',
+          '',
+        )}
+        <div class="employee-tabs" role="tablist" aria-label="Jenis operasional">
+          ${employeeOperationTab('sale', 'Penjualan')}
+          ${employeeOperationTab('expense', 'Pengeluaran')}
+          ${employeeOperationTab('supply', 'Supply')}
+          ${employeeOperationTab('waste', 'Terbuang')}
+          ${employeeOperationTab('periodic', 'Berkala')}
+        </div>
+        <div class="panel" style="margin-top:0">
+          ${tab === 'expense' ? employeeExpenseFormHtml()
+            : tab === 'supply' ? employeeSupplyFormHtml()
+            : tab === 'waste' ? employeeWasteFormHtml()
+            : tab === 'periodic' ? employeePeriodicFormHtml()
+            : employeeSaleFormHtml()}
+        </div>`;
+    }
+
+    function employeeOperationTab(key, label) {
+      return `<button class="employee-tab ${state.employeeOperation === key ? 'active' : ''}" type="button" data-employee-op="${esc(key)}">${esc(label)}</button>`;
+    }
+
+    function employeeSaleFormHtml() {
+      return `
+        <h2 class="employee-form-title">Tambah penjualan</h2>
+        <form class="form-grid" data-submit="employee-sale">
+          <div class="field">
+            <label>Metode pembayaran</label>
+            <select name="payment_method" required>
+              <option value="cash">Cash</option>
+              <option value="qris">QRIS</option>
+              <option value="transfer">Transfer</option>
+              <option value="piutang">Piutang</option>
+            </select>
+          </div>
+          ${employeeProductInputTable(state.employeeProducts, 'sale', { showPrice: true })}
+          <div class="form-grid two">
+            <div class="field"><label>Nama pelanggan</label><input name="customer_name"></div>
+            <div class="field"><label>Nomor HP</label><input name="customer_phone" inputmode="tel"></div>
+          </div>
+          <div class="field"><label>Catatan</label><textarea name="note" rows="2"></textarea></div>
+          <button class="btn primary" type="submit">Simpan Penjualan</button>
+        </form>`;
+    }
+
+    function employeeExpenseFormHtml() {
+      return `
+        <h2 class="employee-form-title">Tambah pengeluaran</h2>
+        <form class="form-grid" data-submit="employee-expense">
+          <div class="field"><label>Kategori</label><input name="category" placeholder="Parkir, es batu, gas, transport" required></div>
+          <div class="field"><label>Jumlah</label><input name="amount" type="number" inputmode="numeric" min="0" required></div>
+          <div class="field"><label>Catatan</label><textarea name="note" rows="2"></textarea></div>
+          <button class="btn primary" type="submit">Simpan Pengeluaran</button>
+        </form>`;
+    }
+
+    function employeeSupplyFormHtml() {
+      return `
+        <h2 class="employee-form-title">Tambah supply</h2>
+        <form class="form-grid" data-submit="employee-supply">
+          <div class="form-grid two">
+            <div class="field"><label>Sumber supply</label><input name="source_name" placeholder="Owner, manager, belanja tambahan" required></div>
+            <div class="field">
+              <label>Role sumber</label>
+              <select name="source_role">
+                <option value="employee">Karyawan</option>
+                <option value="manager">Manager</option>
+                <option value="owner">Owner</option>
+              </select>
+            </div>
+          </div>
+          ${employeeProductInputTable(state.employeeProducts, 'supply')}
+          <div class="field"><label>Catatan</label><textarea name="note" rows="2"></textarea></div>
+          <button class="btn primary" type="submit">Simpan Supply</button>
+        </form>`;
+    }
+
+    function employeeWasteFormHtml() {
+      return `
+        <h2 class="employee-form-title">Produk terbuang</h2>
+        <form class="form-grid" data-submit="employee-waste">
+          <div class="field">
+            <label>Produk</label>
+            <select name="product_id" required>
+              <option value="">Pilih produk</option>
+              ${state.employeeProducts.map(product => `<option value="${esc(product.id)}">${esc(product.name)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field"><label>Qty terbuang</label><input name="qty" type="number" min="0.01" step="0.01" required></div>
+          <div class="field"><label>Alasan</label><textarea name="reason" rows="3" required></textarea></div>
+          <div class="field"><label>Foto (opsional)</label><input name="photo" type="file" accept="image/*" capture="environment"></div>
+          <button class="btn primary" type="submit">Simpan Produk Terbuang</button>
+        </form>`;
+    }
+
+    function employeePeriodicFormHtml() {
+      return `
+        <h2 class="employee-form-title">Laporan berkala</h2>
+        <form class="form-grid" data-submit="employee-periodic">
+          <div class="form-grid two">
+            <div class="field"><label>Cash fisik</label><input name="cash_amount" type="number" min="0" value="0"></div>
+            <div class="field"><label>QRIS</label><input name="qris_amount" type="number" min="0" value="0"></div>
+            <div class="field"><label>Transfer</label><input name="transfer_amount" type="number" min="0" value="0"></div>
+          </div>
+          <div>
+            <h2 class="employee-form-title">Stok fisik</h2>
+            ${employeeProductInputTable(state.employeeProducts, 'physical')}
+          </div>
+          <div class="field"><label>Catatan</label><textarea name="note" rows="2"></textarea></div>
+          <button class="btn primary" type="submit">Simpan Laporan Berkala</button>
+        </form>`;
+    }
+
+    function renderEmployeeCloseShift() {
+      const shift = state.employeeShift;
+      if (!shift || !shift.initial_report_submitted_at) {
+        return employeeUnavailableHtml('Belum bisa tutup shift', 'Selesaikan absen masuk dan laporan awal terlebih dahulu.');
+      }
+
+      if (shift.final_report_submitted_at) {
+        return `
+          ${employeeHeroHtml(
+            shift.outlets?.name || 'Outlet',
+            'Absen pulang',
+            'Laporan akhir sudah tersimpan. Ambil GPS dan foto untuk menyelesaikan shift.',
+            'Tahap 4 dari 4 · Absen pulang',
+          )}
+          <div class="panel">
+            <form class="form-grid" data-submit="employee-checkout">
+              <div class="field"><label>Foto absen pulang</label><input name="photo" type="file" accept="image/*" capture="environment" required></div>
+              <button class="btn danger" type="submit">Absen Pulang & Akhiri Shift</button>
+            </form>
+            <div class="employee-note"><span>GPS</span><span>Absen pulang hanya berhasil jika posisi berada dalam radius outlet.</span></div>
+          </div>`;
+      }
+
+      return `
+        ${employeeHeroHtml(
+          shift.outlets?.name || 'Outlet',
+          'Laporan akhir',
+          'Isi penerimaan uang dan stok akhir sebelum absen pulang.',
+          'Tahap 4 dari 4 · Tutup shift',
+        )}
+        <div class="panel">
+          <form class="form-grid" data-submit="employee-final-report">
+            <div class="form-grid two">
+              <div class="field"><label>Cash</label><input name="cash_amount" type="number" min="0" value="0"></div>
+              <div class="field"><label>QRIS</label><input name="qris_amount" type="number" min="0" value="0"></div>
+              <div class="field"><label>Transfer</label><input name="transfer_amount" type="number" min="0" value="0"></div>
+              <div class="field"><label>Piutang</label><input name="receivable_amount" type="number" min="0" value="0"></div>
+              <div class="field"><label>Setoran cash</label><input name="cash_deposit_amount" type="number" min="0" value="0"></div>
+            </div>
+            <div>
+              <h2 class="employee-form-title">Stok akhir</h2>
+              ${employeeProductInputTable(state.employeeProducts, 'ending', { required: true })}
+            </div>
+            <label style="display:flex;align-items:center;gap:8px;font-weight:400">
+              <input name="continue_shift" type="checkbox" style="width:20px;min-height:20px">
+              Lanjutkan shift setelah laporan akhir
+            </label>
+            <div class="field"><label>Catatan</label><textarea name="note" rows="2"></textarea></div>
+            <button class="btn primary" type="submit">Simpan Laporan Akhir</button>
+          </form>
+        </div>`;
+    }
+
+    function renderEmployeeAccount() {
+      const employee = state.employee;
+      return `
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">Akun karyawan</p>
+            <h1>${esc(state.profile.full_name)}</h1>
+            <p class="page-desc">Profil kerja dan riwayat shift terakhir.</p>
+          </div>
+        </div>
+        <div class="panel" style="margin-top:0">
+          <div class="employee-account-grid">
+            ${employeeAccountItem('Kode karyawan', employee.employee_code || '-')}
+            ${employeeAccountItem('Nomor HP', employee.phone || '-')}
+            ${employeeAccountItem('Outlet default', employee.default_outlet?.name || 'Bebas')}
+            ${employeeAccountItem('Upah per jam', money(employee.hourly_rate))}
+            ${employeeAccountItem('Uang makan', money(employee.meal_allowance))}
+            ${employeeAccountItem('Transport', money(employee.transport_allowance))}
+          </div>
+          <div class="detail-actions">
+            ${themeToggleHtml()}
+            <button class="btn danger" type="button" data-action="logout">Keluar dari akun</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span>Riwayat shift</span><span class="badge">${state.employeeHistory.length} data</span></div>
+          ${employeeHistoryTable(state.employeeHistory)}
+        </div>`;
+    }
+
+    function employeeAccountItem(label, value) {
+      return `<div class="detail-item"><div class="detail-label">${esc(label)}</div><div class="detail-value">${safeCell(value)}</div></div>`;
+    }
+
+    function employeeHistoryTable(rows) {
+      if (!rows.length) return '<div class="empty">Belum ada riwayat shift.</div>';
+      return `
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Tanggal</th><th>Outlet</th><th>Status</th><th><span class="sr-only">Rincian</span></th></tr></thead>
+            <tbody>
+              ${rows.map(row => `
+                <tr class="data-row" tabindex="0" data-row-key="${esc(row.id)}" data-resource="employee-history" aria-expanded="false">
+                  <td>${safeCell(dateText(row.checkin_at || row.created_at))}</td>
+                  <td>${safeCell(row.outlets?.name || '-')}</td>
+                  <td>${badge(row.status === 'closed', shiftStatusLabel(row.status))}</td>
+                  <td class="row-open-cell"><button class="row-toggle" type="button" data-toggle-row="${esc(row.id)}" data-resource="employee-history" aria-label="Buka rincian">›</button></td>
+                </tr>
+                <tr class="data-detail-row" data-detail-key="${esc(row.id)}" data-resource="employee-history" hidden>
+                  <td colspan="4">
+                    <div class="inline-detail">
+                      <div class="inline-detail-grid">
+                        ${detailItemHtml({ label: 'Masuk', value: item => dateTimeText(item.checkin_at) }, row)}
+                        ${detailItemHtml({ label: 'Pulang', value: item => dateTimeText(item.checkout_at) }, row)}
+                        ${detailItemHtml({ label: 'Durasi', value: item => shiftDurationText(item.checkin_at, item.checkout_at) }, row)}
+                        ${detailItemHtml({ label: 'Jarak masuk', value: item => item.checkin_distance_m == null ? '-' : `${numberText(item.checkin_distance_m)} m` }, row)}
+                      </div>
+                    </div>
+                  </td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>`;
+    }
+
+    function employeeProductInputTable(products, prefix, options = {}) {
+      if (!products.length) return '<div class="empty">Produk aktif belum tersedia.</div>';
+      const showPrice = Boolean(options.showPrice);
+      const valueKey = options.valueKey || '';
+      return `
+        <div class="table-wrap">
+          <table class="product-input-table">
+            <thead><tr><th>Produk</th><th>${showPrice ? 'Harga' : 'Info'}</th><th>Qty</th></tr></thead>
+            <tbody>
+              ${products.map(product => `
+                <tr>
+                  <td>${esc(product.name)}</td>
+                  <td>${showPrice ? money(product.resolved_price) : esc(product.product_categories?.name || 'Produk')}</td>
+                  <td><input name="${esc(prefix)}_${esc(product.id)}" type="number" min="0" step="0.01" value="${valueKey ? esc(product[valueKey] ?? 0) : '0'}" ${options.required ? 'required' : ''} aria-label="Qty ${esc(product.name)}"></td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>`;
+    }
+
+    function employeeUnavailableHtml(title, description) {
+      return `
+        ${employeeHeroHtml('Operasional', title, description, '')}
+        <button class="btn primary" style="width:100%;margin-top:12px" type="button" data-employee-route="home">Kembali ke Beranda</button>`;
     }
 
     async function renderOwnerPage() {
@@ -2594,6 +3389,518 @@
       }
     }
 
+    async function employeeCheckIn(form) {
+      const values = new FormData(form);
+      const outletId = String(values.get('outlet_id') || '');
+      const photo = values.get('photo');
+      const outlet = state.employeeOutlets.find(item => String(item.id) === outletId)
+        || state.employeeAssignments.map(item => item.outlets).find(item => String(item?.id) === outletId);
+      if (!outlet) return toast('Outlet belum dipilih.', 'error');
+      if (!(photo instanceof File) || !photo.size) return toast('Foto absen masuk wajib diambil.', 'error');
+
+      disableForm(form, true);
+      try {
+        const location = await getDeviceLocation();
+        const fence = employeeFence(location, outlet.pickup_lat, outlet.pickup_lng, outlet.geofence_radius_m, 'titik pengambilan barang');
+        if (!fence.inside) throw new Error(`Di luar radius lokasi ambil barang. Jarak ${Math.round(fence.distance)} meter.`);
+
+        const shiftId = crypto.randomUUID();
+        const shiftPayload = {
+          id: shiftId,
+          tenant_id: state.profile.tenant_id,
+          employee_id: state.employee.id,
+          outlet_id: outlet.id,
+          status: 'active',
+          checkin_at: new Date().toISOString(),
+          checkin_lat: location.lat,
+          checkin_lng: location.lng,
+          checkin_accuracy_m: location.accuracy,
+          checkin_distance_m: fence.distance,
+        };
+        const { data: created, error } = await supabase.from('shifts').insert(shiftPayload).select('*, outlets(*)').single();
+        if (error) throw error;
+
+        const photoPath = await uploadEmployeePhoto({ shiftId, file: photo, folder: 'check-in' });
+        const { data: shift, error: updateError } = await supabase
+          .from('shifts')
+          .update({ checkin_photo_path: photoPath })
+          .eq('id', created.id)
+          .select('*, outlets(*)')
+          .single();
+        if (updateError) throw updateError;
+
+        const attendanceResult = await supabase.from('attendance_events').insert({
+          tenant_id: state.profile.tenant_id,
+          shift_id: shift.id,
+          employee_id: state.employee.id,
+          outlet_id: outlet.id,
+          type: 'check_in',
+          lat: location.lat,
+          lng: location.lng,
+          accuracy_m: location.accuracy,
+          distance_m: fence.distance,
+          photo_path: photoPath,
+          inside_geofence: fence.inside,
+        });
+        if (attendanceResult.error) throw attendanceResult.error;
+
+        state.employeeShift = shift;
+        state.employeeShiftLoaded = true;
+        await loadEmployeeProducts(outlet.id);
+        toast('Absen masuk berhasil.', 'success');
+        navigateEmployee('home', '', true);
+      } catch (error) {
+        toast(error.message || 'Absen masuk gagal.', 'error');
+      } finally {
+        disableForm(form, false);
+      }
+    }
+
+    async function employeeSubmitInitialReport(form) {
+      const values = new FormData(form);
+      const shift = state.employeeShift;
+      if (!shift) return toast('Shift aktif tidak ditemukan.', 'error');
+      const stockItems = state.employeeProducts.map(product => ({
+        product_id: product.id,
+        qty: formNumber(values, `stock_${product.id}`),
+        source: 'default_qty',
+      }));
+
+      disableForm(form, true);
+      try {
+        const { data: report, error } = await supabase.from('initial_reports').insert({
+          tenant_id: shift.tenant_id,
+          shift_id: shift.id,
+          employee_id: shift.employee_id,
+          outlet_id: shift.outlet_id,
+          opening_cash: formNumber(values, 'opening_cash'),
+          note: cleanText(values.get('note')) || null,
+        }).select().single();
+        if (error) throw error;
+
+        if (stockItems.length) {
+          const itemResult = await supabase.from('initial_stock_items').insert(stockItems.map(item => ({
+            ...item,
+            tenant_id: shift.tenant_id,
+            initial_report_id: report.id,
+            shift_id: shift.id,
+          })));
+          if (itemResult.error) throw itemResult.error;
+        }
+
+        const { data: updated, error: shiftError } = await supabase
+          .from('shifts')
+          .update({ initial_report_submitted_at: new Date().toISOString() })
+          .eq('id', shift.id)
+          .select('*, outlets(*)')
+          .single();
+        if (shiftError) throw shiftError;
+        state.employeeShift = updated;
+        toast('Laporan awal berhasil disimpan.', 'success');
+        navigateEmployee('home', '', true);
+      } catch (error) {
+        toast(error.message || 'Laporan awal gagal disimpan.', 'error');
+      } finally {
+        disableForm(form, false);
+      }
+    }
+
+    async function employeeAddSale(form) {
+      const values = new FormData(form);
+      const shift = requireEmployeeActiveShift();
+      const items = employeeQtyItems(values, 'sale').map(({ product, qty }) => ({
+        product_id: product.id,
+        qty,
+        unit_price_snapshot: Number(product.resolved_price || 0),
+        hpp_snapshot: 0,
+      }));
+      if (!items.length) return toast('Isi minimal satu produk terjual.', 'error');
+
+      await runEmployeeOperation(form, async () => {
+        const { data: sale, error } = await supabase.from('sales').insert({
+          tenant_id: shift.tenant_id,
+          shift_id: shift.id,
+          employee_id: shift.employee_id,
+          outlet_id: shift.outlet_id,
+          payment_method: values.get('payment_method'),
+          customer_name: cleanText(values.get('customer_name')) || null,
+          customer_phone: cleanText(values.get('customer_phone')) || null,
+          note: cleanText(values.get('note')) || null,
+          client_ref: crypto.randomUUID(),
+        }).select().single();
+        if (error) throw error;
+        const itemResult = await supabase.from('sale_items').insert(items.map(item => ({
+          ...item,
+          tenant_id: shift.tenant_id,
+          sale_id: sale.id,
+          shift_id: shift.id,
+        })));
+        if (itemResult.error) throw itemResult.error;
+      }, 'Penjualan berhasil disimpan.');
+    }
+
+    async function employeeAddExpense(form) {
+      const values = new FormData(form);
+      const shift = requireEmployeeActiveShift();
+      await runEmployeeOperation(form, async () => {
+        const { error } = await supabase.from('outlet_expenses').insert({
+          tenant_id: shift.tenant_id,
+          shift_id: shift.id,
+          employee_id: shift.employee_id,
+          outlet_id: shift.outlet_id,
+          category: cleanText(values.get('category')),
+          amount: formNumber(values, 'amount'),
+          note: cleanText(values.get('note')) || null,
+        });
+        if (error) throw error;
+      }, 'Pengeluaran berhasil disimpan.');
+    }
+
+    async function employeeAddSupply(form) {
+      const values = new FormData(form);
+      const shift = requireEmployeeActiveShift();
+      const items = employeeQtyItems(values, 'supply');
+      if (!items.length) return toast('Isi minimal satu produk supply.', 'error');
+
+      await runEmployeeOperation(form, async () => {
+        const { data: supply, error } = await supabase.from('supplies').insert({
+          tenant_id: shift.tenant_id,
+          shift_id: shift.id,
+          employee_id: shift.employee_id,
+          outlet_id: shift.outlet_id,
+          source_name: cleanText(values.get('source_name')),
+          source_role: values.get('source_role') || 'employee',
+          note: cleanText(values.get('note')) || null,
+          created_by: state.profile.id,
+        }).select().single();
+        if (error) throw error;
+        const itemResult = await supabase.from('supply_items').insert(items.map(({ product, qty }) => ({
+          tenant_id: shift.tenant_id,
+          supply_id: supply.id,
+          shift_id: shift.id,
+          product_id: product.id,
+          qty,
+          unit_hpp_snapshot: 0,
+        })));
+        if (itemResult.error) throw itemResult.error;
+      }, 'Supply berhasil disimpan.');
+    }
+
+    async function employeeAddWaste(form) {
+      const values = new FormData(form);
+      const shift = requireEmployeeActiveShift();
+      const productId = String(values.get('product_id') || '');
+      const product = state.employeeProducts.find(item => String(item.id) === productId);
+      if (!product) return toast('Produk belum dipilih.', 'error');
+
+      await runEmployeeOperation(form, async () => {
+        const photo = values.get('photo');
+        const photoPath = photo instanceof File && photo.size
+          ? await uploadEmployeePhoto({ shiftId: shift.id, file: photo, folder: 'waste' })
+          : null;
+        const { error } = await supabase.from('waste_items').insert({
+          tenant_id: shift.tenant_id,
+          shift_id: shift.id,
+          employee_id: shift.employee_id,
+          outlet_id: shift.outlet_id,
+          product_id: product.id,
+          qty: formNumber(values, 'qty'),
+          reason: cleanText(values.get('reason')),
+          unit_hpp_snapshot: 0,
+          photo_path: photoPath,
+        });
+        if (error) throw error;
+      }, 'Produk terbuang berhasil disimpan.');
+    }
+
+    async function employeeAddPeriodicReport(form) {
+      const values = new FormData(form);
+      const shift = requireEmployeeActiveShift();
+      await runEmployeeOperation(form, async () => {
+        const expectedMap = await employeeExpectedStock(shift.id);
+        const items = state.employeeProducts.map(product => ({
+          product_id: product.id,
+          physical_qty: formNumber(values, `physical_${product.id}`),
+          expected_qty: expectedMap.get(product.id) ?? formNumber(values, `physical_${product.id}`),
+        }));
+        const { data: report, error } = await supabase.from('periodic_reports').insert({
+          tenant_id: shift.tenant_id,
+          shift_id: shift.id,
+          employee_id: shift.employee_id,
+          outlet_id: shift.outlet_id,
+          cash_amount: formNumber(values, 'cash_amount'),
+          qris_amount: formNumber(values, 'qris_amount'),
+          transfer_amount: formNumber(values, 'transfer_amount'),
+          note: cleanText(values.get('note')) || null,
+        }).select().single();
+        if (error) throw error;
+        if (items.length) {
+          const itemResult = await supabase.from('periodic_report_items').insert(items.map(item => ({
+            ...item,
+            tenant_id: shift.tenant_id,
+            periodic_report_id: report.id,
+            shift_id: shift.id,
+          })));
+          if (itemResult.error) throw itemResult.error;
+        }
+      }, 'Laporan berkala berhasil disimpan.');
+    }
+
+    async function employeeSubmitFinalReport(form) {
+      const values = new FormData(form);
+      const shift = requireEmployeeActiveShift();
+      disableForm(form, true);
+      try {
+        const expectedMap = await employeeExpectedStock(shift.id);
+        const stockItems = state.employeeProducts.map(product => ({
+          product_id: product.id,
+          ending_qty: formNumber(values, `ending_${product.id}`),
+          expected_qty: expectedMap.get(product.id) ?? formNumber(values, `ending_${product.id}`),
+        }));
+        const continueShift = values.get('continue_shift') === 'on';
+        const { data: report, error } = await supabase.from('final_reports').insert({
+          tenant_id: shift.tenant_id,
+          shift_id: shift.id,
+          employee_id: shift.employee_id,
+          outlet_id: shift.outlet_id,
+          cash_amount: formNumber(values, 'cash_amount'),
+          qris_amount: formNumber(values, 'qris_amount'),
+          transfer_amount: formNumber(values, 'transfer_amount'),
+          receivable_amount: formNumber(values, 'receivable_amount'),
+          cash_deposit_amount: formNumber(values, 'cash_deposit_amount'),
+          continue_shift: continueShift,
+          note: cleanText(values.get('note')) || null,
+        }).select().single();
+        if (error) throw error;
+        if (stockItems.length) {
+          const itemResult = await supabase.from('final_report_items').insert(stockItems.map(item => ({
+            ...item,
+            tenant_id: shift.tenant_id,
+            final_report_id: report.id,
+            shift_id: shift.id,
+          })));
+          if (itemResult.error) throw itemResult.error;
+        }
+        const { data: updated, error: shiftError } = await supabase
+          .from('shifts')
+          .update({
+            final_report_submitted_at: new Date().toISOString(),
+            continue_shift: continueShift,
+            status: continueShift ? 'active' : 'final_reported',
+          })
+          .eq('id', shift.id)
+          .select('*, outlets(*)')
+          .single();
+        if (shiftError) throw shiftError;
+        state.employeeShift = updated;
+        toast('Laporan akhir berhasil disimpan.', 'success');
+        navigateEmployee(continueShift ? 'home' : 'close', '', true);
+      } catch (error) {
+        toast(error.message || 'Laporan akhir gagal disimpan.', 'error');
+      } finally {
+        disableForm(form, false);
+      }
+    }
+
+    async function employeeCheckOut(form) {
+      const values = new FormData(form);
+      const shift = state.employeeShift;
+      const photo = values.get('photo');
+      if (!shift) return toast('Shift aktif tidak ditemukan.', 'error');
+      if (!(photo instanceof File) || !photo.size) return toast('Foto absen pulang wajib diambil.', 'error');
+
+      disableForm(form, true);
+      try {
+        const location = await getDeviceLocation();
+        const outlet = shift.outlets;
+        const fence = employeeFence(
+          location,
+          outlet.checkout_lat ?? outlet.sale_lat,
+          outlet.checkout_lng ?? outlet.sale_lng,
+          outlet.geofence_radius_m,
+          'titik absen pulang',
+        );
+        if (!fence.inside) throw new Error(`Di luar radius lokasi absen pulang. Jarak ${Math.round(fence.distance)} meter.`);
+        const photoPath = await uploadEmployeePhoto({ shiftId: shift.id, file: photo, folder: 'check-out' });
+        const attendanceResult = await supabase.from('attendance_events').insert({
+          tenant_id: shift.tenant_id,
+          shift_id: shift.id,
+          employee_id: shift.employee_id,
+          outlet_id: shift.outlet_id,
+          type: 'check_out',
+          lat: location.lat,
+          lng: location.lng,
+          accuracy_m: location.accuracy,
+          distance_m: fence.distance,
+          photo_path: photoPath,
+          inside_geofence: fence.inside,
+        });
+        if (attendanceResult.error) throw attendanceResult.error;
+        const { error } = await supabase.from('shifts').update({
+          status: 'closed',
+          checkout_at: new Date().toISOString(),
+          checkout_lat: location.lat,
+          checkout_lng: location.lng,
+          checkout_accuracy_m: location.accuracy,
+          checkout_distance_m: fence.distance,
+          checkout_photo_path: photoPath,
+        }).eq('id', shift.id);
+        if (error) throw error;
+        state.employeeShift = null;
+        state.employeeShiftLoaded = true;
+        state.employeeHistory = [];
+        toast('Shift selesai. Terima kasih.', 'success');
+        navigateEmployee('home', '', true);
+      } catch (error) {
+        toast(error.message || 'Absen pulang gagal.', 'error');
+      } finally {
+        disableForm(form, false);
+      }
+    }
+
+    async function sendEmployeeLocation(button) {
+      const shift = requireEmployeeActiveShift();
+      button.disabled = true;
+      try {
+        const location = await getDeviceLocation({ maximumAge: 120000 });
+        const outlet = shift.outlets;
+        const fence = employeeFence(location, outlet.sale_lat, outlet.sale_lng, outlet.geofence_radius_m, 'titik jualan');
+        const { error } = await supabase.from('location_pings').insert({
+          tenant_id: shift.tenant_id,
+          shift_id: shift.id,
+          employee_id: shift.employee_id,
+          outlet_id: shift.outlet_id,
+          lat: location.lat,
+          lng: location.lng,
+          accuracy_m: location.accuracy,
+          distance_from_outlet_m: fence.distance,
+          inside_radius: fence.inside,
+        });
+        if (error) throw error;
+        toast(`Lokasi terkirim · ${Math.round(fence.distance)} m dari outlet.`, 'success');
+      } catch (error) {
+        toast(error.message || 'Lokasi gagal dikirim.', 'error');
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    async function runEmployeeOperation(form, action, successMessage) {
+      disableForm(form, true);
+      try {
+        await action();
+        toast(successMessage, 'success');
+        form.reset();
+      } catch (error) {
+        toast(error.message || 'Data gagal disimpan.', 'error');
+      } finally {
+        disableForm(form, false);
+      }
+    }
+
+    function requireEmployeeActiveShift() {
+      const shift = state.employeeShift;
+      if (!shift || !['active', 'draft'].includes(shift.status)) throw new Error('Shift aktif tidak ditemukan.');
+      return shift;
+    }
+
+    async function employeeExpectedStock(shiftId) {
+      const { data, error } = await supabase.rpc('expected_stock_for_shift', { target_shift_id: shiftId });
+      if (error) throw error;
+      return new Map((data || []).map(row => [row.product_id, Number(row.expected_qty || 0)]));
+    }
+
+    function employeeQtyItems(values, prefix) {
+      return state.employeeProducts
+        .map(product => ({ product, qty: formNumber(values, `${prefix}_${product.id}`) }))
+        .filter(item => item.qty > 0);
+    }
+
+    function formNumber(values, name) {
+      const value = Number(values.get(name) || 0);
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    function cleanText(value) {
+      return String(value || '').trim();
+    }
+
+    function getDeviceLocation(options = {}) {
+      if (!('geolocation' in navigator)) return Promise.reject(new Error('GPS tidak tersedia di perangkat ini.'));
+      return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          position => resolve({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+          }),
+          () => reject(new Error('Lokasi gagal dibaca. Aktifkan GPS dan izinkan akses lokasi.')),
+          { enableHighAccuracy: true, timeout: 20000, maximumAge: 30000, ...options },
+        );
+      });
+    }
+
+    function employeeFence(point, lat, lng, radius, label) {
+      const center = { lat: Number(lat), lng: Number(lng) };
+      if (!Number.isFinite(center.lat) || !Number.isFinite(center.lng) || (center.lat === 0 && center.lng === 0)) {
+        throw new Error(`Koordinat ${label} belum diatur oleh owner.`);
+      }
+      const distance = distanceMeters(point, center);
+      return { distance, inside: distance <= Number(radius || 120) };
+    }
+
+    function distanceMeters(a, b) {
+      const toRad = value => Number(value) * Math.PI / 180;
+      const earthRadius = 6371000;
+      const dLat = toRad(b.lat - a.lat);
+      const dLng = toRad(b.lng - a.lng);
+      const lat1 = toRad(a.lat);
+      const lat2 = toRad(b.lat);
+      const value = Math.sin(dLat / 2) ** 2
+        + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+      return earthRadius * 2 * Math.atan2(Math.sqrt(value), Math.sqrt(1 - value));
+    }
+
+    async function uploadEmployeePhoto({ shiftId, file, folder }) {
+      if (!navigator.onLine) throw new Error('Upload foto membutuhkan koneksi internet.');
+      const compressed = await compressEmployeeImage(file);
+      const path = `${state.profile.tenant_id}/${shiftId}/${folder}/${crypto.randomUUID()}.jpg`;
+      const { error } = await supabase.storage.from('shift-photos').upload(path, compressed, {
+        upsert: false,
+        contentType: compressed.type || 'image/jpeg',
+      });
+      if (error) throw error;
+      return path;
+    }
+
+    async function compressEmployeeImage(file) {
+      if (!file || !file.size) return file;
+      if (!('createImageBitmap' in window)) return file;
+      const bitmap = await createImageBitmap(file);
+      const scale = Math.min(1280 / bitmap.width, 1280 / bitmap.height, 1);
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+      canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+      const context = canvas.getContext('2d');
+      context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      bitmap.close?.();
+      const blob = await new Promise((resolve, reject) => canvas.toBlob(
+        result => result ? resolve(result) : reject(new Error('Foto gagal dikompres.')),
+        'image/jpeg',
+        .72,
+      ));
+      return new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' });
+    }
+
+    function navigateEmployee(route, operation = '', replace = false) {
+      state.employeeRoute = route;
+      if (operation) state.employeeOperation = operation;
+      const url = `#/employee/${route}`;
+      if (replace) history.replaceState(null, '', url);
+      else history.pushState(null, '', url);
+      renderEmployeeShell();
+    }
+
     async function adminFunction(functionName, body) {
       const { data, error } = await supabase.auth.getSession();
       if (error) throw error;
@@ -2645,6 +3952,22 @@
       const themeButton = event.target.closest('[data-theme-set]');
       if (themeButton) {
         setTheme(themeButton.dataset.themeSet);
+        return;
+      }
+
+      const employeeRouteButton = event.target.closest('[data-employee-route]');
+      if (employeeRouteButton) {
+        navigateEmployee(
+          employeeRouteButton.dataset.employeeRoute,
+          employeeRouteButton.dataset.employeeOp || '',
+        );
+        return;
+      }
+
+      const employeeOperationButton = event.target.closest('[data-employee-op]');
+      if (employeeOperationButton) {
+        state.employeeOperation = employeeOperationButton.dataset.employeeOp;
+        await renderEmployeePage();
         return;
       }
 
@@ -2704,6 +4027,7 @@
       if (action === 'close-drawer') document.body.classList.remove('drawer-open');
       if (action === 'close-modal') closeModal();
       if (action === 'toggle-theme') toggleTheme();
+      if (action === 'send-employee-location') await sendEmployeeLocation(event.target.closest('[data-action]'));
       if (action === 'logout') await logout();
       if (action === 'reset-config') {
         localStorage.removeItem(CONFIG_STORAGE_KEY);
@@ -2726,13 +4050,24 @@
       if (action === 'save-config') return saveConfig(form);
       if (action === 'owner-login') return ownerLogin(form);
       if (action === 'employee-login') return employeeLogin(form);
+      if (action === 'employee-checkin') return employeeCheckIn(form);
+      if (action === 'employee-initial-report') return employeeSubmitInitialReport(form);
+      if (action === 'employee-sale') return employeeAddSale(form);
+      if (action === 'employee-expense') return employeeAddExpense(form);
+      if (action === 'employee-supply') return employeeAddSupply(form);
+      if (action === 'employee-waste') return employeeAddWaste(form);
+      if (action === 'employee-periodic') return employeeAddPeriodicReport(form);
+      if (action === 'employee-final-report') return employeeSubmitFinalReport(form);
+      if (action === 'employee-checkout') return employeeCheckOut(form);
       if (action === 'save-resource') return saveResource(form);
       if (action === 'reset-pin') return resetPin(form);
     });
 
     window.addEventListener('hashchange', () => {
       routeFromHash();
-      if (state.session && isOwner()) renderOwnerShell();
+      if (!state.session) return;
+      if (isOwner()) renderOwnerShell();
+      else renderEmployeeShell();
     });
 
     function saveConfig(form) {
@@ -2793,7 +4128,22 @@
       state.user = null;
       state.profile = null;
       state.cache = {};
+      resetEmployeeWorkspace();
       renderLogin();
+    }
+
+    function resetEmployeeWorkspace() {
+      state.employee = null;
+      state.employeeAssignments = [];
+      state.employeeOutlets = [];
+      state.employeeShift = null;
+      state.employeeProducts = [];
+      state.employeeHistory = [];
+      state.employeeLoaded = false;
+      state.employeeShiftLoaded = false;
+      state.employeeProductsFor = null;
+      state.employeeRoute = 'home';
+      state.employeeOperation = 'sale';
     }
 
     function openModal(title, body) {
@@ -2903,6 +4253,14 @@
       const hours = Math.floor(minutes / 60);
       const remainder = Math.round(minutes % 60);
       return `${hours} jam ${remainder} menit`;
+    }
+
+    function shiftDurationText(start, end) {
+      if (!start) return '-';
+      const startTime = new Date(start).getTime();
+      const endTime = end ? new Date(end).getTime() : Date.now();
+      if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) return '-';
+      return durationText(Math.max(0, Math.round((endTime - startTime) / 60000)));
     }
 
     function cssEscape(value) {
@@ -3061,6 +4419,11 @@
 
     function routeFromHash() {
       const parts = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
+      if (parts[0] === 'employee') {
+        const employeeRoute = parts[1] || 'home';
+        state.employeeRoute = ['home', 'operations', 'close', 'account'].includes(employeeRoute) ? employeeRoute : 'home';
+        return;
+      }
       if (parts[0] === 'detail' && tableConfigs[parts[1]]?.detailPage && parts[2]) {
         state.route = 'detail';
         state.detailContext = {
