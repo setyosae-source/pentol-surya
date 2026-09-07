@@ -55,7 +55,12 @@
     }
 
     * { box-sizing: border-box; }
-    html, body { min-height: 100%; }
+    html, body {
+      min-height: 100%;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
     body {
       margin: 0;
       background:
@@ -71,6 +76,7 @@
 
     button, input, select, textarea {
       font: inherit;
+      min-width: 0;
     }
 
     button {
@@ -81,6 +87,9 @@
 
     .app {
       min-height: 100vh;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: clip;
     }
 
     .center-screen {
@@ -98,7 +107,8 @@
       display: grid;
       align-items: center;
       padding: clamp(20px, 5vw, 72px);
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
       background-color: #080606;
       background-image:
         linear-gradient(90deg, rgba(5, 3, 3, .90) 0%, rgba(8, 4, 4, .70) 38%, rgba(8, 3, 3, .18) 72%, rgba(3, 2, 2, .46) 100%),
@@ -202,6 +212,11 @@
       align-items: center;
       gap: 12px;
       margin-bottom: 18px;
+      min-width: 0;
+    }
+
+    .brand-block > div:last-child {
+      min-width: 0;
     }
 
     .logo {
@@ -234,6 +249,9 @@
       line-height: 1.1;
       font-weight: 700;
       letter-spacing: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .brand-small .logo {
@@ -367,6 +385,8 @@
       min-height: 100vh;
       display: grid;
       grid-template-columns: 280px 1fr;
+      width: 100%;
+      max-width: 100%;
     }
 
     .sidebar {
@@ -425,6 +445,8 @@
 
     .main {
       min-width: 0;
+      width: 100%;
+      max-width: 100%;
       display: grid;
       grid-template-rows: auto 1fr;
     }
@@ -442,6 +464,8 @@
       justify-content: space-between;
       gap: 10px;
       padding: 10px 16px;
+      width: 100%;
+      max-width: 100%;
     }
 
     .topbar-left, .topbar-actions {
@@ -449,6 +473,15 @@
       align-items: center;
       gap: 10px;
       min-width: 0;
+    }
+
+    .topbar-left {
+      flex: 1 1 auto;
+      overflow: hidden;
+    }
+
+    .topbar-actions {
+      flex: 0 0 auto;
     }
 
     .burger {
@@ -518,6 +551,8 @@
       padding: 18px;
       max-width: 1180px;
       width: 100%;
+      min-width: 0;
+      overflow-x: clip;
     }
 
     .page-head {
@@ -549,6 +584,7 @@
       margin: 8px 0 0;
       color: var(--muted);
       max-width: 720px;
+      overflow-wrap: anywhere;
     }
 
     .dashboard-grid {
@@ -562,6 +598,7 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 14px;
+      min-width: 0;
     }
 
     .kpi-label {
@@ -575,6 +612,7 @@
       font-size: 22px;
       font-weight: 700;
       color: var(--text);
+      overflow-wrap: anywhere;
     }
 
     .panel {
@@ -588,6 +626,7 @@
       gap: 10px;
       margin-bottom: 10px;
       font-weight: 700;
+      flex-wrap: wrap;
     }
 
     .table-wrap {
@@ -608,6 +647,7 @@
       border-bottom: 1px solid var(--line);
       text-align: left;
       vertical-align: middle;
+      overflow-wrap: anywhere;
     }
 
     th {
@@ -658,6 +698,7 @@
       background: var(--surface);
       border: 1px dashed var(--line);
       border-radius: var(--radius);
+      overflow-wrap: anywhere;
     }
 
     .skeleton {
@@ -771,6 +812,10 @@
       background: rgba(15, 23, 42, .32);
     }
 
+    body.drawer-open {
+      overflow: hidden;
+    }
+
     .code {
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 12px;
@@ -794,6 +839,138 @@
       .topbar .brand-subtitle { display: none; }
     }
 
+    @media (max-width: 760px) {
+      body { font-size: 13px; }
+
+      .content {
+        padding: 12px;
+        padding-bottom: calc(82px + env(safe-area-inset-bottom));
+      }
+
+      .page-head {
+        display: block;
+        margin-bottom: 12px;
+      }
+
+      .page-desc {
+        margin-top: 6px;
+        line-height: 1.4;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .kpi-card, .panel {
+        padding: 11px;
+        border-radius: 10px;
+      }
+
+      .kpi-label { font-size: 11px; }
+      .kpi-value {
+        margin-top: 4px;
+        font-size: clamp(17px, 5vw, 20px);
+        line-height: 1.2;
+      }
+
+      .panel { margin-top: 9px; }
+      .panel-title { margin-bottom: 8px; }
+
+      .table-wrap {
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+      }
+
+      .table-wrap table,
+      .table-wrap tbody {
+        display: block;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .table-wrap thead { display: none; }
+
+      .table-wrap tr {
+        display: block;
+        width: 100%;
+        margin-bottom: 9px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--panel);
+      }
+
+      .table-wrap tr:last-child { margin-bottom: 0; }
+
+      .table-wrap td {
+        display: grid;
+        grid-template-columns: minmax(82px, 36%) minmax(0, 1fr);
+        align-items: start;
+        gap: 9px;
+        width: 100%;
+        padding: 9px 11px;
+        border-bottom: 1px solid var(--line);
+        text-align: right;
+      }
+
+      .table-wrap td::before {
+        content: attr(data-label);
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 650;
+        text-align: left;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+      }
+
+      .table-wrap td:last-child { border-bottom: 0; }
+
+      .table-wrap td[data-label="Aksi"] {
+        display: block;
+        text-align: left;
+      }
+
+      .table-wrap td[data-label="Aksi"]::before { display: none; }
+
+      .row-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+      }
+
+      .row-actions .btn {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .row-actions .btn:last-child:nth-child(3) {
+        grid-column: 1 / -1;
+      }
+
+      .modal-backdrop {
+        align-items: end;
+        padding: 0;
+      }
+
+      .modal {
+        width: 100%;
+        max-height: calc(100svh - 10px);
+        border-radius: 16px 16px 0 0;
+      }
+
+      .modal-head, .modal-body { padding: 13px; }
+
+      .modal-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .modal-actions .btn { width: 100%; }
+    }
+
     @media (max-width: 640px) {
       .login-screen {
         align-items: end;
@@ -814,14 +991,45 @@
       .login-heading { margin-bottom: 14px; }
       .login-heading h1 { font-size: 25px; }
       .form-grid.two { grid-template-columns: 1fr; }
-      .dashboard-grid { grid-template-columns: 1fr; }
-      .page-head { display: block; }
       .topbar { padding: 9px 11px; }
       .topbar .logo { width: 36px; height: 36px; font-size: 12px; }
       .topbar-actions { gap: 6px; }
+      .topbar .theme-toggle {
+        width: 36px;
+        min-width: 36px;
+        padding: 0;
+      }
+      .topbar .theme-toggle span {
+        width: 0;
+        overflow: hidden;
+        font-size: 0;
+      }
+      .topbar .theme-toggle::before {
+        content: '◐';
+        font-size: 17px;
+      }
       .status { display: none; }
-      h1 { font-size: 28px; }
-      .fab { bottom: 16px; right: 16px; }
+      h1 { font-size: clamp(24px, 8vw, 28px); }
+      .fab {
+        width: 54px;
+        height: 54px;
+        right: max(13px, env(safe-area-inset-right));
+        bottom: max(13px, env(safe-area-inset-bottom));
+      }
+    }
+
+    @media (max-width: 390px) {
+      .topbar .brand-block > div:last-child { display: none; }
+      .topbar { gap: 6px; }
+      .topbar-left, .topbar-actions { gap: 6px; }
+      .btn { padding-inline: 11px; }
+      .login-card { padding: 17px; }
+      .login-card .card-theme + .brand-block { padding-right: 96px; }
+    }
+
+    @media (max-width: 330px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .tabs { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -1298,6 +1506,7 @@
             <div class="nav-group">Shift karyawan</div>
             <button class="nav-item active" type="button"><span><span class="badge">HM</span>Dashboard</span><span>›</span></button>
           </aside>
+          <div class="drawer-overlay" data-action="close-drawer"></div>
           <main class="main">
             <header class="topbar">
               <div class="topbar-left">
@@ -1473,8 +1682,8 @@
             <tbody>
               ${rows.map(row => `
                 <tr>
-                  ${config.columns.map(column => `<td>${safeCell(column.value(row))}</td>`).join('')}
-                  ${config.readonly ? '' : `<td>${rowActionsHtml(key, row)}</td>`}
+                  ${config.columns.map(column => `<td data-label="${esc(column.label)}">${safeCell(column.value(row))}</td>`).join('')}
+                  ${config.readonly ? '' : `<td data-label="Aksi">${rowActionsHtml(key, row)}</td>`}
                 </tr>
               `).join('')}
             </tbody>
@@ -2228,7 +2437,7 @@
           <table>
             <thead><tr>${headers.map(header => `<th>${esc(header)}</th>`).join('')}</tr></thead>
             <tbody>
-              ${rows.map(row => `<tr>${mapRow(row).map(value => `<td>${safeCell(value)}</td>`).join('')}</tr>`).join('')}
+              ${rows.map(row => `<tr>${mapRow(row).map((value, index) => `<td data-label="${esc(headers[index] || 'Data')}">${safeCell(value)}</td>`).join('')}</tr>`).join('')}
             </tbody>
           </table>
         </div>`;
