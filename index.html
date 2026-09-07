@@ -630,7 +630,7 @@
     }
 
     .table-wrap {
-      overflow-x: auto;
+      overflow-x: hidden;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--panel);
@@ -639,7 +639,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 720px;
+      min-width: 0;
     }
 
     th, td {
@@ -661,6 +661,140 @@
 
     tr:last-child td {
       border-bottom: 0;
+    }
+
+    .data-table {
+      table-layout: fixed;
+    }
+
+    .data-table th,
+    .data-table td {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .data-table th:last-child,
+    .data-table .row-open-cell {
+      width: 46px;
+      padding-inline: 6px;
+      text-align: center;
+    }
+
+    .data-row {
+      cursor: pointer;
+      transition: background .16s ease;
+    }
+
+    .data-row:hover,
+    .data-row:focus-visible,
+    .data-row.is-open {
+      background: color-mix(in srgb, var(--accent) 8%, var(--panel));
+      outline: 0;
+    }
+
+    .row-toggle {
+      display: inline-grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      color: var(--accent);
+      font: inherit;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      transition: transform .16s ease, background .16s ease;
+    }
+
+    .data-row.is-open .row-toggle {
+      transform: rotate(90deg);
+      background: color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+
+    .data-detail-row[hidden] {
+      display: none;
+    }
+
+    .data-detail-row > td {
+      padding: 0;
+      background: var(--surface);
+      overflow: visible;
+      text-overflow: clip;
+    }
+
+    .inline-detail {
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .inline-detail-grid,
+    .record-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .detail-item {
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--panel);
+    }
+
+    .detail-item.full {
+      grid-column: 1 / -1;
+    }
+
+    .detail-label {
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+
+    .detail-value {
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .detail-json {
+      max-height: 320px;
+      margin: 0;
+      overflow: auto;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .detail-panel {
+      margin-top: 0;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     .row-actions {
@@ -878,62 +1012,77 @@
       .panel-title { margin-bottom: 8px; }
 
       .table-wrap {
-        overflow: visible;
-        border: 0;
-        border-radius: 0;
-        background: transparent;
-      }
-
-      .table-wrap table,
-      .table-wrap tbody {
-        display: block;
-        width: 100%;
-        min-width: 0;
-      }
-
-      .table-wrap thead { display: none; }
-
-      .table-wrap tr {
-        display: block;
-        width: 100%;
-        margin-bottom: 9px;
         overflow: hidden;
         border: 1px solid var(--line);
         border-radius: 10px;
         background: var(--panel);
       }
 
-      .table-wrap tr:last-child { margin-bottom: 0; }
-
-      .table-wrap td {
-        display: grid;
-        grid-template-columns: minmax(82px, 36%) minmax(0, 1fr);
-        align-items: start;
-        gap: 9px;
-        width: 100%;
-        padding: 9px 11px;
-        border-bottom: 1px solid var(--line);
-        text-align: right;
-      }
-
-      .table-wrap td::before {
-        content: attr(data-label);
-        color: var(--muted);
+      .data-table th,
+      .data-table td {
+        padding: 8px 6px;
         font-size: 11px;
-        font-weight: 650;
-        text-align: left;
-        text-transform: uppercase;
-        letter-spacing: .03em;
+        white-space: nowrap;
       }
 
-      .table-wrap td:last-child { border-bottom: 0; }
+      .data-table th:first-child,
+      .data-table .data-row td:first-child { width: 42%; }
 
-      .table-wrap td[data-label="Aksi"] {
-        display: block;
-        text-align: left;
+      .data-table th:nth-child(2),
+      .data-table .data-row td:nth-child(2) { width: 27%; }
+
+      .data-table th:nth-child(3),
+      .data-table .data-row td:nth-child(3) { width: 23%; }
+
+      .data-table th:last-child,
+      .data-table .row-open-cell { width: 34px; }
+
+      .data-table .badge {
+        max-width: 100%;
+        padding: 3px 6px;
+        font-size: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
-      .table-wrap td[data-label="Aksi"]::before { display: none; }
+      .row-toggle {
+        width: 26px;
+        height: 26px;
+        font-size: 17px;
+      }
+
+      .inline-detail { padding: 10px; }
+
+      .data-detail-row > td {
+        width: auto;
+        white-space: normal;
+      }
+
+      .inline-detail-grid,
+      .record-detail-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+      }
+
+      .detail-item { padding: 8px; }
+
+      .mini-table {
+        table-layout: fixed;
+      }
+
+      .mini-table th,
+      .mini-table td {
+        padding: 8px 6px;
+        font-size: 11px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .mini-table th:nth-child(n+4),
+      .mini-table td:nth-child(n+4) {
+        display: none;
+      }
 
       .row-actions {
         display: grid;
@@ -1025,6 +1174,9 @@
       .btn { padding-inline: 11px; }
       .login-card { padding: 17px; }
       .login-card .card-theme + .brand-block { padding-right: 96px; }
+      .inline-detail-grid,
+      .record-detail-grid { grid-template-columns: 1fr; }
+      .detail-item.full { grid-column: auto; }
     }
 
     @media (max-width: 330px) {
@@ -1063,6 +1215,7 @@
       theme: resolveTheme(),
       cache: {},
       formContext: null,
+      detailContext: null,
     };
 
     const ownerNav = [
@@ -1095,12 +1248,24 @@
         empty: 'Belum ada karyawan tersimpan.',
         addLabel: 'Tambah karyawan',
         load: loadEmployees,
+        listColumns: ['Nama', 'Kode', 'Status'],
+        detailPage: true,
         columns: [
           { label: 'Nama', value: row => row.user_profiles?.full_name || '-' },
           { label: 'Kode', value: row => row.employee_code || '-' },
           { label: 'Nomor HP', value: row => row.phone || '-' },
           { label: 'Outlet', value: row => row.default_outlet?.name || '-' },
           { label: 'Upah/jam', value: row => money(row.hourly_rate) },
+          { label: 'Status', value: row => badge(row.active, row.active ? 'Aktif' : 'Nonaktif') },
+        ],
+        detailFields: [
+          { label: 'Nama', value: row => row.user_profiles?.full_name || '-' },
+          { label: 'Kode karyawan', value: row => row.employee_code || '-' },
+          { label: 'Nomor HP', value: row => row.phone || '-' },
+          { label: 'Outlet default', value: row => row.default_outlet?.name || '-' },
+          { label: 'Upah per jam', value: row => money(row.hourly_rate) },
+          { label: 'Uang makan', value: row => money(row.meal_allowance) },
+          { label: 'Transport', value: row => money(row.transport_allowance) },
           { label: 'Status', value: row => badge(row.active, row.active ? 'Aktif' : 'Nonaktif') },
         ],
         fields: () => [
@@ -1122,11 +1287,25 @@
         empty: 'Belum ada outlet tersimpan.',
         addLabel: 'Tambah outlet',
         load: loadOutletsAll,
+        listColumns: ['Nama', 'Radius', 'Status'],
+        detailPage: true,
         columns: [
           { label: 'Nama', value: row => row.name },
           { label: 'Alamat', value: row => row.address || '-' },
           { label: 'Radius', value: row => `${row.geofence_radius_m || 0} m` },
           { label: 'Metode stok', value: row => stockMethodLabel(row.stock_default_method) },
+          { label: 'Status', value: row => badge(row.active, row.active ? 'Aktif' : 'Nonaktif') },
+        ],
+        detailFields: [
+          { label: 'Nama', value: row => row.name || '-' },
+          { label: 'Alamat', value: row => row.address || '-', full: true },
+          { label: 'Titik ambil barang', value: row => coordinateText(row.pickup_lat, row.pickup_lng) },
+          { label: 'Titik jualan', value: row => coordinateText(row.sale_lat, row.sale_lng) },
+          { label: 'Titik absen pulang', value: row => coordinateText(row.checkout_lat, row.checkout_lng) },
+          { label: 'Radius geofence', value: row => `${numberText(row.geofence_radius_m)} m` },
+          { label: 'Metode stok', value: row => stockMethodLabel(row.stock_default_method) },
+          { label: 'Jadwal laporan', value: row => row.report_schedule_mode === 'scheduled' ? 'Terjadwal' : 'Bebas' },
+          { label: 'Jam laporan', value: row => arrayText(row.report_times) },
           { label: 'Status', value: row => badge(row.active, row.active ? 'Aktif' : 'Nonaktif') },
         ],
         fields: () => [
@@ -1151,8 +1330,10 @@
         empty: 'Belum ada produk tersimpan.',
         addLabel: 'Tambah produk',
         load: loadProductsAll,
+        listColumns: ['Nama', 'Harga umum', 'Status'],
         columns: [
           { label: 'Nama', value: row => row.name },
+          { label: 'Kategori', value: row => row.product_categories?.name || '-' },
           { label: 'Harga umum', value: row => money(row.general_sale_price) },
           { label: 'HPP terakhir', value: row => money(row.hpp) },
           { label: 'Qty default', value: row => numberText(row.default_qty) },
@@ -1173,6 +1354,7 @@
         empty: 'Belum ada harga khusus outlet.',
         addLabel: 'Tambah harga',
         load: loadOutletPrices,
+        listColumns: ['Outlet', 'Produk', 'Harga'],
         columns: [
           { label: 'Outlet', value: row => row.outlets?.name || '-' },
           { label: 'Produk', value: row => row.products?.name || '-' },
@@ -1193,6 +1375,7 @@
         empty: 'Belum ada pengeluaran umum.',
         addLabel: 'Tambah pengeluaran',
         load: loadGeneralExpenses,
+        listColumns: ['Tanggal', 'Kategori', 'Jumlah'],
         columns: [
           { label: 'Tanggal', value: row => dateText(row.occurred_at) },
           { label: 'Kategori', value: row => row.category },
@@ -1213,12 +1396,24 @@
         empty: 'Belum ada periode gaji.',
         addLabel: 'Tambah periode',
         load: loadPayrollPeriods,
+        loadDetail: loadPayrollDetail,
+        listColumns: ['Nama periode', 'Selesai', 'Status'],
+        detailPage: true,
         columns: [
           { label: 'Nama periode', value: row => row.name },
           { label: 'Mulai', value: row => dateText(row.starts_on) },
           { label: 'Selesai', value: row => dateText(row.ends_on) },
           { label: 'Status', value: row => badge(row.status !== 'draft', payrollStatusLabel(row.status)) },
         ],
+        detailFields: [
+          { label: 'Nama periode', value: row => row.name || '-' },
+          { label: 'Tanggal mulai', value: row => dateText(row.starts_on) },
+          { label: 'Tanggal selesai', value: row => dateText(row.ends_on) },
+          { label: 'Status', value: row => badge(row.status !== 'draft', payrollStatusLabel(row.status)) },
+          { label: 'Difinalkan', value: row => dateTimeText(row.finalized_at) },
+          { label: 'Dibayar', value: row => dateTimeText(row.paid_at) },
+        ],
+        detailExtra: row => payrollItemsDetailHtml(row.payroll_items || []),
         fields: () => [
           { name: 'name', label: 'Nama periode', required: true, placeholder: 'Gaji Minggu 4 Juli' },
           { name: 'starts_on', label: 'Mulai', type: 'date', required: true },
@@ -1233,12 +1428,28 @@
         empty: 'Tidak ada shift aktif.',
         readonly: true,
         load: loadActiveShifts,
+        listColumns: ['Karyawan', 'Outlet', 'Status'],
+        detailPage: true,
         columns: [
           { label: 'Karyawan', value: row => row.employees?.user_profiles?.full_name || row.employees?.employee_code || '-' },
           { label: 'Outlet', value: row => row.outlets?.name || '-' },
           { label: 'Status', value: row => badge(true, shiftStatusLabel(row.status)) },
           { label: 'Masuk', value: row => dateTimeText(row.checkin_at) },
           { label: 'Catatan', value: row => row.notes || '-' },
+        ],
+        detailFields: [
+          { label: 'Karyawan', value: row => row.employees?.user_profiles?.full_name || row.employees?.employee_code || '-' },
+          { label: 'Outlet', value: row => row.outlets?.name || '-' },
+          { label: 'Status', value: row => badge(true, shiftStatusLabel(row.status)) },
+          { label: 'Masuk', value: row => dateTimeText(row.checkin_at) },
+          { label: 'Titik masuk', value: row => coordinateText(row.checkin_lat, row.checkin_lng) },
+          { label: 'Jarak masuk', value: row => row.checkin_distance_m == null ? '-' : `${numberText(row.checkin_distance_m)} m` },
+          { label: 'Laporan awal', value: row => dateTimeText(row.initial_report_submitted_at) },
+          { label: 'Laporan akhir', value: row => dateTimeText(row.final_report_submitted_at) },
+          { label: 'Pulang', value: row => dateTimeText(row.checkout_at) },
+          { label: 'Titik pulang', value: row => coordinateText(row.checkout_lat, row.checkout_lng) },
+          { label: 'Lanjut shift', value: row => row.continue_shift ? 'Ya' : 'Tidak' },
+          { label: 'Catatan', value: row => row.notes || '-', full: true },
         ],
       },
       locations: {
@@ -1248,12 +1459,24 @@
         empty: 'Belum ada data lokasi.',
         readonly: true,
         load: loadLatestLocations,
+        listColumns: ['Karyawan', 'Jarak', 'Status'],
+        detailPage: true,
         columns: [
           { label: 'Karyawan', value: row => row.employees?.user_profiles?.full_name || row.employees?.employee_code || '-' },
           { label: 'Outlet', value: row => row.outlets?.name || '-' },
           { label: 'Update', value: row => dateTimeText(row.created_at) },
           { label: 'Jarak', value: row => row.distance_from_outlet_m == null ? '-' : `${numberText(row.distance_from_outlet_m)} m` },
           { label: 'Status', value: row => badge(row.inside_radius, row.inside_radius ? 'Dalam radius' : 'Luar radius') },
+        ],
+        detailFields: [
+          { label: 'Karyawan', value: row => row.employees?.user_profiles?.full_name || row.employees?.employee_code || '-' },
+          { label: 'Outlet', value: row => row.outlets?.name || '-' },
+          { label: 'Waktu pembaruan', value: row => dateTimeText(row.created_at) },
+          { label: 'Koordinat', value: row => coordinateText(row.lat, row.lng) },
+          { label: 'Akurasi', value: row => row.accuracy_m == null ? '-' : `${numberText(row.accuracy_m)} m` },
+          { label: 'Jarak dari outlet', value: row => row.distance_from_outlet_m == null ? '-' : `${numberText(row.distance_from_outlet_m)} m` },
+          { label: 'Baterai', value: row => row.battery_percent == null ? '-' : `${numberText(row.battery_percent)}%` },
+          { label: 'Status radius', value: row => badge(row.inside_radius, row.inside_radius ? 'Dalam radius' : 'Luar radius') },
         ],
       },
       audit: {
@@ -1263,12 +1486,25 @@
         empty: 'Belum ada audit log.',
         readonly: true,
         load: loadAuditLogs,
+        loadDetail: loadAuditLogDetail,
+        listColumns: ['Waktu', 'Tabel', 'Aksi'],
+        detailPage: true,
         columns: [
           { label: 'Waktu', value: row => dateTimeText(row.created_at) },
           { label: 'Tabel', value: row => row.table_name },
           { label: 'Aksi', value: row => row.action },
           { label: 'Record', value: row => `<span class="code">${esc(shortId(row.record_id))}</span>` },
           { label: 'Alasan', value: row => row.reason || '-' },
+        ],
+        detailFields: [
+          { label: 'Waktu', value: row => dateTimeText(row.created_at) },
+          { label: 'Tabel', value: row => row.table_name || '-' },
+          { label: 'Aksi', value: row => row.action || '-' },
+          { label: 'Record ID', value: row => row.record_id || '-' },
+          { label: 'Actor ID', value: row => row.actor_id || '-' },
+          { label: 'Alasan', value: row => row.reason || '-', full: true },
+          { label: 'Data sebelum', value: row => row.old_data, json: true, full: true },
+          { label: 'Data sesudah', value: row => row.new_data, json: true, full: true },
         ],
       },
     };
@@ -1460,6 +1696,7 @@
     }
 
     function renderOwnerShell() {
+      const activeRoute = state.route === 'detail' ? state.detailContext?.resourceKey : state.route;
       app.innerHTML = `
         <div class="shell">
           <aside class="sidebar">
@@ -1467,7 +1704,7 @@
             ${ownerNav.map(group => `
               <div class="nav-group">${esc(group.group)}</div>
               ${group.items.map(item => `
-                <button class="nav-item ${state.route === item.key ? 'active' : ''}" type="button" data-route="${item.key}">
+                <button class="nav-item ${activeRoute === item.key ? 'active' : ''}" type="button" data-route="${item.key}">
                   <span><span class="badge">${esc(item.icon)}</span>${esc(item.label)}</span>
                   <span>›</span>
                 </button>`).join('')}
@@ -1552,6 +1789,10 @@
       }
       if (state.route === 'settings') {
         renderSettingsPage(page);
+        return;
+      }
+      if (state.route === 'detail') {
+        await renderDetailPage(page);
         return;
       }
       const config = tableConfigs[state.route] || tableConfigs.employees;
@@ -1670,26 +1911,151 @@
     }
 
     function dataTableHtml(key, config, rows) {
+      const listColumns = getListColumns(config);
       return `
         <div class="table-wrap">
-          <table>
+          <table class="data-table">
             <thead>
               <tr>
-                ${config.columns.map(column => `<th>${esc(column.label)}</th>`).join('')}
-                ${config.readonly ? '' : '<th>Aksi</th>'}
+                ${listColumns.map(column => `<th>${esc(column.label)}</th>`).join('')}
+                <th><span class="sr-only">Rincian</span></th>
               </tr>
             </thead>
             <tbody>
-              ${rows.map(row => `
-                <tr>
-                  ${config.columns.map(column => `<td data-label="${esc(column.label)}">${safeCell(column.value(row))}</td>`).join('')}
-                  ${config.readonly ? '' : `<td data-label="Aksi">${rowActionsHtml(key, row)}</td>`}
-                </tr>
-              `).join('')}
+              ${rows.map(row => dataRowsHtml(key, config, row, listColumns)).join('')}
             </tbody>
           </table>
+        </div>`;
+    }
+
+    function dataRowsHtml(key, config, row, listColumns) {
+      const rowId = String(row.id);
+      const detailId = `detail-${key}-${rowId}`;
+      return `
+        <tr class="data-row" tabindex="0" data-row-key="${esc(rowId)}" data-resource="${esc(key)}" aria-expanded="false" aria-controls="${esc(detailId)}">
+          ${listColumns.map(column => `<td title="${esc(plainCellText(column.value(row)))}">${safeCell(column.value(row))}</td>`).join('')}
+          <td class="row-open-cell">
+            <button class="row-toggle" type="button" data-toggle-row="${esc(rowId)}" data-resource="${esc(key)}" aria-label="Buka rincian">›</button>
+          </td>
+        </tr>
+        <tr class="data-detail-row" id="${esc(detailId)}" data-detail-key="${esc(rowId)}" data-resource="${esc(key)}" hidden>
+          <td colspan="${listColumns.length + 1}">${inlineDetailsHtml(key, config, row, listColumns)}</td>
+        </tr>`;
+    }
+
+    function getListColumns(config) {
+      const labels = new Set(config.listColumns || config.columns.slice(0, 3).map(column => column.label));
+      return config.columns.filter(column => labels.has(column.label));
+    }
+
+    function inlineDetailsHtml(key, config, row, listColumns) {
+      const shownLabels = new Set(listColumns.map(column => column.label));
+      const details = config.columns.filter(column => !shownLabels.has(column.label));
+      return `
+        <div class="inline-detail">
+          ${details.length ? `<div class="inline-detail-grid">${details.map(field => detailItemHtml(field, row)).join('')}</div>` : '<p class="page-desc">Tidak ada informasi tambahan.</p>'}
+          <div class="detail-actions">
+            ${config.detailPage ? `<button class="btn primary small" type="button" data-view-detail="${esc(key)}" data-id="${esc(row.id)}">Lihat data lengkap</button>` : ''}
+            ${config.readonly ? '' : rowActionsHtml(key, row)}
+          </div>
+        </div>`;
+    }
+
+    async function renderDetailPage(page) {
+      const context = state.detailContext;
+      const config = context ? tableConfigs[context.resourceKey] : null;
+      if (!config || !config.detailPage) {
+        state.route = 'dashboard';
+        history.replaceState(null, '', '#/dashboard');
+        await renderOwnerPage();
+        return;
+      }
+
+      page.innerHTML = pageSkeleton({
+        eyebrow: 'Detail data',
+        title: config.title,
+        desc: 'Memuat informasi lengkap...',
+      });
+
+      try {
+        let row;
+        if (config.loadDetail) {
+          row = await config.loadDetail(context.rowId);
+          const cachedRows = Array.isArray(state.cache[context.resourceKey]) ? state.cache[context.resourceKey] : [];
+          if (!cachedRows.some(item => String(item.id) === String(row?.id))) {
+            state.cache[context.resourceKey] = [...cachedRows, row];
+          }
+        } else {
+          let rows = state.cache[context.resourceKey];
+          if (!Array.isArray(rows)) {
+            rows = await config.load();
+            state.cache[context.resourceKey] = rows;
+          }
+          row = rows.find(item => String(item.id) === String(context.rowId));
+        }
+        if (!row) throw new Error('Data tidak ditemukan atau sudah dihapus.');
+        page.innerHTML = detailPageHtml(context.resourceKey, config, row);
+      } catch (error) {
+        page.innerHTML = `
+          <button class="btn ghost small" type="button" data-route="${esc(context.resourceKey)}">← Kembali</button>
+          <div class="empty" style="margin-top:12px"><strong>Detail belum bisa dimuat.</strong><br>${esc(error.message || error)}</div>`;
+      }
+    }
+
+    function detailPageHtml(key, config, row) {
+      const fields = config.detailFields || config.columns;
+      return `
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">Detail data</p>
+            <h1>${esc(config.title)}</h1>
+            <p class="page-desc">Informasi lengkap untuk data yang dipilih.</p>
+          </div>
+          <button class="btn ghost small" type="button" data-route="${esc(key)}">← Kembali</button>
         </div>
-        ${config.readonly ? '' : `<button class="fab" type="button" title="${esc(config.addLabel)}" data-open-form="${key}">+</button>`}`;
+        <div class="panel detail-panel">
+          <div class="record-detail-grid">
+            ${fields.map(field => detailItemHtml(field, row)).join('')}
+          </div>
+          ${typeof config.detailExtra === 'function' ? config.detailExtra(row) : ''}
+          ${config.readonly ? '' : `<div class="detail-actions">${rowActionsHtml(key, row)}</div>`}
+        </div>`;
+    }
+
+    function detailItemHtml(field, row) {
+      const rawValue = field.value(row);
+      const value = field.json
+        ? `<pre class="detail-json">${esc(prettyJson(rawValue))}</pre>`
+        : safeCell(rawValue);
+      return `
+        <div class="detail-item ${field.full ? 'full' : ''}">
+          <div class="detail-label">${esc(field.label)}</div>
+          <div class="detail-value">${value}</div>
+        </div>`;
+    }
+
+    function toggleDataRow(key, rowId) {
+      const row = document.querySelector(`.data-row[data-resource="${cssEscape(key)}"][data-row-key="${cssEscape(rowId)}"]`);
+      const detail = document.querySelector(`.data-detail-row[data-resource="${cssEscape(key)}"][data-detail-key="${cssEscape(rowId)}"]`);
+      if (!row || !detail) return;
+      const willOpen = detail.hidden;
+      document.querySelectorAll('.data-detail-row:not([hidden])').forEach(item => {
+        item.hidden = true;
+      });
+      document.querySelectorAll('.data-row.is-open').forEach(item => {
+        item.classList.remove('is-open');
+        item.setAttribute('aria-expanded', 'false');
+      });
+      detail.hidden = !willOpen;
+      row.classList.toggle('is-open', willOpen);
+      row.setAttribute('aria-expanded', String(willOpen));
+    }
+
+    function openDetailPage(resourceKey, rowId) {
+      state.detailContext = { resourceKey, rowId: String(rowId) };
+      state.route = 'detail';
+      history.pushState(null, '', `#/detail/${encodeURIComponent(resourceKey)}/${encodeURIComponent(rowId)}`);
+      renderOwnerShell();
     }
 
     function rowActionsHtml(key, row) {
@@ -1868,6 +2234,16 @@
       return data || [];
     }
 
+    async function loadPayrollDetail(rowId) {
+      const { data, error } = await supabase
+        .from('payroll_periods')
+        .select('*, payroll_items(*, employees(employee_code, user_profiles(full_name)))')
+        .eq('id', rowId)
+        .single();
+      if (error) throw error;
+      return data;
+    }
+
     async function loadActiveShifts() {
       const { data, error } = await supabase
         .from('shifts')
@@ -1896,6 +2272,16 @@
         .limit(60);
       if (error) throw error;
       return data || [];
+    }
+
+    async function loadAuditLogDetail(rowId) {
+      const { data, error } = await supabase
+        .from('audit_logs')
+        .select('*')
+        .eq('id', rowId)
+        .single();
+      if (error) throw error;
+      return data;
     }
 
     async function loadProductPerformance(range) {
@@ -1937,7 +2323,7 @@
       const config = tableConfigs[resourceKey];
       if (!config || config.readonly) return;
       await ensureLookups(resourceKey);
-      const row = id ? (state.cache[resourceKey] || []).find(item => item.id === id) : null;
+      const row = id ? (state.cache[resourceKey] || []).find(item => String(item.id) === String(id)) : null;
       state.formContext = { resourceKey, id };
       const fields = config.fields().filter(field => !(field.createOnly && row) && !(field.editOnly && !row));
       openModal(row ? `Edit ${config.title}` : config.addLabel, `
@@ -2008,7 +2394,7 @@
       const context = state.formContext;
       if (!context) return;
       const config = tableConfigs[context.resourceKey];
-      const row = context.id ? (state.cache[context.resourceKey] || []).find(item => item.id === context.id) : null;
+      const row = context.id ? (state.cache[context.resourceKey] || []).find(item => String(item.id) === String(context.id)) : null;
       const fields = config.fields().filter(field => !(field.createOnly && row) && !(field.editOnly && !row));
       const values = formValues(form, fields);
       disableForm(form, true);
@@ -2126,7 +2512,7 @@
 
     async function deleteResource(resourceKey, id) {
       const config = tableConfigs[resourceKey];
-      const row = (state.cache[resourceKey] || []).find(item => item.id === id);
+      const row = (state.cache[resourceKey] || []).find(item => String(item.id) === String(id));
       if (!row || !config || config.readonly) return;
       openModal(`Hapus ${config.title}`, `
         <p>Yakin hapus data ini? Untuk master data, status akan dibuat nonaktif supaya riwayat lama tetap aman.</p>
@@ -2138,7 +2524,7 @@
     }
 
     async function confirmDelete(resourceKey, id) {
-      const row = (state.cache[resourceKey] || []).find(item => item.id === id);
+      const row = (state.cache[resourceKey] || []).find(item => String(item.id) === String(id));
       try {
         if (resourceKey === 'employees') {
           const profileResult = await supabase.from('user_profiles').update({ active: false }).eq('id', row.user_id);
@@ -2158,6 +2544,9 @@
         }
         closeModal();
         state.cache = {};
+        state.detailContext = null;
+        state.route = resourceKey;
+        history.replaceState(null, '', `#/${resourceKey}`);
         toast('Data berhasil dihapus.', 'success');
         await renderOwnerPage();
       } catch (error) {
@@ -2166,7 +2555,7 @@
     }
 
     async function openResetPin(userId, rowId) {
-      const row = (state.cache.employees || []).find(item => item.id === rowId);
+      const row = (state.cache.employees || []).find(item => String(item.id) === String(rowId));
       state.formContext = { userId };
       openModal('Reset PIN karyawan', `
         <p class="page-desc">Karyawan: ${esc(row?.user_profiles?.full_name || row?.employee_code || '-')}</p>
@@ -2262,8 +2651,27 @@
       const routeButton = event.target.closest('[data-route]');
       if (routeButton) {
         state.route = routeButton.dataset.route;
+        state.detailContext = null;
         history.replaceState(null, '', `#/${state.route}`);
         renderOwnerShell();
+        return;
+      }
+
+      const detailButton = event.target.closest('[data-view-detail]');
+      if (detailButton) {
+        openDetailPage(detailButton.dataset.viewDetail, detailButton.dataset.id);
+        return;
+      }
+
+      const toggleButton = event.target.closest('[data-toggle-row]');
+      if (toggleButton) {
+        toggleDataRow(toggleButton.dataset.resource, toggleButton.dataset.toggleRow);
+        return;
+      }
+
+      const dataRow = event.target.closest('.data-row[data-row-key]');
+      if (dataRow && !event.target.closest('button, a, input, select, textarea')) {
+        toggleDataRow(dataRow.dataset.resource, dataRow.dataset.rowKey);
         return;
       }
 
@@ -2301,6 +2709,13 @@
         localStorage.removeItem(CONFIG_STORAGE_KEY);
         location.reload();
       }
+    });
+
+    document.addEventListener('keydown', event => {
+      const dataRow = event.target.closest?.('.data-row[data-row-key]');
+      if (!dataRow || !['Enter', ' '].includes(event.key)) return;
+      event.preventDefault();
+      toggleDataRow(dataRow.dataset.resource, dataRow.dataset.rowKey);
     });
 
     document.addEventListener('submit', async event => {
@@ -2434,7 +2849,7 @@
       if (!rows.length) return '<div class="empty">Belum ada data.</div>';
       return `
         <div class="table-wrap">
-          <table>
+          <table class="mini-table">
             <thead><tr>${headers.map(header => `<th>${esc(header)}</th>`).join('')}</tr></thead>
             <tbody>
               ${rows.map(row => `<tr>${mapRow(row).map((value, index) => `<td data-label="${esc(headers[index] || 'Data')}">${safeCell(value)}</td>`).join('')}</tr>`).join('')}
@@ -2443,10 +2858,56 @@
         </div>`;
     }
 
+    function payrollItemsDetailHtml(rows) {
+      return `
+        <div class="panel" style="padding:0;border:0;box-shadow:none">
+          <div class="panel-title"><span>Rincian gaji karyawan</span><span class="badge">${rows.length} data</span></div>
+          ${miniTable(rows, ['Karyawan', 'Durasi', 'Total'], row => [
+            row.employees?.user_profiles?.full_name || row.employees?.employee_code || '-',
+            durationText(row.total_minutes),
+            money(row.total_amount),
+          ])}
+        </div>`;
+    }
+
     function safeCell(value) {
       const text = value == null || value === '' ? '-' : String(value);
       if (text.includes('<span') || text.includes('<div') || text.includes('<button')) return text;
       return esc(text);
+    }
+
+    function plainCellText(value) {
+      return String(value ?? '-').replace(/<[^>]*>/g, '').trim() || '-';
+    }
+
+    function prettyJson(value) {
+      if (value == null) return '-';
+      try {
+        return JSON.stringify(value, null, 2);
+      } catch {
+        return String(value);
+      }
+    }
+
+    function coordinateText(lat, lng) {
+      if (lat == null || lng == null || lat === '' || lng === '') return '-';
+      return `${Number(lat).toFixed(6)}, ${Number(lng).toFixed(6)}`;
+    }
+
+    function arrayText(value) {
+      return Array.isArray(value) && value.length ? value.join(', ') : '-';
+    }
+
+    function durationText(totalMinutes) {
+      const minutes = Math.max(0, Number(totalMinutes || 0));
+      const hours = Math.floor(minutes / 60);
+      const remainder = Math.round(minutes % 60);
+      return `${hours} jam ${remainder} menit`;
+    }
+
+    function cssEscape(value) {
+      if (window.CSS?.escape) return window.CSS.escape(String(value));
+      return String(value).replace(/[^a-zA-Z0-9_-]/g, '\\$&');
     }
 
     function badge(ok, text) {
@@ -2599,10 +3060,19 @@
     }
 
     function routeFromHash() {
-      const hash = location.hash.replace(/^#\/?/, '');
-      const route = hash.split('/').filter(Boolean).pop();
+      const parts = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
+      if (parts[0] === 'detail' && tableConfigs[parts[1]]?.detailPage && parts[2]) {
+        state.route = 'detail';
+        state.detailContext = {
+          resourceKey: parts[1],
+          rowId: decodeURIComponent(parts.slice(2).join('/')),
+        };
+        return;
+      }
+      const route = parts[0] || 'dashboard';
       const validRoutes = ['dashboard', ...Object.keys(tableConfigs), 'settings'];
       state.route = validRoutes.includes(route) ? route : 'dashboard';
+      state.detailContext = null;
     }
 
     function unregisterOldServiceWorker() {
