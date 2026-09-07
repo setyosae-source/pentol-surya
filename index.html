@@ -837,6 +837,7 @@
       height: 100%;
       display: block;
       object-fit: cover;
+      transform: scaleX(-1);
     }
 
     .camera-loading {
@@ -3625,7 +3626,7 @@
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
-            facingMode: { ideal: 'environment' },
+            facingMode: { ideal: 'user' },
             width: { ideal: 1280 },
             height: { ideal: 1280 },
           },
@@ -3674,6 +3675,8 @@
         canvas.width = Math.max(1, Math.round(video.videoWidth * scale));
         canvas.height = Math.max(1, Math.round(video.videoHeight * scale));
         const context = canvas.getContext('2d');
+        context.translate(canvas.width, 0);
+        context.scale(-1, 1);
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         const blob = await new Promise((resolve, reject) => canvas.toBlob(
           result => result ? resolve(result) : reject(new Error('Foto gagal dibuat.')),
